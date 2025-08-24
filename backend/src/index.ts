@@ -146,15 +146,6 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerOptions));
 app.get('/api/v1/health', healthCheck);
 app.get('/api/v1/metrics', metricsEndpoint);
 
-// 404 handler for unmatched routes (must come before global error handler)
-app.use(notFoundHandler);
-
-// Error logging middleware
-app.use(errorLoggingMiddleware);
-
-// Global error handling middleware (must be last)
-app.use(globalErrorHandler);
-
 // Start server only if not in test environment
 if (process.env['NODE_ENV'] !== 'test') {
   const startServer = async () => {
@@ -187,6 +178,13 @@ if (process.env['NODE_ENV'] !== 'test') {
     // Import LLM response routes
     const llmResponseRoutes = (await import('./routes/llm-response')).default;
     app.use('/api/v1', llmResponseRoutes);
+
+    // 404 handler for unmatched routes (must come before error handlers)
+    app.use(notFoundHandler);
+
+    // Error logging and global error handling (must be last)
+    app.use(errorLoggingMiddleware);
+    app.use(globalErrorHandler);
 
     console.log('All routes setup complete');
 

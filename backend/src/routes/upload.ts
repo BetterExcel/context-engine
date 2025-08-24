@@ -189,6 +189,7 @@ router.post('/upload-spreadsheet',
     };
 
     // Parse the spreadsheet file
+    console.log('About to parse file:', req.file.originalname, 'MIME:', req.file.mimetype);
     const spreadsheetData = await SpreadsheetParser.parseFile(
       req.file.buffer,
       req.file.originalname,
@@ -200,6 +201,7 @@ router.post('/upload-spreadsheet',
         maxCols: 1000
       }
     );
+    console.log('File parsed successfully, ID:', spreadsheetData.id);
 
     // Collect any warnings
     const warnings: string[] = [];

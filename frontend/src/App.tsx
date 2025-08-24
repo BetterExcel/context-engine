@@ -513,7 +513,7 @@ function App(): JSX.Element {
                           setUploadError(null);
                           setUploadResult(null);
                         }}
-                        showDetails={process.env['NODE_ENV'] === 'development'}
+                        showDetails={import.meta.env.DEV}
                       />
                     </div>
                   ) : null}
@@ -658,7 +658,7 @@ function App(): JSX.Element {
                                 title="Analysis Failed"
                                 onRetry={() => setAnalysisError(null)}
                                 onDismiss={() => setAnalysisError(null)}
-                                showDetails={process.env['NODE_ENV'] === 'development'}
+                                showDetails={import.meta.env.DEV}
                               />
                             </div>
                           )}
