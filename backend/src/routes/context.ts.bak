@@ -145,7 +145,7 @@ router.post('/analyze-context', upload.single('file'), async (req, res) => {
     }
     
     console.log('Step 4: Formatting context for LLM');
-    const openaiService = req.app.locals["openAIService"] as OpenAIService;
+    const openaiService = new OpenAIService();
     const contextFormatter = new ContextFormatter(openaiService);
     
     const formattedContext = await contextFormatter.formatForLLM(
