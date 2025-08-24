@@ -124,10 +124,13 @@ INSTRUCTIONS:
   }
 
   private buildUserPrompt(request: LLMResponseRequest): string {
+    // Handle both old and new context structures
+    const contextData = request.contextAnalysis.spreadsheetContext || request.contextAnalysis.context;
+    
     let prompt = `USER REQUEST: "${request.userRequest}"
 
 SPREADSHEET CONTEXT:
-${JSON.stringify(request.contextAnalysis.spreadsheetContext, null, 2)}
+${JSON.stringify(contextData, null, 2)}
 
 NATURAL LANGUAGE CONTEXT:
 ${request.contextAnalysis.naturalLanguageDescription}

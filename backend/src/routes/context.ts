@@ -16,7 +16,7 @@ const router = express.Router();
 // Validation schema for context analysis requests
 const contextAnalysisSchema = z.object({
   request: z.string().min(1, 'Request is required').max(1000, 'Request too long'),
-  spreadsheetId: z.string().regex(/^sheet_\d+_[a-z0-9]+$/, 'Invalid spreadsheet ID format'),
+  spreadsheetId: z.string().regex(/^sheet_\d+_[a-zA-Z0-9]+$/, 'Invalid spreadsheet ID format'),
   currentSelection: z.object({
     sheet: z.string().min(1, 'Sheet name is required'),
     range: z.string().min(1, 'Range is required'),
@@ -30,7 +30,8 @@ const contextAnalysisSchema = z.object({
       analysisDepth: z.enum(['basic', 'detailed', 'comprehensive']).optional(),
       includePatterns: z.boolean().optional(),
       includeInsights: z.boolean().optional()
-    }).optional()
+    }).optional(),
+    interactionHistory: z.array(z.any()).optional()
   }).optional()
 });
 
