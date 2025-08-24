@@ -143,6 +143,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerOptions));
 // Routes will be set up in the async startServer function
 
 // Health and monitoring endpoints
+app.get('/health', healthCheck);
 app.get('/api/v1/health', healthCheck);
 app.get('/api/v1/metrics', metricsEndpoint);
 
