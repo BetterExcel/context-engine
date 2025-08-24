@@ -1,0 +1,54 @@
+{
+  "name": "excel-context-engine",
+  "version": "1.0.0",
+  "description": "Intelligent system that analyzes user requests in spreadsheet environments and generates optimal context for LLM processing",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "test": "npm run test --workspace=backend && npm run test --workspace=frontend",
+    "test:backend": "npm run test --workspace=backend",
+    "test:frontend": "npm run test --workspace=frontend",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:performance": "playwright test e2e/performance.spec.ts",
+    "test:performance": "npm run test:performance --workspace=backend",
+    "test:all": "npm run test && npm run test:e2e",
+    "test:integration": "npm run test:backend -- --testPathPattern=integration",
+    "test:load": "tsx backend/src/test/load-testing.ts",
+    "test:openai": "npm run test:backend -- --testPathPattern=openai-integration",
+    "test:context-accuracy": "npm run test:backend -- --testPathPattern=context-accuracy",
+    "test:edge-cases": "npm run test:backend -- --testPathPattern=bug-fixes-edge-cases",
+    "test:system": "npm run test:all && npm run test:integration && npm run test:load",
+    "validate:system": "tsx scripts/system-validation.ts",
+    "validate:deployment": "tsx scripts/deployment-check.ts",
+    "validate:all": "npm run validate:system && npm run validate:deployment",
+    "lint": "npm run lint --workspace=backend && npm run lint --workspace=frontend",
+    "lint:fix": "npm run lint:fix --workspace=backend && npm run lint:fix --workspace=frontend",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md}\"",
+    "precommit": "npm run lint && npm run format:check && npm run test",
+    "prepare:deployment": "npm run build && npm run test:system && npm run validate:deployment"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0",
+    "tsx": "^4.6.0",
+    "axios": "^1.6.0",
+    "form-data": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
