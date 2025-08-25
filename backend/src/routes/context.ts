@@ -148,26 +148,53 @@ router.post('/analyze-context', upload.single('file'), async (req, res) => {
     const openaiService = req.app.locals["openAIService"] as OpenAIService;
     const contextFormatter = new ContextFormatter(openaiService);
     
-    const formattedContext = await contextFormatter.formatForLLM(
+    // Create request analysis object
+    const requestAnalysis = {
+      intent: 'general_assistance',
+      confidence: 0.8,
+      scope: 'current_selection',
+      keywords: [],
+      clarificationNeeded: false,
+      suggestedQuestions: []
+    };
+    
+    // Create selection info object  
+    const selectionInfo = {
+      sheet: currentSelection.sheet,
+      range: currentSelection.range,
+      activeCell: currentSelection.activeCell
+    };
+    
+    const formattedContext = await contextFormatter.formatContext(
       contextData,
-      query,
+      requestAnalysis,
+      selectionInfo,
       {
-        includeMetadata: true,
-        maxTokens: contextOptions.maxTokens || 4000,
-        priority: 'accuracy'
+        includeStructuredData: true,
+        maxContextLength: contextOptions.maxTokens || 4000,
+        enableAIGeneration: true
       }
     );
     
     console.log('Context formatted successfully, token count:', formattedContext.estimatedTokens);
     
     console.log('Step 5: Generating LLM response');
-    const llmResponse = await openaiService.generateContextualResponse(
-      query,
-      formattedContext.content,
+    const messages = [
+      {
+        role: 'system',
+        content: 'You are an AI assistant that helps users understand and analyze spreadsheet data. Provide clear, helpful explanations based on the context provided.'
+      },
+      {
+        role: 'user',
+        content: `User request: ${query}\n\nSpreadsheet context:\n${formattedContext.content}`
+      }
+    ];
+    
+    const llmResponse = await openaiService.generateCompletion(
+      messages,
       {
         temperature: 0.7,
-        maxTokens: 1000,
-        includeExplanation: true
+        maxTokens: 1000
       }
     );
     
