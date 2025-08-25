@@ -53,7 +53,7 @@ export class ImprovedContextExtractor {
       immediate: {
         selectedData: this.convertToMatrix(selectedCells, range),
         activeCell: this.getActiveCell(sheet, selectionInfo.activeCell),
-        visibleData: selectedCells.slice(0, 100), // First 100 cells
+        visibleData: [selectedCells.slice(0, 100)], // First 100 cells as a single row
         currentFormulas: [],
         selectionInfo: selectionInfo
       },
@@ -85,8 +85,20 @@ export class ImprovedContextExtractor {
         interactionCount: 0
       },
       patterns: {
-        dataPatterns: analysis.patterns,
-        insights: analysis.insights,
+        dataPatterns: analysis.patterns.map(pattern => ({
+          type: 'trend' as const,
+          description: pattern,
+          confidence: 0.7,
+          affectedRange: selectionInfo.range,
+          severity: 'medium' as const
+        })),
+        insights: analysis.insights.map(insight => ({
+          type: 'suggestion' as const,
+          title: 'Data Insight',
+          description: insight,
+          actionable: true,
+          priority: 'medium' as const
+        })),
         anomalies: [],
         relationships: [],
         confidence: 0.9
@@ -154,6 +166,16 @@ export class ImprovedContextExtractor {
   private static extractSelectedCells(sheet: any, range: any): Cell[] {
     const cells: Cell[] = [];
     
+    // For very large ranges, optimize by only processing actual data
+    const totalCells = (range.endCell.row - range.startCell.row + 1) * (range.endCell.column - range.startCell.column + 1);
+    console.log(`Processing range with ${totalCells} cells`);
+    
+    // If range is very large (>1000 cells), sample the data instead of processing everything
+    if (totalCells > 1000) {
+      console.log('Large range detected, using optimized sampling approach');
+      return this.extractSampledCells(sheet, range);
+    }
+    
     for (let row = range.startCell.row; row <= range.endCell.row; row++) {
       for (let col = range.startCell.column; col <= range.endCell.column; col++) {
         const cellData = sheet.data[row]?.[col];
@@ -174,6 +196,73 @@ export class ImprovedContextExtractor {
     }
     
     return cells;
+  }
+
+  private static extractSampledCells(sheet: any, range: any): Cell[] {
+    const cells: Cell[] = [];
+    
+    // Strategy: Sample key areas + find actual data bounds
+    console.log('Extracting sampled cells from large range');
+    
+    // 1. First, find the actual data bounds within the range
+    let actualDataBounds = this.findActualDataBounds(sheet, range);
+    console.log('Actual data bounds found:', actualDataBounds);
+    
+    // 2. If no data found, sample the first few rows/cols to check
+    if (!actualDataBounds) {
+      console.log('No data bounds found, sampling first 10x10 area');
+      const sampleEndRow = Math.min(range.startCell.row + 9, range.endCell.row);
+      const sampleEndCol = Math.min(range.startCell.column + 9, range.endCell.column);
+      
+      for (let row = range.startCell.row; row <= sampleEndRow; row++) {
+        for (let col = range.startCell.column; col <= sampleEndCol; col++) {
+          const cellData = sheet.data[row]?.[col];
+          if (cellData && cellData.value !== null && cellData.value !== undefined && cellData.value !== '') {
+            cells.push({
+              ...cellData,
+              address: this.indexToAddress(row, col)
+            });
+          }
+        }
+      }
+    } else {
+      // 3. Extract all data within the actual bounds
+      for (let row = actualDataBounds.startRow; row <= actualDataBounds.endRow; row++) {
+        for (let col = actualDataBounds.startCol; col <= actualDataBounds.endCol; col++) {
+          const cellData = sheet.data[row]?.[col];
+          if (cellData) {
+            cells.push({
+              ...cellData,
+              address: this.indexToAddress(row, col)
+            });
+          }
+        }
+      }
+    }
+    
+    console.log(`Sampled ${cells.length} cells with data`);
+    return cells;
+  }
+
+  private static findActualDataBounds(sheet: any, range: any): any {
+    let minRow = null, maxRow = null, minCol = null, maxCol = null;
+    let hasData = false;
+    
+    // Scan the range to find actual data boundaries
+    for (let row = range.startCell.row; row <= range.endCell.row; row++) {
+      for (let col = range.startCell.column; col <= range.endCell.column; col++) {
+        const cellData = sheet.data[row]?.[col];
+        if (cellData && cellData.value !== null && cellData.value !== undefined && cellData.value !== '') {
+          hasData = true;
+          if (minRow === null || row < minRow) minRow = row;
+          if (maxRow === null || row > maxRow) maxRow = row;
+          if (minCol === null || col < minCol) minCol = col;
+          if (maxCol === null || col > maxCol) maxCol = col;
+        }
+      }
+    }
+    
+    return hasData ? { startRow: minRow, endRow: maxRow, startCol: minCol, endCol: maxCol } : null;
   }
 
   private static indexToAddress(row: number, col: number): string {
@@ -235,58 +324,78 @@ export class ImprovedContextExtractor {
       columnInfo: [] as any[]
     };
 
+    console.log(`Analyzing ${cells.length} extracted cells`);
+
     // Count data types and empty cells
-    cells.forEach(cell => {
-      const dataType = cell.dataType || DataType.EMPTY;
-      analysis.dataTypeCounts[dataType] = (analysis.dataTypeCounts[dataType] || 0) + 1;
-      
-      if (!cell.value || cell.value === '') {
+    for (const cell of cells) {
+      if (!cell.value || cell.value === null || cell.value === undefined || cell.value === '') {
         analysis.emptyCells++;
+        analysis.dataTypeCounts['empty'] = (analysis.dataTypeCounts['empty'] || 0) + 1;
+      } else {
+        const dataType = cell.dataType || 'unknown';
+        analysis.dataTypeCounts[dataType] = (analysis.dataTypeCounts[dataType] || 0) + 1;
+        
+        if (cell.formula) {
+          analysis.hasFormulas = true;
+        }
+        
+        // Try to detect headers (first row, text values)
+        if (typeof cell.value === 'string' && cell.address && cell.address.includes('1')) {
+          analysis.headers.push(cell.value);
+        }
+      }
+    }
+
+    // Calculate dimensions
+    const nonEmptyCells = cells.filter(c => c.value !== null && c.value !== undefined && c.value !== '');
+    console.log(`Found ${nonEmptyCells.length} non-empty cells out of ${cells.length} total`);
+
+    // Generate insights based on actual data
+    if (nonEmptyCells.length > 0) {
+      analysis.insights.push(`Found ${nonEmptyCells.length} cells with data`);
+      
+      // Detect data types
+      const types = Object.keys(analysis.dataTypeCounts).filter(t => t !== 'empty');
+      if (types.length > 0) {
+        analysis.insights.push(`Data types detected: ${types.join(', ')}`);
       }
       
-      if (cell.formula) {
-        analysis.hasFormulas = true;
+      // Check for headers
+      if (analysis.headers.length > 0) {
+        analysis.insights.push(`Potential headers found: ${analysis.headers.slice(0, 3).join(', ')}${analysis.headers.length > 3 ? '...' : ''}`);
       }
-    });
+      
+      // Check for formulas
+      if (analysis.hasFormulas) {
+        analysis.insights.push('Contains formulas');
+      }
+      
+      // Estimate structure
+      const addresses = nonEmptyCells.map(c => c.address).filter(Boolean);
+      if (addresses.length > 0) {
+        const rowNumbers = addresses.map(addr => parseInt(addr.replace(/[A-Z]/g, '')));
+        const colLetters = addresses.map(addr => addr.replace(/[0-9]/g, ''));
+        
+        analysis.rowCount = Math.max(...rowNumbers) - Math.min(...rowNumbers) + 1;
+        analysis.columnCount = new Set(colLetters).size;
+        
+        analysis.insights.push(`Data spans approximately ${analysis.rowCount} rows and ${analysis.columnCount} columns`);
+      }
+    } else {
+      // Even if no data found, provide helpful context
+      analysis.insights.push('No data found in the selected range');
+      analysis.insights.push('The selection may contain only empty cells or the data might be outside the selected area');
+    }
 
     analysis.dataTypes = Object.keys(analysis.dataTypeCounts);
+    analysis.patterns = [`${analysis.totalCells} total cells analyzed`, `${analysis.emptyCells} empty cells`];
 
-    // Try to detect headers (first row with text values)
-    if (cells.length > 0) {
-      // Assuming rectangular selection, estimate dimensions
-      const firstCell = cells[0];
-      if (firstCell?.address) {
-        // This is a simplified approach - in reality you'd calculate based on range
-        analysis.rowCount = Math.ceil(Math.sqrt(cells.length));
-        analysis.columnCount = Math.ceil(cells.length / analysis.rowCount);
-      }
-
-      // Look for potential headers in first row
-      const firstRowSize = analysis.columnCount;
-      const firstRowCells = cells.slice(0, firstRowSize);
-      
-      if (firstRowCells.every(cell => 
-        cell.dataType === DataType.TEXT || 
-        cell.dataType === DataType.STRING
-      )) {
-        analysis.headers = firstRowCells.map(cell => 
-          cell.value?.toString() || ''
-        );
-      }
-    }
-
-    // Generate insights
-    if (analysis.emptyCells > analysis.totalCells * 0.5) {
-      analysis.insights.push('Selection contains many empty cells');
-    }
-    
-    if (analysis.dataTypeCounts[DataType.NUMBER] > 0) {
-      analysis.insights.push('Contains numeric data suitable for calculations');
-    }
-    
-    if (analysis.headers.length > 0) {
-      analysis.insights.push('Data appears to have header row');
-    }
+    console.log('Analysis completed:', {
+      totalCells: analysis.totalCells,
+      emptyCells: analysis.emptyCells,
+      dataTypes: analysis.dataTypes,
+      insights: analysis.insights
+    });
 
     return analysis;
   }

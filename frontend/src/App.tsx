@@ -212,6 +212,7 @@ function App(): JSX.Element {
       const result = await ApiService.analyzeContext({
         request,
         spreadsheetId: uploadResult.spreadsheetId,
+        spreadsheetData: spreadsheetData, // Include the actual spreadsheet data
         currentSelection: {
           sheet: spreadsheetData.sheets[currentSheetIndex]?.name || 'Sheet1',
           range: validRange,
