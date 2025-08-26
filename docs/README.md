@@ -8,8 +8,10 @@ Welcome to the Excel Context Engine documentation. This intelligent system analy
 - [API Reference](./api-reference.md)
 - [User Guide](./user-guide.md)
 - [Examples](./examples.md)
+- [Financial Portfolio Examples](./financial-portfolio-examples.md)
+- [Domain-Specific Usage Guide](./domain-specific-guide.md)
+- [Performance Optimization](./performance-optimization.md)
 - [Deployment Guide](./deployment.md)
-- [Development Guide](./development.md)
 - [Troubleshooting](./troubleshooting.md)
 
 ## Quick Start
@@ -43,6 +45,34 @@ Welcome to the Excel Context Engine documentation. This intelligent system analy
 - **Multi-format Support**: Handles Excel (.xlsx, .xls) and CSV files
 - **Natural Language Output**: Provides both structured JSON and human-readable context descriptions
 - **Learning System**: Improves accuracy over time through user feedback
+- **Domain Intelligence**: Specialized analysis for financial, healthcare, sales, and other business domains
+- **Performance Optimization**: Handles large datasets efficiently with intelligent sampling and caching
+
+## Comprehensive Documentation
+
+### 📊 [Financial Portfolio Examples](./financial-portfolio-examples.md)
+Live examples using real portfolio data demonstrating:
+- Portfolio performance analysis and risk assessment
+- Sector allocation and rebalancing recommendations
+- Tax-loss harvesting and compliance reporting
+- Advanced financial calculations and formulas
+
+### 🏢 [Domain-Specific Usage Guide](./domain-specific-guide.md)
+Specialized guidance for different business domains:
+- **Financial Services**: Portfolio management, trading, credit analysis
+- **Healthcare**: Clinical trials, pharmaceutical research, operations
+- **Sales & Marketing**: Performance analysis, campaign ROI, customer analytics
+- **Operations**: Supply chain, inventory management, manufacturing
+- **Human Resources**: Workforce analytics, talent management
+- **Research**: Statistical analysis, market research, academic performance
+
+### ⚡ [Performance Optimization Guide](./performance-optimization.md)
+Comprehensive performance tuning recommendations:
+- Large dataset processing strategies
+- Memory management and caching
+- API optimization and response compression
+- Database performance tuning
+- Frontend optimization techniques
 
 ## Architecture
 

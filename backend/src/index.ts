@@ -180,6 +180,12 @@ if (process.env['NODE_ENV'] !== 'test') {
     const llmResponseRoutes = (await import('./routes/llm-response')).default;
     app.use('/api/v1', llmResponseRoutes);
 
+    // Import enhanced context routes
+    console.log('Loading enhanced context routes...');
+    const enhancedContextRoutes = (await import('./routes/enhanced-context')).default;
+    app.use('/api/v1/enhanced-context', enhancedContextRoutes);
+    console.log('Enhanced context routes loaded');
+
     // 404 handler for unmatched routes (must come before error handlers)
     app.use(notFoundHandler);
 

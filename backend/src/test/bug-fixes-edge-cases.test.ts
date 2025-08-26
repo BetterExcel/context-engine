@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../index';
+import app from '../index';
 import { SpreadsheetParser } from '../services/SpreadsheetParser';
 import { ContextExtractor } from '../services/ContextExtractor';
 import { RequestAnalyzer } from '../services/RequestAnalyzer';
@@ -13,7 +13,7 @@ describe('Bug Fixes and Edge Cases', () => {
   beforeAll(() => {
     spreadsheetParser = new SpreadsheetParser();
     contextExtractor = new ContextExtractor();
-    requestAnalyzer = new RequestAnalyzer(new OpenAIService());
+    requestAnalyzer = new RequestAnalyzer(new OpenAIService({ apiKey: 'test-key' }));
   });
 
   describe('File Upload Edge Cases', () => {
@@ -105,7 +105,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'data_analysis'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, mergedCellData);
+      const context = await ContextExtractor.extractRelevantData(
+        mergedCellData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.immediate.selectedData).toBeDefined();
@@ -136,7 +140,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'formula_assistance'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, circularData);
+      const context = await ContextExtractor.extractRelevantData(
+        circularData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       // Should detect circular reference and handle gracefully
@@ -169,7 +177,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'formula_assistance'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, longFormulaData);
+      const context = await ContextExtractor.extractRelevantData(
+        longFormulaData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       // Should handle long formulas without performance issues
@@ -197,7 +209,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'data_analysis'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, unicodeData);
+      const context = await ContextExtractor.extractRelevantData(
+        unicodeData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.immediate.selectedData[0][0].value).toBe('🚀 Rocket');
@@ -235,7 +251,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'data_analysis'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, mixedData);
+      const context = await ContextExtractor.extractRelevantData(
+        mixedData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.structural.dataTypes).toContain('text');
@@ -371,7 +391,11 @@ describe('Bug Fixes and Edge Cases', () => {
           analysisType: 'data_analysis'
         };
 
-        const context = await contextExtractor.extractRelevantData(scopeInfo, testData);
+        const context = await ContextExtractor.extractRelevantData(
+          testData,
+          { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+          scopeInfo
+        );
         
         expect(context).toBeDefined();
         // Should handle invalid ranges gracefully
@@ -400,7 +424,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'data_analysis'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, emptyData);
+      const context = await ContextExtractor.extractRelevantData(
+        emptyData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.immediate.selectedData).toEqual([]);
@@ -435,7 +463,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'formula_assistance'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, formulaOnlyData);
+      const context = await ContextExtractor.extractRelevantData(
+        formulaOnlyData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.immediate.selectedData.every(row => 
@@ -664,7 +696,11 @@ describe('Bug Fixes and Edge Cases', () => {
       };
 
       try {
-        const context = await contextExtractor.extractRelevantData(scopeInfo, corruptibleData);
+        const context = await ContextExtractor.extractRelevantData(
+          corruptibleData,
+          { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+          scopeInfo
+        );
         expect(context).toBeDefined();
         // Should handle corruption gracefully
       } catch (error) {
@@ -696,7 +732,11 @@ describe('Bug Fixes and Edge Cases', () => {
         analysisType: 'data_analysis'
       };
 
-      const context = await contextExtractor.extractRelevantData(scopeInfo, inconsistentData);
+      const context = await ContextExtractor.extractRelevantData(
+        inconsistentData,
+        { sheet: 'Sheet1', range: 'A1:D10', activeCell: 'A1' },
+        scopeInfo
+      );
       
       expect(context).toBeDefined();
       expect(context.warnings).toBeDefined();

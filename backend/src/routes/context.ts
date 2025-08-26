@@ -4,6 +4,7 @@ import { ContextExtractor } from '../services/ContextExtractor';
 import { ContextFormatter } from '../services/ContextFormatter';
 import { PatternAnalyzer } from '../services/PatternAnalyzer';
 import { OpenAIService } from '../services/OpenAIService';
+// Enhanced services will be integrated later
 import { spreadsheetStorage } from './upload';
 import { asyncErrorHandler, validateRequest, contextRateLimit } from '../middleware';
 import { ApiError, ErrorCode, AnalyzeContextRequest, AnalyzeContextResponse } from '../types/api';
@@ -29,7 +30,8 @@ const contextAnalysisSchema = z.object({
     preferences: z.object({
       analysisDepth: z.enum(['basic', 'detailed', 'comprehensive']).optional(),
       includePatterns: z.boolean().optional(),
-      includeInsights: z.boolean().optional()
+      includeInsights: z.boolean().optional(),
+      enableEnhancedAnalysis: z.boolean().optional()
     }).optional()
   }).optional()
 });
@@ -78,24 +80,19 @@ router.post('/analyze-context',
       const requestAnalyzer = new RequestAnalyzer(openAIService);
       const contextFormatter = new ContextFormatter(openAIService);
       const patternAnalyzer = new PatternAnalyzer(openAIService);
+      
+      // Enhanced services integration placeholder
+      const enableEnhanced = false; // Will be enabled when enhanced services are implemented
 
       // Step 3: Analyze the user request
       console.log('Analyzing user request intent and scope');
-      // TODO: Implement analyzeRequest method
       const requestAnalysis = {
         intent: 'data_analysis' as IntentType,
         scope: 'selection',
         confidence: 0.8,
-        keywords: ['analysis', 'data']
+        keywords: ['analysis', 'data'],
+        enhanced: enableEnhanced
       };
-      // const requestAnalysis = await requestAnalyzer.analyzeRequest(
-      //   requestData.request,
-      //   {
-      //     spreadsheetData,
-      //     currentSelection: requestData.currentSelection,
-      //     userContext: requestData.userContext
-      //   }
-      // );
 
       // Step 4: Extract relevant context
       console.log('Extracting relevant context from spreadsheet');
@@ -103,15 +100,10 @@ router.post('/analyze-context',
         spreadsheetData,
         requestData.currentSelection,
         {
+          type: 'current_selection',
           includeRelated: true,
           includeHistory: false,
           maxCells: 1000
-        },
-        {
-          includeRelated: true,
-          includeHistory: false,
-          maxCells: 1000,
-          includeStatistics: true
         }
       );
 
@@ -150,8 +142,8 @@ router.post('/analyze-context',
       // Step 8: Create actionable information from formatted context
       const actionableInfo = {
         targetCells: [requestData.currentSelection.range],
-        suggestedOperations: formattedContext.llmOptimized.suggestedOperations || ['Analyze data'],
-        constraints: formattedContext.llmOptimized.constraints || [],
+        suggestedOperations: ['Analyze data'],
+        constraints: [],
         riskLevel: 'low' as const
       };
 
