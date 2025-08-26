@@ -338,13 +338,31 @@ Please provide a helpful response based on this context and the user's request.`
     
     if (userRequest.includes('average') || userRequest.includes('mean')) {
       if (numericValues.length > 0) {
-        const avg = numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
-        return `The average of numeric values in the selected data is ${avg.toLocaleString()}.`;
+        // Don't give generic averages - this should be handled by enhanced query processing
+        console.warn('LLMResponseService: Generic average calculation detected. This should use EnhancedQueryProcessor instead.');
+        return `I found ${numericValues.length} numeric values in the selected data. For specific analysis, please use the enhanced context analysis endpoint which provides targeted Excel formulas and step-by-step guidance.`;
       }
     }
     
-    // Default description for "what is" queries
-    if (userRequest.includes('what is') || userRequest.includes('show me') || userRequest.includes('selected data')) {
+    // Check for specific queries that should use enhanced processing
+    const specificQueries = [
+      'what is', 'show me', 'find', 'get', 'average price', 'market value', 
+      'profit', 'loss', 'return', 'coinbase', 'apple', 'aapl', 'coin'
+    ];
+    
+    if (specificQueries.some(query => userRequest.toLowerCase().includes(query))) {
+      return `For specific data queries like "${userRequest}", I recommend using the enhanced context analysis which provides:
+
+• Exact Excel formulas (e.g., =VLOOKUP("AAPL", A:K, 4, FALSE))
+• Step-by-step instructions
+• Confidence analysis based on your actual data
+• Validation steps to ensure accuracy
+
+This gives you precise, actionable guidance instead of generic responses.`;
+    }
+
+    // Default description for general queries
+    if (userRequest.includes('selected data')) {
       const headers = data[0]?.map((cell: any) => typeof cell === 'object' ? cell.value : cell) || [];
       const rowCount = data.length;
       const colCount = headers.length;

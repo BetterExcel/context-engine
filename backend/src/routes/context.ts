@@ -128,23 +128,61 @@ router.post('/analyze-context',
         }
       }
 
-      // Step 6: Format context for LLM consumption
-      console.log('Formatting context for optimal LLM processing');
-      const formattedContext = await contextFormatter.formatContext(
-        contextData,
-        requestAnalysis,
+      // Step 6: Use Enhanced Query Processor for intelligent analysis
+      console.log('Processing query with enhanced intelligence...');
+      
+      // Import and use the enhanced query processor
+      const { EnhancedQueryProcessor } = await import('../services/EnhancedQueryProcessor');
+      
+      const processedQuery = await EnhancedQueryProcessor.processQuery(
+        requestData.request,
+        spreadsheetData,
         requestData.currentSelection
       );
 
-      // Step 7: Extract natural language description from formatted context
-      const naturalLanguageDescription = formattedContext.naturalLanguage;
+      // Step 7: Create enhanced natural language description
+      const naturalLanguageDescription = `
+${processedQuery.summary.llmFriendlyPrompt}
 
-      // Step 8: Create actionable information from formatted context
+ANALYSIS RESULTS:
+- Query Understanding: ${processedQuery.summary.userQuery}
+- Target Entities: ${processedQuery.summary.extractedEntities.join(', ') || 'None identified'}
+- Target Metric: ${processedQuery.summary.targetMetric}
+- Expected Output: ${processedQuery.summary.expectedOutput}
+
+EXCEL GUIDANCE:
+- Primary Function: ${processedQuery.excelGuidance.primaryFunction}
+- Example Formula: ${processedQuery.excelGuidance.exampleFormula}
+- Step-by-Step Instructions:
+${processedQuery.excelGuidance.stepByStepInstructions.map((step, i) => `  ${i + 1}. ${step}`).join('\n')}
+
+CONFIDENCE ANALYSIS:
+- Overall Confidence: ${(processedQuery.confidence.overall * 100).toFixed(1)}%
+- Entity Recognition: ${(processedQuery.confidence.breakdown.entityFound * 100).toFixed(1)}%
+- Data Quality: ${(processedQuery.confidence.breakdown.dataQuality * 100).toFixed(1)}%
+- Formula Applicability: ${(processedQuery.confidence.breakdown.formulaApplicability * 100).toFixed(1)}%
+
+REASONING:
+${processedQuery.confidence.reasoning.join('\n')}
+
+CURRENT SELECTION:
+- Status: ${processedQuery.currentSelection.isValid ? 'Valid' : 'Invalid'}
+- Contains Target Data: ${processedQuery.currentSelection.containsTargetData ? 'Yes' : 'No'}
+- Recommendation: ${processedQuery.currentSelection.explanation}
+      `.trim();
+
+      // Step 8: Create enhanced actionable information
       const actionableInfo = {
-        targetCells: [requestData.currentSelection.range],
-        suggestedOperations: ['Analyze data'],
-        constraints: [],
-        riskLevel: 'low' as const
+        targetCells: [processedQuery.currentSelection.isValid ? 
+          requestData.currentSelection.range : 
+          processedQuery.currentSelection.recommendedRange],
+        suggestedOperations: [
+          processedQuery.excelGuidance.exampleFormula,
+          ...processedQuery.excelGuidance.alternativeFunctions.slice(0, 2)
+        ],
+        constraints: processedQuery.confidence.uncertaintyFactors,
+        riskLevel: processedQuery.confidence.overall > 0.8 ? 'low' as const : 
+                  processedQuery.confidence.overall > 0.6 ? 'medium' as const : 'high' as const
       };
 
       const processingTime = Date.now() - startTime;
@@ -152,12 +190,21 @@ router.post('/analyze-context',
       const response: AnalyzeContextResponse = {
         success: true,
         data: {
-          requestAnalysis,
+          requestAnalysis: {
+            intent: processedQuery.summary.targetMetric !== 'Unknown' ? IntentType.DATA_ANALYSIS : requestAnalysis.intent,
+            scope: requestAnalysis.scope,
+            confidence: processedQuery.confidence.overall,
+            keywords: processedQuery.summary.extractedEntities
+          },
           context: contextData,
           naturalLanguageDescription,
           actionableInfo,
-          suggestions: generateSuggestions(requestAnalysis, contextData),
-          confidence: calculateOverallConfidence(requestAnalysis, contextData, patternInsights)
+          suggestions: [
+            `Use ${processedQuery.excelGuidance.primaryFunction}: ${processedQuery.excelGuidance.exampleFormula}`,
+            ...processedQuery.excelGuidance.validationSteps.slice(0, 2),
+            ...processedQuery.excelGuidance.alternativeFunctions.slice(0, 1)
+          ],
+          confidence: processedQuery.confidence.overall
         },
         requestId,
         processingTime
