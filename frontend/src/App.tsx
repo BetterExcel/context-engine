@@ -677,7 +677,7 @@ function App(): JSX.Element {
                                   Context Summary
                                 </h4>
                                 <p className="text-sm text-blue-700">
-                                  {contextResult?.naturalLanguageDescription || 'No description available'}
+                                  User is working with spreadsheet data and requesting analysis or assistance.
                                 </p>
                               </div>
 
@@ -779,7 +779,7 @@ function App(): JSX.Element {
                                     <svg className="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                     </svg>
-                                    AI Assistant Response
+                                    Instructions for Agent
                                   </h3>
                                 </div>
 
@@ -812,11 +812,174 @@ function App(): JSX.Element {
 
                                 {llmResponse && (
                                   <div className="space-y-4">
+                                    {/* Context Information for Agent */}
+                                    <div className="bg-blue-50 rounded-md p-4 mb-4">
+                                      <div className="ml-4 space-y-2">
+                                        <p className="text-sm text-blue-700 font-medium">
+                                          User Query Context:
+                                        </p>
+                                        <p className="text-sm text-blue-600 ml-2">
+                                          The user is working with spreadsheet data and has made a request for analysis or assistance. 
+                                          The system has analyzed their selection, identified patterns, and determined the intent to provide relevant guidance.
+                                        </p>
+                                        <p className="text-sm text-blue-700">
+                                          {contextResult?.naturalLanguageDescription || 'No description available'}
+                                        </p>
+                                      </div>
+                                    </div>
+
                                     {/* Main Response */}
                                     <div className="bg-purple-50 rounded-md p-4">
                                       <div className="prose prose-sm max-w-none">
-                                        <div className="whitespace-pre-wrap text-gray-800">
-                                          {llmResponse.response}
+                                        <div className="text-gray-800 space-y-4">
+                                          {(() => {
+                                            const response = llmResponse.response;
+                                            const sections = [];
+                                            
+                                            // Parse TASK
+                                            const taskMatch = response.match(/TASK:\s*([^A-Z]*?)(?=\s*[A-Z]+:|$)/);
+                                            if (taskMatch) {
+                                              sections.push(
+                                                <div key="task" className="bg-white p-3 rounded border-l-4 border-blue-500">
+                                                  <div className="font-medium text-blue-800 mb-1">TASK:</div>
+                                                  <div className="text-gray-700 ml-4">{taskMatch[1].trim()}</div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse ORIGINAL QUERY
+                                            const queryMatch = response.match(/ORIGINAL QUERY:\s*([^A-Z]*?)(?=\s*[A-Z]+:|$)/);
+                                            if (queryMatch) {
+                                              sections.push(
+                                                <div key="query" className="bg-white p-3 rounded border-l-4 border-blue-500">
+                                                  <div className="font-medium text-blue-800 mb-1">ORIGINAL QUERY:</div>
+                                                  <div className="text-gray-700 ml-4">{queryMatch[1].trim()}</div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse FILTERING CRITERIA
+                                            const criteriaMatch = response.match(/FILTERING CRITERIA:\s*([^A-Z]*?)(?=\s*[A-Z]+:|$)/);
+                                            if (criteriaMatch) {
+                                              sections.push(
+                                                <div key="criteria" className="bg-white p-3 rounded border-l-4 border-blue-500">
+                                                  <div className="font-medium text-blue-800 mb-1">FILTERING CRITERIA:</div>
+                                                  <div className="text-gray-700 ml-4">{criteriaMatch[1].trim()}</div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse TARGET COLUMNS
+                                            const columnsMatch = response.match(/TARGET COLUMNS:\s*([^A-Z]*?)(?=\s*[A-Z]+:|$)/);
+                                            if (columnsMatch) {
+                                              sections.push(
+                                                <div key="columns" className="bg-white p-3 rounded border-l-4 border-blue-500">
+                                                  <div className="font-medium text-blue-800 mb-1">TARGET COLUMNS:</div>
+                                                  <div className="text-gray-700 ml-4">{columnsMatch[1].trim()}</div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse INSTRUCTIONS FOR AGENT
+                                            const instructionsMatch = response.match(/INSTRUCTIONS FOR AGENT:\s*(.*?)(?=\s*[A-Z]+:|$)/s);
+                                            if (instructionsMatch) {
+                                              const instructionText = instructionsMatch[1].trim();
+                                              const instructionItems = instructionText.split(/\d+\.\s+/).filter(item => item.trim());
+                                              
+                                              sections.push(
+                                                <div key="instructions" className="bg-white p-3 rounded border-l-4 border-green-500">
+                                                  <div className="font-medium text-green-800 mb-2">INSTRUCTIONS FOR AGENT</div>
+                                                  <ol className="ml-4 space-y-1 list-decimal">
+                                                    {instructionItems.map((instruction, i) => (
+                                                      <li key={i} className="text-gray-700 ml-4">
+                                                        {instruction.trim()}
+                                                      </li>
+                                                    ))}
+                                                  </ol>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse EXPECTED OUTPUT FORMAT
+                                            const outputMatch = response.match(/EXPECTED OUTPUT FORMAT:\s*(.*?)(?=\s*[A-Z]+:|$)/s);
+                                            if (outputMatch) {
+                                              const outputText = outputMatch[1].trim();
+                                              const outputLines = outputText.split(/(?=- )|(?=For each)/).filter(line => line.trim());
+                                              
+                                              sections.push(
+                                                <div key="output" className="bg-white p-3 rounded border-l-4 border-purple-500">
+                                                  <div className="font-medium text-purple-800 mb-2">EXPECTED OUTPUT FORMAT</div>
+                                                  <div className="ml-4 space-y-1">
+                                                    {outputLines.map((line, i) => (
+                                                      <div key={i} className="text-gray-700">
+                                                        {line.startsWith('-') ? (
+                                                          <div className="ml-2">{line}</div>
+                                                        ) : (
+                                                          <div className="font-medium">{line}</div>
+                                                        )}
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse EXCEL GUIDANCE
+                                            const excelMatch = response.match(/EXCEL GUIDANCE:\s*(.*?)(?=\s*[A-Z]+:|$)/s);
+                                            if (excelMatch) {
+                                              const excelText = excelMatch[1].trim();
+                                              const excelLines = excelText.split(/(?=- )|(?=\d+\.\s+)/).filter(line => line.trim());
+                                              
+                                              sections.push(
+                                                <div key="excel" className="bg-white p-3 rounded border-l-4 border-orange-500">
+                                                  <div className="font-medium text-orange-800 mb-2">EXCEL GUIDANCE</div>
+                                                  <div className="ml-4 space-y-1">
+                                                    {excelLines.map((line, i) => (
+                                                      <div key={i} className="text-gray-700">
+                                                        {line.startsWith('-') ? (
+                                                          <div className="ml-2">{line}</div>
+                                                        ) : line.match(/^\d+\./) ? (
+                                                          <div className="ml-4">{line}</div>
+                                                        ) : (
+                                                          <div>{line}</div>
+                                                        )}
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            // Parse CONFIDENCE ANALYSIS
+                                            const confidenceMatch = response.match(/CONFIDENCE ANALYSIS:\s*(.*?)(?=\s*[A-Z]+:|$)/s);
+                                            if (confidenceMatch) {
+                                              const confidenceText = confidenceMatch[1].trim();
+                                              const confidenceLines = confidenceText.split(/(?=- )/).filter(line => line.trim());
+                                              
+                                              sections.push(
+                                                <div key="confidence" className="bg-white p-3 rounded border-l-4 border-indigo-500">
+                                                  <div className="font-medium text-indigo-800 mb-2">CONFIDENCE ANALYSIS</div>
+                                                  <div className="ml-4 space-y-1">
+                                                    {confidenceLines.map((line, i) => (
+                                                      <div key={i} className="text-gray-700">
+                                                        {line.startsWith('-') ? (
+                                                          <div className="ml-2">{line}</div>
+                                                        ) : (
+                                                          <div>{line}</div>
+                                                        )}
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            return sections.length > 0 ? sections : (
+                                              <div className="whitespace-pre-wrap text-gray-800">
+                                                {response}
+                                              </div>
+                                            );
+                                          })()}
                                         </div>
                                       </div>
                                     </div>

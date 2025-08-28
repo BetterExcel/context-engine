@@ -141,35 +141,7 @@ router.post('/analyze-context',
       );
 
       // Step 7: Create enhanced natural language description
-      const naturalLanguageDescription = `
-${processedQuery.summary.llmFriendlyPrompt}
-
-ANALYSIS RESULTS:
-- Query Understanding: ${processedQuery.summary.userQuery}
-- Target Entities: ${processedQuery.summary.extractedEntities.join(', ') || 'None identified'}
-- Target Metric: ${processedQuery.summary.targetMetric}
-- Expected Output: ${processedQuery.summary.expectedOutput}
-
-EXCEL GUIDANCE:
-- Primary Function: ${processedQuery.excelGuidance.primaryFunction}
-- Example Formula: ${processedQuery.excelGuidance.exampleFormula}
-- Step-by-Step Instructions:
-${processedQuery.excelGuidance.stepByStepInstructions.map((step, i) => `  ${i + 1}. ${step}`).join('\n')}
-
-CONFIDENCE ANALYSIS:
-- Overall Confidence: ${(processedQuery.confidence.overall * 100).toFixed(1)}%
-- Entity Recognition: ${(processedQuery.confidence.breakdown.entityFound * 100).toFixed(1)}%
-- Data Quality: ${(processedQuery.confidence.breakdown.dataQuality * 100).toFixed(1)}%
-- Formula Applicability: ${(processedQuery.confidence.breakdown.formulaApplicability * 100).toFixed(1)}%
-
-REASONING:
-${processedQuery.confidence.reasoning.join('\n')}
-
-CURRENT SELECTION:
-- Status: ${processedQuery.currentSelection.isValid ? 'Valid' : 'Invalid'}
-- Contains Target Data: ${processedQuery.currentSelection.containsTargetData ? 'Yes' : 'No'}
-- Recommendation: ${processedQuery.currentSelection.explanation}
-      `.trim();
+      const naturalLanguageDescription = `${processedQuery.summary.llmFriendlyPrompt}\n\nANALYSIS RESULTS:\n- Query Understanding: ${processedQuery.summary.userQuery}\n- Target Entities: ${processedQuery.summary.extractedEntities.join(', ') || 'None identified'}\n- Target Metric: ${processedQuery.summary.targetMetric}\n- Expected Output: ${processedQuery.summary.expectedOutput}\n\nEXCEL GUIDANCE:\n- Primary Function: ${processedQuery.excelGuidance.primaryFunction}\n- Example Formula: ${processedQuery.excelGuidance.exampleFormula}\n- Step-by-Step Instructions:\n${processedQuery.excelGuidance.stepByStepInstructions.map((step, i) => `  ${i + 1}. ${step}`).join('\n')}\n\nCONFIDENCE ANALYSIS:\n- Overall Confidence: ${(processedQuery.confidence.overall * 100).toFixed(1)}%\n- Entity Recognition: ${(processedQuery.confidence.breakdown.entityFound * 100).toFixed(1)}%\n- Data Quality: ${(processedQuery.confidence.breakdown.dataQuality * 100).toFixed(1)}%\n- Formula Applicability: ${(processedQuery.confidence.breakdown.formulaApplicability * 100).toFixed(1)}%\n\nREASONING:\n${processedQuery.confidence.reasoning.map(reason => `✓ ${reason}`).join('\n')}\n\nCURRENT SELECTION:\n- Status: ${processedQuery.currentSelection.isValid ? 'Valid' : 'Invalid'}\n- Contains Target Data: ${processedQuery.currentSelection.containsTargetData ? 'Yes' : 'No'}\n- Recommendation: ${processedQuery.currentSelection.explanation}`;
 
       // Step 8: Create enhanced actionable information
       const actionableInfo = {
