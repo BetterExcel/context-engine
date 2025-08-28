@@ -11,3 +11,10 @@ export { default as DataVisualization } from './DataVisualization';
 export { default as KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 export { default as LoadingSkeleton, SpreadsheetSkeleton, ContextAnalysisSkeleton, ChartSkeleton, FileUploadSkeleton } from './LoadingSkeleton';
 export { default as Tooltip, HelpTooltip, InfoTooltip } from './Tooltip';
+
+// Enhanced Context Components
+export { EnhancedContextDisplay } from './EnhancedContextDisplay';
+export { EnhancedContextSummary } from './EnhancedContextSummary';
+export { ConfidenceVisualization } from './ConfidenceVisualization';
+export { ActionableInsightsPanel } from './ActionableInsightsPanel';
+export { StreamingContextDisplay } from './StreamingContextDisplay';

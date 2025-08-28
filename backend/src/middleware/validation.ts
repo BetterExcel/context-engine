@@ -52,17 +52,36 @@ const uploadOptionsSchema = z.object({
   generatePreview: z.boolean().optional().default(true)
 });
 
+// Spreadsheet data schema
+const spreadsheetDataSchema = z.object({
+  id: z.string().optional(),
+  sheets: z.array(z.any()),
+  formulas: z.array(z.any()).optional().default([]),
+  metadata: z.object({
+    fileName: z.string().optional(),
+    fileSize: z.number().optional(),
+    sheets: z.array(z.any()).optional().default([])
+  }).optional()
+});
+
 // Main request schemas
 export const analyzeContextSchema = z.object({
   request: z.string()
     .min(1, 'Request text is required')
     .max(2000, 'Request text cannot exceed 2000 characters')
     .refine(text => text.trim().length > 0, 'Request text cannot be empty or only whitespace'),
-  spreadsheetId: z.string().min(1, 'Spreadsheet ID is required').optional(),
+  spreadsheetId: z.string().optional(),
+  spreadsheetData: spreadsheetDataSchema.optional(),
   currentSelection: selectionInfoSchema,
   userContext: userContextSchema,
   options: analysisOptionsSchema.optional().default({})
-});
+}).refine(
+  (data) => data.spreadsheetId || data.spreadsheetData,
+  {
+    message: 'Either spreadsheetId or spreadsheetData must be provided',
+    path: ['spreadsheetId']
+  }
+);
 
 export const uploadSpreadsheetSchema = z.object({
   options: uploadOptionsSchema.optional().default({})

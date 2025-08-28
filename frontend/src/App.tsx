@@ -204,16 +204,22 @@ function App(): JSX.Element {
         }
       }
 
+      // Ensure we have valid data for the API
+      const validRange = (analysisRange && analysisRange.match(/^[A-Z]+\d+(:[A-Z]+\d+)?$/)) ? analysisRange : 'A1:J20';
+      const validActiveCell = (activeCell && activeCell.match(/^[A-Z]+\d+$/)) ? activeCell : 'A1';
+      const validSessionId = currentSessionId || `session_${Date.now()}`;
+
       const result = await ApiService.analyzeContext({
         request,
         spreadsheetId: uploadResult.spreadsheetId,
+        spreadsheetData: spreadsheetData, // Include the actual spreadsheet data
         currentSelection: {
           sheet: spreadsheetData.sheets[currentSheetIndex]?.name || 'Sheet1',
-          range: analysisRange,
-          activeCell: activeCell || '',
+          range: validRange,
+          activeCell: validActiveCell,
         },
         userContext: {
-          sessionId: currentSessionId || '',
+          sessionId: validSessionId,
           recentActions: [],
           preferences: {},
           interactionHistory: []
@@ -376,8 +382,8 @@ function App(): JSX.Element {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          requestId: contextResult.requestId,
-          contextId: contextResult.contextHistoryId,
+          requestId: contextResult?.requestId || '',
+          contextId: contextResult?.contextHistoryId || '',
           satisfaction: feedbackData.satisfaction,
           feedback: feedbackData.feedback,
           corrections: feedbackData.corrections
@@ -671,7 +677,7 @@ function App(): JSX.Element {
                                   Context Summary
                                 </h4>
                                 <p className="text-sm text-blue-700">
-                                  {contextResult.naturalLanguageDescription}
+                                  {contextResult?.naturalLanguageDescription || 'No description available'}
                                 </p>
                               </div>
 
@@ -682,7 +688,7 @@ function App(): JSX.Element {
                                     Intent
                                   </h4>
                                   <p className="text-sm text-gray-600 capitalize">
-                                    {contextResult.requestAnalysis.intent.replace(/_/g, ' ')}
+                                    {contextResult?.requestAnalysis?.intent?.replace(/_/g, ' ') || 'Unknown'}
                                   </p>
                                 </div>
                                 <div className="bg-gray-50 rounded-md p-4 animate-scale-in" style={{ animationDelay: '0.1s' }}>
@@ -690,7 +696,7 @@ function App(): JSX.Element {
                                     Scope
                                   </h4>
                                   <p className="text-sm text-gray-600 capitalize">
-                                    {contextResult.requestAnalysis.scope.replace(/_/g, ' ')}
+                                    {contextResult?.requestAnalysis?.scope?.replace(/_/g, ' ') || 'Unknown'}
                                   </p>
                                 </div>
                                 <div className={`bg-gray-50 rounded-md p-4 animate-scale-in ${isMobile || isTablet ? 'col-span-full' : ''}`} style={{ animationDelay: '0.2s' }}>
@@ -701,11 +707,11 @@ function App(): JSX.Element {
                                     <div className="flex-1 bg-gray-200 rounded-full h-2 mr-2">
                                       <div
                                         className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out"
-                                        style={{ width: `${contextResult.requestAnalysis.confidence * 100}%` }}
+                                        style={{ width: `${(contextResult?.requestAnalysis?.confidence || 0) * 100}%` }}
                                       ></div>
                                     </div>
                                     <span className="text-sm text-gray-600">
-                                      {Math.round(contextResult.requestAnalysis.confidence * 100)}%
+                                      {Math.round((contextResult?.requestAnalysis?.confidence || 0) * 100)}%
                                     </span>
                                   </div>
                                 </div>
@@ -719,13 +725,13 @@ function App(): JSX.Element {
                                 <div className="text-sm text-gray-600 space-y-1">
                                   <p><strong>Range:</strong> {selectedRange || 'None'}</p>
                                   <p><strong>Active Cell:</strong> {activeCell || 'None'}</p>
-                                  <p><strong>Data Types:</strong> {contextResult.spreadsheetContext.currentSelection.dataTypes.join(', ')}</p>
-                                  <p><strong>Row Count:</strong> {contextResult.spreadsheetContext.dataSummary.rowCount}</p>
+                                  <p><strong>Data Types:</strong> {contextResult?.spreadsheetContext?.currentSelection?.dataTypes?.join(', ') || 'Not available'}</p>
+                                  <p><strong>Row Count:</strong> {contextResult?.spreadsheetContext?.dataSummary?.rowCount || 'Not available'}</p>
                                 </div>
                               </div>
 
                               {/* Actionable Information */}
-                              {contextResult.actionableInfo.suggestedOperations.length > 0 && (
+                              {(contextResult?.actionableInfo?.suggestedOperations?.length || 0) > 0 && (
                                 <div className="bg-green-50 rounded-md p-4 animate-fade-in">
                                   <h4 className="text-sm font-medium text-green-800 mb-2">
                                     Suggested Actions
@@ -733,13 +739,13 @@ function App(): JSX.Element {
                                   <div className="text-sm text-green-700">
                                     <p className="mb-2"><strong>Operations:</strong></p>
                                     <ul className="list-disc list-inside space-y-1">
-                                      {contextResult.actionableInfo.suggestedOperations.map((operation, index) => (
+                                      {contextResult?.actionableInfo?.suggestedOperations?.map((operation, index) => (
                                         <li key={index}>{operation}</li>
                                       ))}
                                     </ul>
-                                    {contextResult.actionableInfo.targetCells.length > 0 && (
+                                    {(contextResult?.actionableInfo?.targetCells?.length || 0) > 0 && (
                                       <p className="mt-2">
-                                        <strong>Target Cells:</strong> {contextResult.actionableInfo.targetCells.join(', ')}
+                                        <strong>Target Cells:</strong> {contextResult?.actionableInfo?.targetCells?.join(', ') || 'None'}
                                       </p>
                                     )}
                                   </div>
@@ -747,17 +753,17 @@ function App(): JSX.Element {
                               )}
 
                               {/* Data Patterns */}
-                              {contextResult.spreadsheetContext.dataSummary.patterns.length > 0 && (
+                              {(contextResult?.spreadsheetContext?.dataSummary?.patterns?.length || 0) > 0 && (
                                 <div className="bg-yellow-50 rounded-md p-4 animate-fade-in">
                                   <h4 className="text-sm font-medium text-yellow-800 mb-2">
                                     Data Patterns
                                   </h4>
                                   <ul className="list-disc list-inside text-sm text-yellow-700 space-y-1">
-                                    {contextResult.spreadsheetContext.dataSummary.patterns.map((pattern, index) => (
+                                    {contextResult?.spreadsheetContext?.dataSummary?.patterns?.map((pattern, index) => (
                                       <li key={index} className="capitalize">
                                         {pattern.replace(/_/g, ' ')}
                                       </li>
-                                    ))}
+                                    )) || []}
                                   </ul>
                                 </div>
                               )}
@@ -931,9 +937,9 @@ function App(): JSX.Element {
           isOpen={isFeedbackModalOpen}
           onClose={() => setIsFeedbackModalOpen(false)}
           onSubmit={handleFeedbackSubmit}
-          requestId={contextResult.requestId}
-          contextId={contextResult.contextHistoryId || ''}
-          contextPreview={contextResult.naturalLanguageDescription}
+          requestId={contextResult?.requestId || ''}
+          contextId={contextResult?.contextHistoryId || ''}
+          contextPreview={contextResult?.naturalLanguageDescription || ''}
         />
       )}
 

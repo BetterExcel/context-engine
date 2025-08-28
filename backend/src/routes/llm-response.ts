@@ -10,31 +10,7 @@ const router = express.Router();
 // Validation schema for LLM response requests
 const llmResponseSchema = z.object({
   userRequest: z.string().min(1, 'User request is required').max(1000, 'Request too long'),
-  contextAnalysis: z.object({
-    requestAnalysis: z.object({
-      intent: z.string(),
-      scope: z.string(),
-      confidence: z.number()
-    }),
-    spreadsheetContext: z.object({
-      currentSelection: z.object({
-        range: z.string(),
-        data: z.array(z.array(z.any())),
-        dataTypes: z.array(z.string())
-      }),
-      dataSummary: z.object({
-        rowCount: z.number(),
-        patterns: z.array(z.string()),
-        statistics: z.any()
-      }).optional()
-    }),
-    naturalLanguageDescription: z.string(),
-    actionableInfo: z.object({
-      targetCells: z.array(z.string()),
-      suggestedOperations: z.array(z.string()),
-      constraints: z.array(z.string())
-    }).optional()
-  }),
+  contextAnalysis: z.any(), // More flexible validation for context analysis
   responseType: z.enum(['explanation', 'formula', 'steps', 'analysis', 'general']).optional(),
   includeCode: z.boolean().optional(),
   includeExamples: z.boolean().optional()

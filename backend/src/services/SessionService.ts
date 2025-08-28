@@ -1,5 +1,10 @@
 import { SessionRepository } from '../database/repositories/SessionRepository';
-import { Session, CreateSession, UserAction, ActionType } from '../database/models/Session';
+import {
+  Session,
+  CreateSession,
+  UserAction,
+  ActionType,
+} from '../database/models/Session';
 import { ContextData } from '../types/context';
 
 export interface SessionContext {
@@ -43,10 +48,16 @@ export class SessionService {
   /**
    * Creates a new session or retrieves an existing active session
    */
-  async createOrGetSession(userId?: string, spreadsheetId?: string): Promise<Session> {
+  async createOrGetSession(
+    userId?: string,
+    spreadsheetId?: string
+  ): Promise<Session> {
     // Try to find an active session first
-    const activeSession = await this.sessionRepository.findActiveSession(userId, spreadsheetId);
-    
+    const activeSession = await this.sessionRepository.findActiveSession(
+      userId,
+      spreadsheetId
+    );
+
     if (activeSession) {
       return activeSession;
     }
@@ -58,8 +69,8 @@ export class SessionService {
       actions: [],
       metadata: {
         createdAt: new Date().toISOString(),
-        preferences: this.getDefaultPreferences()
-      }
+        preferences: this.getDefaultPreferences(),
+      },
     };
 
     return await this.sessionRepository.create(sessionData);
@@ -80,7 +91,7 @@ export class SessionService {
       timestamp: new Date(),
       data,
       cell_reference: cellReference,
-      range
+      range,
     };
 
     await this.sessionRepository.addAction(sessionId, action);
@@ -100,16 +111,16 @@ export class SessionService {
       request,
       context,
       timestamp: new Date(),
-      confidence
+      confidence,
     };
 
     // Get existing history or create new array
     const existingHistory = this.contextHistory.get(sessionId) || [];
-    
+
     // Add new entry and limit to max entries
     const preferences = await this.getSessionPreferences(sessionId);
     const maxEntries = preferences.maxHistoryEntries;
-    
+
     existingHistory.unshift(historyEntry);
     if (existingHistory.length > maxEntries) {
       existingHistory.splice(maxEntries);
@@ -121,7 +132,7 @@ export class SessionService {
     await this.trackAction(sessionId, ActionType.CONTEXT_GENERATE, {
       contextId: historyEntry.id,
       confidence,
-      requestLength: request.length
+      requestLength: request.length,
     });
 
     return historyEntry.id;
@@ -130,7 +141,10 @@ export class SessionService {
   /**
    * Retrieves context history for a session
    */
-  async getContextHistory(sessionId: string, limit?: number): Promise<ContextHistoryEntry[]> {
+  async getContextHistory(
+    sessionId: string,
+    limit?: number
+  ): Promise<ContextHistoryEntry[]> {
     const history = this.contextHistory.get(sessionId) || [];
     return limit ? history.slice(0, limit) : history;
   }
@@ -138,7 +152,10 @@ export class SessionService {
   /**
    * Gets recent actions for context continuity
    */
-  async getRecentActions(sessionId: string, limit: number = 10): Promise<UserAction[]> {
+  async getRecentActions(
+    sessionId: string,
+    limit: number = 10
+  ): Promise<UserAction[]> {
     return await this.sessionRepository.getRecentActions(sessionId, limit);
   }
 
@@ -159,27 +176,31 @@ export class SessionService {
       sessionId,
       recentActions,
       contextHistory,
-      preferences
+      preferences,
     };
   }
 
   /**
    * Updates user preferences for a session
    */
-  async updatePreferences(sessionId: string, preferences: Partial<UserPreferences>): Promise<void> {
+  async updatePreferences(
+    sessionId: string,
+    preferences: Partial<UserPreferences>
+  ): Promise<void> {
     const session = await this.sessionRepository.findById(sessionId);
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
     }
 
-    const currentPreferences = session.metadata?.['preferences'] || this.getDefaultPreferences();
+    const currentPreferences =
+      session.metadata?.['preferences'] || this.getDefaultPreferences();
     const updatedPreferences = { ...currentPreferences, ...preferences };
 
     await this.sessionRepository.update(sessionId, {
       metadata: {
         ...session.metadata,
-        preferences: updatedPreferences
-      }
+        preferences: updatedPreferences,
+      },
     });
   }
 
@@ -193,7 +214,7 @@ export class SessionService {
   ): Promise<void> {
     const history = this.contextHistory.get(sessionId) || [];
     const entryIndex = history.findIndex(entry => entry.id === contextId);
-    
+
     if (entryIndex !== -1 && history[entryIndex]) {
       history[entryIndex]!.feedback = feedback;
       this.contextHistory.set(sessionId, history);
@@ -203,8 +224,8 @@ export class SessionService {
         contextId,
         feedback: {
           rating: feedback.rating,
-          wasHelpful: feedback.wasHelpful
-        }
+          wasHelpful: feedback.wasHelpful,
+        },
       });
     }
   }
@@ -230,16 +251,21 @@ export class SessionService {
     // Calculate statistics
     const totalActions = actions.length;
     const contextGenerations = contextHistory.length;
-    
-    const averageConfidence = contextGenerations > 0
-      ? contextHistory.reduce((sum, entry) => sum + entry.confidence, 0) / contextGenerations
-      : 0;
+
+    const averageConfidence =
+      contextGenerations > 0
+        ? contextHistory.reduce((sum, entry) => sum + entry.confidence, 0) /
+          contextGenerations
+        : 0;
 
     // Count action types
-    const actionCounts = actions.reduce((counts, action) => {
-      counts[action.type] = (counts[action.type] || 0) + 1;
-      return counts;
-    }, {} as Record<string, number>);
+    const actionCounts = actions.reduce(
+      (counts, action) => {
+        counts[action.type] = (counts[action.type] || 0) + 1;
+        return counts;
+      },
+      {} as Record<string, number>
+    );
 
     const mostCommonActions = Object.entries(actionCounts)
       .map(([type, count]) => ({ type, count }))
@@ -249,14 +275,16 @@ export class SessionService {
     // Calculate session duration
     const sessionStart = new Date(session.created_at || Date.now());
     const sessionEnd = new Date(session.updated_at || Date.now());
-    const sessionDuration = Math.round((sessionEnd.getTime() - sessionStart.getTime()) / (1000 * 60));
+    const sessionDuration = Math.round(
+      (sessionEnd.getTime() - sessionStart.getTime()) / (1000 * 60)
+    );
 
     return {
       totalActions,
       contextGenerations,
       averageConfidence,
       mostCommonActions,
-      sessionDuration
+      sessionDuration,
     };
   }
 
@@ -267,16 +295,21 @@ export class SessionService {
     sessionsDeleted: number;
     historyEntriesDeleted: number;
   }> {
-    const sessionsDeleted = await this.sessionRepository.cleanupOldSessions(olderThanDays);
-    
+    const sessionsDeleted =
+      await this.sessionRepository.cleanupOldSessions(olderThanDays);
+
     // Clean up in-memory context history
     let historyEntriesDeleted = 0;
-    const cutoffDate = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000);
-    
+    const cutoffDate = new Date(
+      Date.now() - olderThanDays * 24 * 60 * 60 * 1000
+    );
+
     for (const [sessionId, history] of this.contextHistory.entries()) {
-      const filteredHistory = history.filter(entry => entry.timestamp > cutoffDate);
+      const filteredHistory = history.filter(
+        entry => entry.timestamp > cutoffDate
+      );
       historyEntriesDeleted += history.length - filteredHistory.length;
-      
+
       if (filteredHistory.length === 0) {
         this.contextHistory.delete(sessionId);
       } else {
@@ -317,33 +350,51 @@ export class SessionService {
 
     // Generate improvement suggestions
     if (stats.averageConfidence < 0.7) {
-      improvementSuggestions.push('Try providing more specific requests for better context analysis');
+      improvementSuggestions.push(
+        'Try providing more specific requests for better context analysis'
+      );
     }
     if (stats.contextGenerations < 3) {
-      improvementSuggestions.push('Explore more features by asking different types of questions');
+      improvementSuggestions.push(
+        'Explore more features by asking different types of questions'
+      );
     }
 
     // Analyze feedback for common mistakes
-    const feedbackEntries = sessionContext.contextHistory.filter(entry => entry.feedback);
-    const lowRatedEntries = feedbackEntries.filter(entry => entry.feedback!.rating < 3);
-    
+    const feedbackEntries = sessionContext.contextHistory.filter(
+      entry => entry.feedback
+    );
+    const lowRatedEntries = feedbackEntries.filter(
+      entry => entry.feedback!.rating < 3
+    );
+
     if (lowRatedEntries.length > 0) {
-      commonMistakes.push('Context analysis sometimes misunderstands user intent');
+      commonMistakes.push(
+        'Context analysis sometimes misunderstands user intent'
+      );
     }
 
-    const contextAccuracy = feedbackEntries.length > 0
-      ? feedbackEntries.reduce((sum, entry) => sum + entry.feedback!.rating, 0) / feedbackEntries.length / 5
-      : stats.averageConfidence;
+    const contextAccuracy =
+      feedbackEntries.length > 0
+        ? feedbackEntries.reduce(
+            (sum, entry) => sum + entry.feedback!.rating,
+            0
+          ) /
+          feedbackEntries.length /
+          5
+        : stats.averageConfidence;
 
     return {
       userPatterns,
       improvementSuggestions,
       contextAccuracy,
-      commonMistakes
+      commonMistakes,
     };
   }
 
-  private async getSessionPreferences(sessionId: string): Promise<UserPreferences> {
+  private async getSessionPreferences(
+    sessionId: string
+  ): Promise<UserPreferences> {
     const session = await this.sessionRepository.findById(sessionId);
     return session?.metadata?.['preferences'] || this.getDefaultPreferences();
   }
@@ -353,7 +404,7 @@ export class SessionService {
       preferredAnalysisDepth: 'detailed',
       includePatternAnalysis: true,
       maxHistoryEntries: 50,
-      autoSaveActions: true
+      autoSaveActions: true,
     };
   }
 }

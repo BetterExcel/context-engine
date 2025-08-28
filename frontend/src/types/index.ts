@@ -272,3 +272,6 @@ export interface ContextDisplayProps {
 }
 
 export type ContextDisplayTab = 'natural' | 'json' | 'visual';
+
+// Re-export enhanced context types
+export * from './enhanced-context';
