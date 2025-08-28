@@ -351,14 +351,7 @@ Please provide a helpful response based on this context and the user's request.`
     ];
     
     if (specificQueries.some(query => userRequest.toLowerCase().includes(query))) {
-      return `For specific data queries like "${userRequest}", I recommend using the enhanced context analysis which provides:
-
-• Exact Excel formulas (e.g., =VLOOKUP("AAPL", A:K, 4, FALSE))
-• Step-by-step instructions
-• Confidence analysis based on your actual data
-• Validation steps to ensure accuracy
-
-This gives you precise, actionable guidance instead of generic responses.`;
+      return `Spreadsheet data analysis request detected.`;
     }
 
     // Default description for general queries
