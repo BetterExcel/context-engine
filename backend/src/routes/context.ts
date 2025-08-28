@@ -4,6 +4,7 @@ import { ContextExtractor } from '../services/ContextExtractor';
 import { ContextFormatter } from '../services/ContextFormatter';
 import { PatternAnalyzer } from '../services/PatternAnalyzer';
 import { OpenAIService } from '../services/OpenAIService';
+// Enhanced services will be integrated later
 import { spreadsheetStorage } from './upload';
 import { asyncErrorHandler, validateRequest, contextRateLimit } from '../middleware';
 import { ApiError, ErrorCode, AnalyzeContextRequest, AnalyzeContextResponse } from '../types/api';
@@ -16,7 +17,7 @@ const router = express.Router();
 // Validation schema for context analysis requests
 const contextAnalysisSchema = z.object({
   request: z.string().min(1, 'Request is required').max(1000, 'Request too long'),
-  spreadsheetId: z.string().uuid('Invalid spreadsheet ID'),
+  spreadsheetId: z.string().regex(/^sheet_\d+_[a-z0-9]+$/, 'Invalid spreadsheet ID format'),
   currentSelection: z.object({
     sheet: z.string().min(1, 'Sheet name is required'),
     range: z.string().min(1, 'Range is required'),
@@ -29,7 +30,8 @@ const contextAnalysisSchema = z.object({
     preferences: z.object({
       analysisDepth: z.enum(['basic', 'detailed', 'comprehensive']).optional(),
       includePatterns: z.boolean().optional(),
-      includeInsights: z.boolean().optional()
+      includeInsights: z.boolean().optional(),
+      enableEnhancedAnalysis: z.boolean().optional()
     }).optional()
   }).optional()
 });
@@ -76,91 +78,34 @@ router.post('/analyze-context',
       // Step 2: Initialize services
       const openAIService = req.app.locals['openAIService'] as OpenAIService | undefined;
       const requestAnalyzer = new RequestAnalyzer(openAIService);
-      const contextExtractor = new ContextExtractor();
       const contextFormatter = new ContextFormatter(openAIService);
       const patternAnalyzer = new PatternAnalyzer(openAIService);
+      
+      // Enhanced services integration placeholder
+      const enableEnhanced = false; // Will be enabled when enhanced services are implemented
 
       // Step 3: Analyze the user request
       console.log('Analyzing user request intent and scope');
-      // TODO: Implement analyzeRequest method
       const requestAnalysis = {
         intent: 'data_analysis' as IntentType,
         scope: 'selection',
         confidence: 0.8,
-        keywords: ['analysis', 'data']
+        keywords: ['analysis', 'data'],
+        enhanced: enableEnhanced
       };
-      // const requestAnalysis = await requestAnalyzer.analyzeRequest(
-      //   requestData.request,
-      //   {
-      //     spreadsheetData,
-      //     currentSelection: requestData.currentSelection,
-      //     userContext: requestData.userContext
-      //   }
-      // );
 
       // Step 4: Extract relevant context
       console.log('Extracting relevant context from spreadsheet');
-      // TODO: Implement extractContext method
-      const contextData = {
-        immediate: {
-          selectedData: [],
-          activeCell: { value: '', dataType: DataType.TEXT, address: 'A1' },
-          visibleData: [],
-          currentFormulas: [],
-          selectionInfo: { sheet: 'Sheet1', range: 'A1', activeCell: 'A1' }
-        },
-        related: {
-          dependentCells: [],
-          precedentCells: [],
-          relatedFormulas: [],
-          namedRanges: [],
-          crossSheetReferences: []
-        },
-        structural: {
-          headers: [],
-          dataTypes: [],
-          columnCount: 0,
-          rowCount: 0,
-          hasFormulas: false,
-          hasNamedRanges: false,
-          sheetStructure: {
-            hasHeaders: false,
-            dataStartRow: 1,
-            dataEndRow: 1,
-            dataColumns: []
-          }
-        },
-        historical: {
-          recentActions: [],
-          previousRequests: [],
-          sessionDuration: 0,
-          interactionCount: 0
-        },
-        patterns: {
-          dataPatterns: [],
-          relationships: [],
-          anomalies: [],
-          insights: [],
-          confidence: 0
-        },
-        summary: {
-          rowCount: 0,
-          columnCount: 0,
-          cellCount: 0,
-          formulaCount: 0,
-          emptyCount: 0,
-          dataTypes: {},
-          patterns: []
-        },
-        confidence: 0.8,
-        generatedAt: new Date()
-      };
-      // const contextData = await contextExtractor.extractContext(
-      //   requestAnalysis,
-      //   spreadsheetData,
-      //   requestData.currentSelection,
-      //   requestData.userContext
-      // );
+      const contextData = await ContextExtractor.extractRelevantData(
+        spreadsheetData,
+        requestData.currentSelection,
+        {
+          type: 'current_selection',
+          includeRelated: true,
+          includeHistory: false,
+          maxCells: 1000
+        }
+      );
 
       // Step 5: Analyze patterns (if enabled and AI available)
       let patternInsights;
@@ -183,53 +128,83 @@ router.post('/analyze-context',
         }
       }
 
-      // Step 6: Format context for LLM consumption
-      console.log('Formatting context for optimal LLM processing');
-      // TODO: Implement formatContext method
-      const formattedContext = {
-        summary: 'Context formatted for LLM',
-        data: contextData
-      };
-      // const formattedContext = await contextFormatter.formatContext(
-      //   contextData,
-      //   requestAnalysis,
-      //   patternInsights
-      // );
+      // Step 6: Use Enhanced Query Processor for intelligent analysis
+      console.log('Processing query with enhanced intelligence...');
+      
+      // Import and use the enhanced query processor
+      const { EnhancedQueryProcessor } = await import('../services/EnhancedQueryProcessor');
+      
+      const processedQuery = await EnhancedQueryProcessor.processQuery(
+        requestData.request,
+        spreadsheetData,
+        requestData.currentSelection
+      );
 
-      // Step 7: Generate natural language description
-      // TODO: Implement generateNaturalLanguageDescription method
-      const naturalLanguageDescription = 'Natural language description of the context';
-      // const naturalLanguageDescription = await contextFormatter.generateNaturalLanguageDescription(
-      //   contextData,
-      //   requestAnalysis,
-      //   requestData.request
-      // );
+      // Step 7: Create enhanced natural language description
+      const naturalLanguageDescription = `
+${processedQuery.summary.llmFriendlyPrompt}
 
-      // Step 8: Create actionable information
-      // TODO: Implement generateActionableInfo method
+ANALYSIS RESULTS:
+- Query Understanding: ${processedQuery.summary.userQuery}
+- Target Entities: ${processedQuery.summary.extractedEntities.join(', ') || 'None identified'}
+- Target Metric: ${processedQuery.summary.targetMetric}
+- Expected Output: ${processedQuery.summary.expectedOutput}
+
+EXCEL GUIDANCE:
+- Primary Function: ${processedQuery.excelGuidance.primaryFunction}
+- Example Formula: ${processedQuery.excelGuidance.exampleFormula}
+- Step-by-Step Instructions:
+${processedQuery.excelGuidance.stepByStepInstructions.map((step, i) => `  ${i + 1}. ${step}`).join('\n')}
+
+CONFIDENCE ANALYSIS:
+- Overall Confidence: ${(processedQuery.confidence.overall * 100).toFixed(1)}%
+- Entity Recognition: ${(processedQuery.confidence.breakdown.entityFound * 100).toFixed(1)}%
+- Data Quality: ${(processedQuery.confidence.breakdown.dataQuality * 100).toFixed(1)}%
+- Formula Applicability: ${(processedQuery.confidence.breakdown.formulaApplicability * 100).toFixed(1)}%
+
+REASONING:
+${processedQuery.confidence.reasoning.join('\n')}
+
+CURRENT SELECTION:
+- Status: ${processedQuery.currentSelection.isValid ? 'Valid' : 'Invalid'}
+- Contains Target Data: ${processedQuery.currentSelection.containsTargetData ? 'Yes' : 'No'}
+- Recommendation: ${processedQuery.currentSelection.explanation}
+      `.trim();
+
+      // Step 8: Create enhanced actionable information
       const actionableInfo = {
-        targetCells: ['A1'],
-        suggestedOperations: ['Analyze data', 'Create chart'],
-        constraints: ['Data must be numeric'],
-        riskLevel: 'low' as const
+        targetCells: [processedQuery.currentSelection.isValid ? 
+          requestData.currentSelection.range : 
+          processedQuery.currentSelection.recommendedRange],
+        suggestedOperations: [
+          processedQuery.excelGuidance.exampleFormula,
+          ...processedQuery.excelGuidance.alternativeFunctions.slice(0, 2)
+        ],
+        constraints: processedQuery.confidence.uncertaintyFactors,
+        riskLevel: processedQuery.confidence.overall > 0.8 ? 'low' as const : 
+                  processedQuery.confidence.overall > 0.6 ? 'medium' as const : 'high' as const
       };
-      // const actionableInfo = contextFormatter.generateActionableInfo(
-      //   contextData,
-      //   requestAnalysis,
-      //   requestData.currentSelection
-      // );
 
       const processingTime = Date.now() - startTime;
 
       const response: AnalyzeContextResponse = {
         success: true,
         data: {
-          requestAnalysis,
+          requestAnalysis: {
+            intent: processedQuery.summary.targetMetric !== 'Unknown' ? IntentType.DATA_ANALYSIS : requestAnalysis.intent,
+            scope: requestAnalysis.scope,
+            confidence: processedQuery.confidence.overall,
+            keywords: processedQuery.summary.extractedEntities
+          },
           context: contextData,
           naturalLanguageDescription,
           actionableInfo,
-          suggestions: generateSuggestions(requestAnalysis, contextData),
-          confidence: calculateOverallConfidence(requestAnalysis, contextData, patternInsights)
+          suggestions: [
+            `Use ${processedQuery.excelGuidance.primaryFunction}: ${processedQuery.excelGuidance.exampleFormula}`,
+            ...processedQuery.excelGuidance.validationSteps.slice(0, 2),
+            ...processedQuery.excelGuidance.alternativeFunctions.slice(0, 1)
+          ],
+          confidence: processedQuery.confidence.overall
         },
         requestId,
         processingTime

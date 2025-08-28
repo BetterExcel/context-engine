@@ -71,6 +71,7 @@ export class ApiService {
   static async analyzeContext(request: {
     request: string;
     spreadsheetId: string;
+    spreadsheetData?: SpreadsheetData; // Optional: include actual spreadsheet data
     currentSelection: {
       sheet: string;
       range: string;

@@ -163,7 +163,7 @@ describe('Performance Tests', () => {
       
       // Test context retrieval
       const retrieveStart = performance.now();
-      const context = await databaseService.contexts.findById(contextId);
+      const context = await databaseService.contexts.findById(contextId.id);
       const retrieveDuration = performance.now() - retrieveStart;
       
       expect(retrieveDuration).toBeLessThan(50); // 50ms
@@ -178,7 +178,7 @@ describe('Performance Tests', () => {
       expect(contexts).toHaveLength(1);
       
       // Cleanup
-      await databaseService.contexts.delete(contextId);
+      await databaseService.contexts.delete(contextId.id);
     });
 
     test('Pagination should be efficient', async () => {
@@ -207,7 +207,7 @@ describe('Performance Tests', () => {
       expect(contexts.length).toBeGreaterThan(0);
       
       // Cleanup
-      await Promise.all(contextIds.map(id => databaseService.contexts.delete(id)));
+      await Promise.all(contextIds.map(id => databaseService.contexts.delete(id.id)));
     });
   });
 

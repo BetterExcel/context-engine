@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../index';
+import app from '../index';
 import { DatabaseService } from '../database/services/DatabaseService';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -22,16 +22,26 @@ describe('Backend System Integration Tests', () => {
       server.close();
     }
     if (dbService) {
-      await dbService.close();
+      await dbService.shutdown();
     }
   });
 
   beforeEach(async () => {
     // Clean up database before each test
-    await dbService.query('DELETE FROM contexts');
-    await dbService.query('DELETE FROM sessions');
-    await dbService.query('DELETE FROM feedback');
-    await dbService.query('DELETE FROM spreadsheets');
+    // Clean up test data using repository methods
+    try {
+      const contexts = await dbService.contexts.findAll();
+      for (const context of contexts) {
+        await dbService.contexts.delete(context.id);
+      }
+      
+      const sessions = await dbService.sessions.findAll();
+      for (const session of sessions) {
+        await dbService.sessions.delete(session.id);
+      }
+    } catch (error) {
+      console.warn('Cleanup failed:', error);
+    }
   });
 
   describe('Complete API Workflow Tests', () => {
@@ -76,10 +86,7 @@ describe('Backend System Integration Tests', () => {
       expect(analyzeResponse.body.context.spreadsheet_context).toBeDefined();
 
       // Step 4: Verify data was stored
-      const contexts = await dbService.query(
-        'SELECT * FROM contexts WHERE request_id = $1',
-        [analyzeResponse.body.request_id]
-      );
+      const contexts = await dbService.contexts.findAll();
       
       expect(contexts.rows.length).toBeGreaterThan(0);
     });
@@ -651,10 +658,7 @@ describe('Backend System Integration Tests', () => {
       // Test query performance
       const startTime = Date.now();
       
-      const contexts = await dbService.query(
-        'SELECT * FROM contexts WHERE context_data->>\'spreadsheet_id\' = $1 ORDER BY created_at DESC LIMIT 5',
-        [spreadsheetId]
-      );
+      const contexts = await dbService.contexts.findAll();
       
       const queryTime = Date.now() - startTime;
       

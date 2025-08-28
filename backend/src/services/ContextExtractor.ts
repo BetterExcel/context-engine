@@ -62,6 +62,18 @@ export class ContextExtractor {
     scope: ScopeInfo,
     options: ContextExtractionOptions = {}
   ): Promise<ContextData> {
+    console.log('=== ContextExtractor.extractRelevantData START ===');
+    console.log('SpreadsheetData structure:', {
+      sheetsCount: spreadsheetData.sheets?.length || 0,
+      firstSheetName: spreadsheetData.sheets?.[0]?.name,
+      firstSheetDataRows: spreadsheetData.sheets?.[0]?.data?.length || 0,
+      firstSheetDimensions: spreadsheetData.sheets?.[0]?.dimensions,
+      formulasCount: spreadsheetData.formulas?.length || 0
+    });
+    console.log('SelectionInfo:', JSON.stringify(selectionInfo, null, 2));
+    console.log('Sample sheet data (first 3 rows):', 
+      JSON.stringify(spreadsheetData.sheets?.[0]?.data?.slice(0, 3) || [], null, 2));
+    
     const maxCells = options.maxCells || scope.maxCells || this.DEFAULT_MAX_CELLS;
     
     // Extract immediate context
@@ -123,21 +135,35 @@ export class ContextExtractor {
     selectionInfo: SelectionInfo,
     maxCells: number
   ): ImmediateContext {
+    console.log('=== Extracting Immediate Context ===');
+    
     const sheet = this.findSheet(spreadsheetData, selectionInfo.sheet);
     if (!sheet) {
+      console.error(`Sheet "${selectionInfo.sheet}" not found!`);
       throw new ContextExtractionError(
         `Sheet "${selectionInfo.sheet}" not found`,
         'SHEET_NOT_FOUND'
       );
     }
+    
+    console.log('Found sheet:', sheet.name, 'with dimensions:', sheet.dimensions);
+    console.log('Selection range:', selectionInfo.range);
 
     // Parse selection range
     const selectionRange = this.parseRange(selectionInfo.range, sheet);
+    console.log('Parsed selection range:', selectionRange);
+    
     const activeCellAddress = selectionInfo.activeCell;
     const activeCellCoords = this.parseCellAddress(activeCellAddress);
+    console.log('Active cell coords:', activeCellCoords);
 
     // Extract selected data
     const selectedData = this.extractCellsFromRange(sheet, selectionRange, maxCells);
+    console.log('Extracted selected data:', {
+      rowCount: selectedData.length,
+      colCount: selectedData[0]?.length || 0,
+      sampleData: selectedData.slice(0, 2).map(row => row.slice(0, 3))
+    });
 
     // Get active cell
     const activeCell = this.getCellAt(sheet, activeCellCoords.row, activeCellCoords.col);

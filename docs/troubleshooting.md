@@ -206,17 +206,71 @@ Error: CORS policy blocked
    
    # CPU usage
    top
+   
+   # Check Node.js memory usage
+   curl http://localhost:3000/api/v1/metrics | grep memory
    ```
 
 2. **Optimize file size**:
-   - Remove unnecessary data
-   - Use CSV for simple datasets
-   - Split large files into smaller chunks
+   - Remove unnecessary data and empty rows/columns
+   - Use CSV for simple datasets (faster parsing)
+   - Split large files into smaller chunks (< 10MB recommended)
+   - Remove complex formulas and formatting before upload
 
-3. **Increase timeout limits**:
+3. **Enable performance optimizations**:
    ```env
-   REQUEST_TIMEOUT=60000
+   # Increase timeouts for large files
+   REQUEST_TIMEOUT=120000
+   FILE_PROCESSING_TIMEOUT=180000
+   
+   # Enable intelligent sampling for large datasets
+   ENABLE_SMART_SAMPLING=true
+   MAX_SAMPLE_ROWS=5000
+   
+   # Enable caching
+   REDIS_URL=redis://localhost:6379
+   CACHE_TTL=3600
    ```
+
+4. **Use strategic data selection**:
+   - Select specific ranges instead of entire sheets
+   - Focus on data-dense areas
+   - Avoid selecting large empty ranges
+   - Use headers and representative samples
+
+### Large Dataset Optimization
+
+**Problem**: Analysis fails or times out on large datasets (10,000+ rows)
+
+**Solutions**:
+1. **Enable intelligent sampling**:
+   ```env
+   ENABLE_INTELLIGENT_SAMPLING=true
+   MAX_PROCESSING_ROWS=10000
+   SAMPLING_STRATEGY=statistical
+   ```
+
+2. **Use progressive analysis**:
+   ```bash
+   # Analyze in chunks
+   curl -X POST http://localhost:3000/api/v1/analyze-context \
+     -H "Content-Type: application/json" \
+     -d '{
+       "request": "Analyze first 1000 rows for patterns",
+       "spreadsheetId": "large_dataset",
+       "currentSelection": {
+         "sheet": "Data",
+         "range": "A1:Z1000",
+         "activeCell": "A1"
+       }
+     }'
+   ```
+
+3. **Optimize for specific analysis types**:
+   - **Financial data**: Focus on key metrics columns
+   - **Sales data**: Sample by time periods or regions
+   - **Research data**: Use stratified sampling
+   - **Operational data**: Focus on recent time periods
 
 ### Memory Issues
 

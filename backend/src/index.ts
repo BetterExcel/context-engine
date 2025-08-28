@@ -143,6 +143,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerOptions));
 // Routes will be set up in the async startServer function
 
 // Health and monitoring endpoints
+app.get('/health', healthCheck);
 app.get('/api/v1/health', healthCheck);
 app.get('/api/v1/metrics', metricsEndpoint);
 
@@ -178,6 +179,12 @@ if (process.env['NODE_ENV'] !== 'test') {
     // Import LLM response routes
     const llmResponseRoutes = (await import('./routes/llm-response')).default;
     app.use('/api/v1', llmResponseRoutes);
+
+    // Import enhanced context routes
+    console.log('Loading enhanced context routes...');
+    const enhancedContextRoutes = (await import('./routes/enhanced-context')).default;
+    app.use('/api/v1/enhanced-context', enhancedContextRoutes);
+    console.log('Enhanced context routes loaded');
 
     // 404 handler for unmatched routes (must come before error handlers)
     app.use(notFoundHandler);
