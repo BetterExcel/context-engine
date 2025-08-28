@@ -130,67 +130,75 @@ export class EnhancedQueryProcessor {
   }
 
   /**
-   * Extract entities from query (company names, financial terms, etc.)
+   * Extract entities from query - generalized for any data type
    */
   private static extractEntities(query: string): string[] {
     const entities: string[] = [];
+    const normalizedQuery = query.toLowerCase();
 
-    // For filtering operations, don't extract specific entities since we want all matching rows
-    const isFilteringQuery =
-      /losing|winning|profitable|negative|positive|best|worst|all.*positions/i.test(
-        query
-      );
-    if (isFilteringQuery) {
-      return []; // Return empty array for filtering operations
+    // Check if this is a superlative query (most/best/worst/top/bottom)
+    const isSuperlativeQuery = /\b(most|best|worst|top|bottom|highest|lowest|maximum|minimum|max|min)\b/i.test(query);
+    
+    // Check if this is a filtering query (all positions with certain criteria)
+    const isFilteringQuery = /\b(all|show.*all|list.*all|filter|where)\b/i.test(query) && 
+                             /\b(positions?|companies?|items?|records?|rows?)\b/i.test(query);
+
+    // For superlative queries, we want to find the entity type, not specific entities
+    if (isSuperlativeQuery) {
+      // Extract what type of entity they want (company, stock, position, etc.)
+      const entityTypes = ['company', 'companies', 'stock', 'stocks', 'position', 'positions', 'item', 'items'];
+      entityTypes.forEach(type => {
+        if (normalizedQuery.includes(type)) {
+          entities.push(type);
+        }
+      });
+      return entities;
     }
 
-    // Common company name patterns
-    const companyPatterns = [
-      /\b(apple|aapl)\b/i,
-      /\b(coinbase|coin)\b/i,
-      /\b(microsoft|msft)\b/i,
-      /\b(google|googl|goog)\b/i,
-      /\b(amazon|amzn)\b/i,
-      /\b(tesla|tsla)\b/i,
-      /\b(boeing|ba)\b/i,
-      /\b(uber)\b/i,
-      /\b(nvidia|nvda)\b/i,
-      /\b(reliance)\b/i,
-      /\b(tcs)\b/i,
-      /\b(infosys|infy)\b/i,
-      /\b(hdfc|hdfcbank)\b/i,
-      /\b(itc)\b/i,
-      /\b(jpmorgan|jpm)\b/i,
-      /\b(visa)\b/i,
-      /\b(johnson.*johnson|jnj)\b/i,
-      /\b(procter.*gamble|pg)\b/i,
-      /\b(coca.*cola|ko)\b/i,
-      /\b([A-Z]{2,5})\b/g, // Stock symbols
+    // For filtering queries, return empty to indicate we want all matching records
+    if (isFilteringQuery) {
+      return [];
+    }
+
+    // Extract specific entities (company names, symbols, etc.)
+    // Common patterns for various data types
+    const entityPatterns = [
+      // Stock symbols (2-5 uppercase letters)
+      /\b([A-Z]{2,5})\b/g,
+      
+      // Common company names (generalized)
+      /\b(apple|aapl|microsoft|msft|google|googl|amazon|amzn|tesla|tsla|nvidia|nvda)\b/i,
+      /\b(coinbase|coin|uber|boeing|ba|visa|jpm|jpmorgan)\b/i,
+      /\b(reliance|tcs|infosys|infy|hdfc|hdfcbank|itc)\b/i,
+      /\b(johnson.*johnson|jnj|procter.*gamble|pg|coca.*cola|ko)\b/i,
+      
+      // Quoted strings (exact matches)
+      /"([^"]+)"/g,
+      /'([^']+)'/g,
     ];
 
-    companyPatterns.forEach(pattern => {
+    entityPatterns.forEach(pattern => {
       const matches = query.match(pattern);
       if (matches) {
-        entities.push(...matches.map(m => m.toUpperCase()));
+        matches.forEach(match => {
+          // Clean up the match
+          const cleanMatch = match.replace(/['"]/g, '').trim();
+          if (cleanMatch.length > 1) {
+            entities.push(cleanMatch.toUpperCase());
+          }
+        });
       }
     });
 
-    // Financial terms (only for non-filtering queries)
-    const financialTerms = [
-      'average price',
-      'price paid',
-      'profit',
-      'loss',
-      'return',
-      'market value',
-      'portfolio',
-      'dividend',
-      'yield',
-      'pe ratio',
+    // Extract financial/business terms
+    const businessTerms = [
+      'average price', 'price paid', 'profit', 'loss', 'return', 'market value',
+      'portfolio', 'dividend', 'yield', 'pe ratio', 'revenue', 'earnings',
+      'sales', 'income', 'expense', 'cost', 'value', 'amount'
     ];
 
-    financialTerms.forEach(term => {
-      if (query.includes(term)) {
+    businessTerms.forEach(term => {
+      if (normalizedQuery.includes(term)) {
         entities.push(term);
       }
     });
@@ -199,76 +207,123 @@ export class EnhancedQueryProcessor {
   }
 
   /**
-   * Identify what metric the user is asking for
+   * Identify what metric the user is asking for - generalized for any data
    */
   private static identifyTargetMetric(query: string): string {
-    const metricPatterns = [
-      // Filtering patterns (more specific, check first)
+    const normalizedQuery = query.toLowerCase();
+    
+    // Superlative patterns (most/best/worst/top/bottom)
+    const superlativePatterns = [
       {
-        pattern: /losing\s+positions?|negative\s+positions?|losses/i,
-        metric: 'ProfitLoss (negative)',
+        pattern: /\b(most|best|top|highest|maximum|max)\s+(profitable|profit|earning|gain|return|performing)/i,
+        metric: 'ProfitLoss (highest)',
       },
       {
-        pattern: /winning\s+positions?|profitable\s+positions?|gains/i,
-        metric: 'ProfitLoss (positive)',
+        pattern: /\b(most|worst|bottom|lowest|minimum|min)\s+(loss|losing|unprofitable|poor|bad)/i,
+        metric: 'ProfitLoss (lowest)',
       },
       {
-        pattern: /best\s+performing|top\s+performers?/i,
+        pattern: /\b(best|top|highest)\s+(performing|performance|return|percentage)/i,
         metric: 'ProfitLossPercentage (highest)',
       },
       {
-        pattern: /worst\s+performing|bottom\s+performers?/i,
+        pattern: /\b(worst|bottom|lowest)\s+(performing|performance|return|percentage)/i,
         metric: 'ProfitLossPercentage (lowest)',
       },
-
-      // Specific value lookups
-      { pattern: /average\s+price/i, metric: 'AveragePricePaid' },
-      { pattern: /price\s+paid/i, metric: 'AveragePricePaid' },
-      { pattern: /market\s+value/i, metric: 'MarketValueDelayed' },
-      { pattern: /profit/i, metric: 'ProfitLoss' },
-      { pattern: /loss/i, metric: 'ProfitLoss' },
-      { pattern: /quantity/i, metric: 'Quantity' },
-      { pattern: /percentage/i, metric: 'ProfitLossPercentage' },
-      { pattern: /return/i, metric: 'ProfitLossPercentage' },
+      {
+        pattern: /\b(most|highest|largest|biggest)\s+(value|valued|expensive|costly)/i,
+        metric: 'MarketValueDelayed (highest)',
+      },
+      {
+        pattern: /\b(least|lowest|smallest|cheapest)\s+(value|valued|expensive|costly)/i,
+        metric: 'MarketValueDelayed (lowest)',
+      },
     ];
 
-    for (const { pattern, metric } of metricPatterns) {
+    // Filtering patterns (all items with certain criteria)
+    const filteringPatterns = [
+      {
+        pattern: /\b(all|show.*all|list.*all)\s+.*(losing|loss|negative|unprofitable)/i,
+        metric: 'ProfitLoss (negative)',
+      },
+      {
+        pattern: /\b(all|show.*all|list.*all)\s+.*(winning|profit|positive|profitable|gain)/i,
+        metric: 'ProfitLoss (positive)',
+      },
+      {
+        pattern: /\b(all|show.*all|list.*all)\s+.*(positions?|companies?|stocks?|items?)/i,
+        metric: 'All (filter)',
+      },
+    ];
+
+    // Specific value lookup patterns
+    const specificPatterns = [
+      { pattern: /\b(average\s+price|price\s+paid|cost\s+basis)/i, metric: 'AveragePricePaid' },
+      { pattern: /\b(market\s+value|current\s+value|total\s+value)/i, metric: 'MarketValueDelayed' },
+      { pattern: /\b(profit|gain|earning)/i, metric: 'ProfitLoss' },
+      { pattern: /\b(loss|losing)/i, metric: 'ProfitLoss' },
+      { pattern: /\b(quantity|shares|amount|count)/i, metric: 'Quantity' },
+      { pattern: /\b(percentage|percent|return|yield)/i, metric: 'ProfitLossPercentage' },
+      { pattern: /\b(symbol|ticker|code)/i, metric: 'Symbol' },
+      { pattern: /\b(company|name|corporation)/i, metric: 'CompanyName' },
+    ];
+
+    // Check patterns in order of specificity
+    const allPatterns = [...superlativePatterns, ...filteringPatterns, ...specificPatterns];
+    
+    for (const { pattern, metric } of allPatterns) {
       if (pattern.test(query)) {
         return metric;
       }
+    }
+
+    // Fallback: try to infer from context
+    if (normalizedQuery.includes('profit') || normalizedQuery.includes('loss')) {
+      return 'ProfitLoss';
+    }
+    if (normalizedQuery.includes('value') || normalizedQuery.includes('worth')) {
+      return 'MarketValueDelayed';
+    }
+    if (normalizedQuery.includes('price') || normalizedQuery.includes('cost')) {
+      return 'AveragePricePaid';
     }
 
     return 'Unknown';
   }
 
   /**
-   * Create LLM-friendly prompt
+   * Create LLM-friendly prompt - generalized for any data type
    */
   private static createLLMPrompt(
     originalQuery: string,
     entities: string[],
     targetMetric: string
   ): string {
-    // Handle filtering operations differently
-    if (
-      targetMetric.includes('(negative)') ||
-      targetMetric.includes('(positive)') ||
-      targetMetric.includes('(highest)') ||
-      targetMetric.includes('(lowest)')
-    ) {
-      const baseMetric = targetMetric.split(' ')[0];
-      const condition = targetMetric.match(/\((.*?)\)/)?.[1] || '';
+    const baseMetric = targetMetric.split(' ')[0];
+    const condition = targetMetric.match(/\((.*?)\)/)?.[1] || '';
 
-      return `TASK: Filter and display all positions where ${baseMetric} is ${condition}\n\nORIGINAL QUERY: "${originalQuery}"\n\nFILTERING CRITERIA: ${baseMetric} ${condition === 'negative' ? '< 0' : condition === 'positive' ? '> 0' : condition}\nTARGET COLUMNS: Symbol, CompanyName, ${baseMetric}, ProfitLossPercentage\n\nINSTRUCTIONS FOR AGENT:\n1. Scan all rows in the spreadsheet data\n2. Filter rows where ${baseMetric} meets the condition (${condition})\n3. For each matching row, extract: Symbol, Company Name, ${baseMetric}, and Percentage\n4. Present results in a clear table format\n5. Include row references for verification\n\nEXPECTED OUTPUT FORMAT:\nFor each losing position:\n- Symbol: [Stock Symbol]\n- Company: [Company Name]\n- Loss Amount: [Exact ${baseMetric} value with currency]\n- Loss Percentage: [ProfitLossPercentage value]\n- Row Reference: [Row number]\n\nSUMMARY: Total positions found, total loss amount, worst performer`;
+    // Handle superlative queries (most/best/worst/top/bottom)
+    if (condition === 'highest' || condition === 'lowest') {
+      const sortOrder = condition === 'highest' ? 'descending' : 'ascending';
+      const superlativeWord = condition === 'highest' ? 'highest' : 'lowest';
+      
+      return `TASK: Find the record with the ${superlativeWord} ${baseMetric} value\n\nORIGINAL QUERY: "${originalQuery}"\n\nSORT CRITERIA: ${baseMetric} in ${sortOrder} order\nTARGET COLUMNS: All relevant columns (Symbol, CompanyName, ${baseMetric}, etc.)\n\nINSTRUCTIONS FOR AGENT:\n1. Scan all rows in the spreadsheet data\n2. Sort by ${baseMetric} column in ${sortOrder} order\n3. Identify the record with the ${superlativeWord} value\n4. Extract all relevant information for that record\n5. Include the exact value and row reference\n\nEXPECTED OUTPUT FORMAT:\n- Company/Entity: [Name]\n- ${baseMetric}: [Exact ${superlativeWord} value with units]\n- Additional Details: [Other relevant column values]\n- Row Reference: [Row number]\n- Ranking Context: [How it compares to others]`;
     }
 
-    // Handle entity-specific lookups
-    if (entities.length > 0) {
-      return `TASK: Find ${targetMetric} for ${entities.join(' or ')} in spreadsheet data\n\nORIGINAL QUERY: "${originalQuery}"\n\nEXTRACTED ENTITIES: ${entities.join(', ')}\nTARGET METRIC: ${targetMetric}\n\nINSTRUCTIONS FOR AGENT:\n1. Search for rows containing any of these entities: ${entities.join(', ')}\n2. Locate the column containing ${targetMetric}\n3. Extract the specific value(s)\n4. Provide the exact numerical result with proper formatting\n5. Include the source cell reference for verification\n\nEXPECTED OUTPUT FORMAT:\n- Entity: [Company Name]\n- ${targetMetric}: [Exact Value]\n- Source: [Cell Reference]\n- Currency/Unit: [If applicable]`;
+    // Handle filtering operations (all items with certain criteria)
+    if (condition === 'negative' || condition === 'positive' || targetMetric.includes('filter')) {
+      const operator = condition === 'negative' ? '< 0' : condition === 'positive' ? '> 0' : 'meets criteria';
+      
+      return `TASK: Filter and display all records where ${baseMetric} ${operator}\n\nORIGINAL QUERY: "${originalQuery}"\n\nFILTERING CRITERIA: ${baseMetric} ${operator}\nTARGET COLUMNS: All relevant columns\n\nINSTRUCTIONS FOR AGENT:\n1. Scan all rows in the spreadsheet data\n2. Filter rows where ${baseMetric} meets the condition (${operator})\n3. For each matching row, extract all relevant information\n4. Present results in a clear table format\n5. Include row references for verification\n\nEXPECTED OUTPUT FORMAT:\nFor each matching record:\n- Primary Identifier: [Name/Symbol]\n- ${baseMetric}: [Value with units]\n- Additional Details: [Other relevant columns]\n- Row Reference: [Row number]\n\nSUMMARY: Total records found, aggregate statistics`;
     }
 
-    // Generic fallback
-    return `TASK: Analyze spreadsheet data to answer: "${originalQuery}"\n\nTARGET METRIC: ${targetMetric}\n\nINSTRUCTIONS FOR AGENT:\n1. Understand what the user is asking for\n2. Identify relevant data columns and rows\n3. Perform the requested analysis or lookup\n4. Provide specific, actionable results\n5. Include source references for verification\n\nEXPECTED OUTPUT: Specific answer to the user's question with supporting data`;
+    // Handle specific entity lookups
+    if (entities.length > 0 && !entities.includes('company') && !entities.includes('companies')) {
+      return `TASK: Find ${targetMetric} for specific entities: ${entities.join(', ')}\n\nORIGINAL QUERY: "${originalQuery}"\n\nEXTRACTED ENTITIES: ${entities.join(', ')}\nTARGET METRIC: ${targetMetric}\n\nINSTRUCTIONS FOR AGENT:\n1. Search for rows containing any of these entities: ${entities.join(', ')}\n2. Look in all text columns (Symbol, CompanyName, etc.)\n3. Locate the column containing ${targetMetric}\n4. Extract the specific value(s) with proper formatting\n5. Include the source cell reference for verification\n\nEXPECTED OUTPUT FORMAT:\n- Entity Found: [Exact match from data]\n- ${targetMetric}: [Exact value with units/currency]\n- Source Location: [Cell reference]\n- Additional Context: [Other relevant data from same row]`;
+    }
+
+    // Generic analysis fallback
+    return `TASK: Analyze spreadsheet data to answer: "${originalQuery}"\n\nTARGET METRIC: ${targetMetric}\nANALYSIS TYPE: Data lookup and analysis\n\nINSTRUCTIONS FOR AGENT:\n1. Understand what the user is asking for\n2. Identify relevant data columns and rows\n3. Perform the requested analysis or lookup\n4. Use appropriate Excel functions (VLOOKUP, INDEX/MATCH, MAX, MIN, etc.)\n5. Provide specific, actionable results with source references\n\nEXPECTED OUTPUT FORMAT:\n- Direct Answer: [Specific result to user's question]\n- Supporting Data: [Relevant context and details]\n- Source Reference: [Cell/row references]\n- Methodology: [How the result was obtained]`;
   }
 
   /**
@@ -482,6 +537,46 @@ export class EnhancedQueryProcessor {
     entities: string[]
   ): ExcelGuidance {
     const entity = entities[0] || 'TARGET_ENTITY';
+    const baseMetric = targetMetric.split(' ')[0];
+    const condition = targetMetric.match(/\((.*?)\)/)?.[1] || '';
+
+    // Handle superlative queries (highest/lowest)
+    if (condition === 'highest' || condition === 'lowest') {
+      const isHighest = condition === 'highest';
+      const sortOrder = isHighest ? 'FALSE' : 'TRUE';
+      const functionName = isHighest ? 'MAX' : 'MIN';
+      const indexFunction = isHighest ? 'MAXIFS' : 'MINIFS';
+      
+      return {
+        primaryFunction: `${functionName} with INDEX/MATCH`,
+        stepByStepInstructions: [
+          `1. Use ${functionName} function to find the ${condition} ${baseMetric} value`,
+          `2. Use INDEX/MATCH to find the corresponding company/entity`,
+          `3. Alternative: Use SORT function to order data and pick first result`,
+          `4. Include all relevant columns for context`,
+        ],
+        formulaTemplate: `=INDEX(B:B, MATCH(${functionName}(${this.getColumnLetter(baseMetric)}:${this.getColumnLetter(baseMetric)}), ${this.getColumnLetter(baseMetric)}:${this.getColumnLetter(baseMetric)}, 0))`,
+        exampleFormula: `=INDEX(B2:B16, MATCH(${functionName}(F2:F16), F2:F16, 0))`,
+        alternativeFunctions: [
+          `SORT method: =INDEX(SORT(A2:K16, ${this.getColumnNumber(baseMetric)}, ${sortOrder}), 1, 2)`,
+          `Array formula: =INDEX(B2:B16, MATCH(${functionName}(F2:F16), F2:F16, 0))`,
+          `XLOOKUP: =XLOOKUP(${functionName}(F2:F16), F2:F16, B2:B16)`,
+          `Filter + Sort: =INDEX(SORT(A2:K16, ${this.getColumnNumber(baseMetric)}, ${sortOrder}), 1, 0)`,
+        ],
+        validationSteps: [
+          `Verify ${baseMetric} column contains numeric values`,
+          `Confirm ${functionName} returns expected result`,
+          `Check that INDEX/MATCH finds correct corresponding row`,
+          `Validate that result makes logical sense`,
+        ],
+        commonPitfalls: [
+          `Using wrong column reference for ${baseMetric}`,
+          `Not excluding header row from ${functionName} calculation`,
+          `MATCH function returning #N/A if exact match not found`,
+          `Forgetting to handle ties (multiple records with same ${condition} value)`,
+        ],
+      };
+    }
 
     // Handle filtering operations
     if (targetMetric.includes('(negative)')) {
@@ -686,7 +781,7 @@ export class EnhancedQueryProcessor {
   private static calculateRealConfidence(
     summary: QuerySummary,
     spreadsheetData: SpreadsheetData,
-    selectionAnalysis: any,
+    selectionAnalysis: unknown,
     excelGuidance: ExcelGuidance
   ): RealConfidenceScore {
     const sheet = spreadsheetData.sheets[0];
@@ -1004,5 +1099,45 @@ export class EnhancedQueryProcessor {
     }
 
     return factors;
+  }
+
+  /**
+   * Helper method to get Excel column letter for a metric
+   */
+  private static getColumnLetter(metric: string): string {
+    const columnMap: { [key: string]: string } = {
+      'Symbol': 'A',
+      'CompanyName': 'B', 
+      'MarketValueDelayed': 'C',
+      'AveragePricePaid': 'D',
+      'Quantity': 'E',
+      'ProfitLoss': 'F',
+      'ProfitLossPercentage': 'G',
+      'Currency': 'H',
+      'Exchange': 'I',
+      'SecurityType': 'J',
+      'MarginRequirements': 'K'
+    };
+    return columnMap[metric] || 'F'; // Default to F (ProfitLoss)
+  }
+
+  /**
+   * Helper method to get Excel column number for a metric
+   */
+  private static getColumnNumber(metric: string): number {
+    const columnMap: { [key: string]: number } = {
+      'Symbol': 1,
+      'CompanyName': 2,
+      'MarketValueDelayed': 3,
+      'AveragePricePaid': 4,
+      'Quantity': 5,
+      'ProfitLoss': 6,
+      'ProfitLossPercentage': 7,
+      'Currency': 8,
+      'Exchange': 9,
+      'SecurityType': 10,
+      'MarginRequirements': 11
+    };
+    return columnMap[metric] || 6; // Default to 6 (ProfitLoss)
   }
 }
