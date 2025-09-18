@@ -8,6 +8,6 @@ def eval(context):
     pass
 
 # different benchmarks for col/row/inverted/raw
-
+# shuld have a feature for single llm or multiple llms evaluation
 def eval_benchmark():
     pass
