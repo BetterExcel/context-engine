@@ -7,6 +7,7 @@ def get_data():
 def eval(context):
     pass
 
-# different benchmarks 
+# different benchmarks for col/row/inverted/raw
+
 def eval_benchmark():
     pass
