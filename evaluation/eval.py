@@ -1,3 +1,8 @@
+from context_processing.col_row_context import col_based_processing, row_based_processing
+from context_processing.raw_dump import get_read_data
+from context_processing.inverted_index import inverted_processing
+from typing import Union
+
 import pandas as pd
 from llm_util import call_llm
 def get_data():
@@ -9,7 +14,15 @@ def eval(context):
     response=call_llm(prompt)
     return response
 
-def make_context(spreadsheet_path):
+def make_context(spreadsheet_path,sheet_name:Union[int,str,None]=None,type="col"):
+    if type=="col":
+        return col_based_processing(spreadsheet_path,sheet_name)
+    elif type=="row":
+        return row_based_processing(spreadsheet_path,sheet_name)
+    elif type=="inverted":
+        return inverted_processing(spreadsheet_path,sheet_name)
+    elif type=="raw":
+        return get_read_data(spreadsheet_path,sheet_name)
     pass
 
 # different benchmarks for col/row/inverted/raw
@@ -32,7 +45,7 @@ def eval_needle_in_haystack():
     pass
 
 if __name__ == "__main__":
-    data=get_data()
-    print(data.head())
+
+    print(make_context("test.xlsx",2,type="row"))
 
 
