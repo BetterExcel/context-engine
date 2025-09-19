@@ -1,5 +1,5 @@
 import openpyxl
-from typing import Literal
+from typing import Literal, Union
 
 def detect_type(value) -> Literal["number", "string", "date", "empty"]:
     """Simple type detection for a cell value."""
@@ -11,13 +11,18 @@ def detect_type(value) -> Literal["number", "string", "date", "empty"]:
         return "date"
     return "string"
 
-def col_based_processing(path: str) -> str:
+def col_based_processing(path: str,sheet_name: Union[int,str,None]=None) -> str:
     """
     Encode Excel sheet column by column into a string.
     Format: |A1, 100, number|
     """
     wb = openpyxl.load_workbook(path, data_only=True)
-    sheet = wb.active
+    if isinstance(sheet_name, int):
+        sheet = wb.worksheets[sheet_name]
+    elif isinstance(sheet_name, str):
+        sheet = wb[sheet_name]
+    else:
+        sheet = wb.active
 
     parts = []
     for col in sheet.iter_cols():
@@ -28,13 +33,18 @@ def col_based_processing(path: str) -> str:
         parts.append(" ".join(col_parts))
     return " || ".join(parts)  # separator between columns
 
-def row_based_processing(path: str) -> str:
+def row_based_processing(path: str,sheet_name: Union[int,str,None]=None) -> str:
     """
     Encode Excel sheet row by row into a string.
     Format: |A1, 100, number|
     """
     wb = openpyxl.load_workbook(path, data_only=True)
-    sheet = wb.active
+    if isinstance(sheet_name, int):
+        sheet = wb.worksheets[sheet_name]
+    elif isinstance(sheet_name, str):
+        sheet = wb[sheet_name]
+    else:
+        sheet = wb.active
 
     parts = []
     for row in sheet.iter_rows():
