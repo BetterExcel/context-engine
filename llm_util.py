@@ -1,9 +1,10 @@
-# --------- LLM backend (OpenAI + Ollama support) ----------
+# --------- LLM backend with LangChain (OpenAI + Ollama support) ----------
 import os
 from dotenv import load_dotenv  # pip install python-dotenv
-import ollama
 
-
+from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama   # ✅ new
+from langchain_core.prompts import ChatPromptTemplate
 
 # Load .env file at startup
 load_dotenv()
@@ -17,37 +18,38 @@ def call_llm(
 ) -> str:
     provider = provider.lower()
 
+    # Build the LangChain prompt template
+    template = ChatPromptTemplate.from_messages([
+        ("system", "You summarize dataset columns concisely and conservatively."),
+        ("user", "{user_input}")
+    ])
+    chain = None
+
     if provider == "openai":
-        # pip install openai>=1.0.0
-        from openai import OpenAI
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise RuntimeError("OPENAI_API_KEY not set in environment or .env file")
-        client = OpenAI(api_key=api_key)
-        resp = client.chat.completions.create(
+        # Requires: pip install langchain-openai
+        llm = ChatOpenAI(
             model=model,
-            messages=[
-                {"role": "system", "content": "You summarize dataset columns concisely and conservatively."},
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=max_tokens,
             temperature=temperature,
+            max_tokens=max_tokens,
+            api_key=os.getenv("OPENAI_API_KEY"),
         )
-        return resp.choices[0].message.content.strip()
+        chain = template | llm
 
     elif provider == "ollama":
-        # pip install ollama
-        resp = ollama.chat(
+        # Requires: pip install langchain-community
+        llm = ChatOllama(
             model=model,
-            messages=[
-                {"role": "system", "content": "You summarize dataset columns concisely and conservatively."},
-                {"role": "user", "content": prompt},
-            ],
-            options={"temperature": temperature, "num_predict": max_tokens}
+            temperature=temperature,
+            num_predict=max_tokens,
         )
-        return resp["message"]["content"].strip()
+        chain = template | llm
 
-    raise RuntimeError(f"Unsupported LLM provider: {provider}")
+    else:
+        raise RuntimeError(f"Unsupported LLM provider: {provider}")
+
+    # Run the chain
+    resp = chain.invoke({"user_input": prompt})
+    return resp.content.strip()
 
 
 if __name__ == "__main__":
@@ -66,4 +68,3 @@ if __name__ == "__main__":
     ollama_resp = call_llm(test_prompt, provider="ollama", model="gemma3:270m")
     end = datetime.datetime.now()
     print("Ollama:", ollama_resp, f"(took {(end - start).total_seconds():.2f}s)")
-
