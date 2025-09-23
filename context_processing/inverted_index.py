@@ -4,70 +4,164 @@ from typing import Dict, List, Any, Union, Tuple
 from datetime import datetime
 from collections import defaultdict
 import re
+import requests
+import time
 
-def normalize_value(value: Any) -> str:
-    """
-    Normalize cell values into typed keys for consistent indexing.
-    """
-    if value is None or value == "":
-        return "__NULL__"
-    if isinstance(value, (int, float)):
-        return f"NUM:{value}"
-    if hasattr(value, 'year') or isinstance(value, datetime):
-        return f"DATE:{value.isoformat()}"
-    if isinstance(value, str):
-        cleaned = value.strip()
-        if not cleaned:
-            return "__NULL__"
-        return f"STR:{cleaned}"
-    return f"STR:{str(value).strip()}"
+# Ollama configuration
+OLLAMA_URL = "http://localhost:11434"
+OLLAMA_MODEL = "llama3.1:8b"
 
+def call_ollama(prompt: str, max_retries: int = 3) -> str:
+    """Call Ollama API with retry logic."""
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                f"{OLLAMA_URL}/api/generate",
+                json={
+                    "model": OLLAMA_MODEL,
+                    "prompt": prompt,
+                    "stream": False
+                },
+                timeout=30
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result.get("response", "").strip()
+        except Exception as e:
+            print(f"Ollama attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
+
+def analyze_chunk_with_ollama(chunk_data: List[List[Any]], chunk_range: str) -> Dict:
+    """Use Ollama to analyze a 10-row chunk and generate intelligent summary."""
+    
+    # Prepare data for Ollama
+    data_text = f"Data chunk {chunk_range}:\n"
+    for row_idx, row in enumerate(chunk_data):
+        data_text += f"Row {row_idx + 1}: {row}\n"
+    
+    prompt = f"""
+Analyze this spreadsheet data chunk and provide ONLY a valid JSON response with this exact structure:
+{{
+    "summary": "Brief description of what this chunk contains",
+    "data_types": ["type1", "type2", "type3"],
+    "patterns": ["pattern1", "pattern2"],
+    "outliers": ["outlier1", "outlier2"],
+    "key_values": ["important_value1", "important_value2"],
+    "context": "Additional context about this data"
+}}
+
+CRITICAL JSON RULES:
+- All strings must be properly escaped (use \\" for quotes inside strings)
+- No unescaped quotes, commas, or special characters in strings
+- All array values must be strings, never null or None
+- If no outliers exist, use empty array: []
+- If no patterns exist, use empty array: []
+- Keep strings short and simple
+- Respond with ONLY the JSON object, no explanations, no markdown, no additional text
+
+Data to analyze:
+{data_text}
+"""
+    
+    try:
+        response = call_ollama(prompt)
+        print(f"Raw Ollama response for {chunk_range}: {response[:200]}...")
+        
+        # Clean up common JSON issues
+        cleaned_response = response.replace('[None]', '[]').replace('None', 'null')
+        
+        # Try to parse JSON response with multiple attempts
+        analysis = None
+        for attempt in range(3):
+            try:
+                analysis = json.loads(cleaned_response)
+                break
+            except json.JSONDecodeError as e:
+                if attempt == 0:
+                    # First attempt: try to fix common issues
+                    cleaned_response = cleaned_response.replace("'", '"')  # Replace single quotes with double
+                elif attempt == 1:
+                    # Second attempt: try to fix unescaped quotes in strings
+                    import re
+                    # This is a more aggressive cleanup - might break some cases
+                    cleaned_response = re.sub(r'(?<!\\)"(?=[^,}\]])', '\\"', cleaned_response)
+                else:
+                    # Final attempt: create a minimal valid response
+                    print(f"Creating fallback response for {chunk_range}")
+                    analysis = {
+                        "summary": "Data chunk analysis",
+                        "data_types": ["mixed"],
+                        "patterns": [],
+                        "outliers": [],
+                        "key_values": [],
+                        "context": "Analysis completed with fallback"
+                    }
+                    break
+        
+        if analysis is None:
+            raise Exception("Failed to parse JSON after multiple attempts")
+        
+        # Ensure all arrays contain only strings and clean them up
+        for key in ['data_types', 'patterns', 'outliers', 'key_values']:
+            if key in analysis:
+                cleaned_items = []
+                for item in analysis[key]:
+                    if item is not None:
+                        # Clean up the string: remove quotes, escape special chars
+                        cleaned_item = str(item).replace('"', '').replace("'", '').strip()
+                        if cleaned_item and cleaned_item != 'null':
+                            cleaned_items.append(cleaned_item)
+                analysis[key] = cleaned_items
+        
+        return analysis
+    except json.JSONDecodeError as e:
+        print(f"JSON parsing failed for {chunk_range}: {e}")
+        print(f"Response was: {response}")
+        raise e
+    except Exception as e:
+        print(f"Ollama analysis failed for {chunk_range}: {e}")
+        raise e
 
 def get_column_name(col_idx: int, headers: List[str] = None) -> str:
     """Get column name from headers or generate Excel-style column name."""
     if headers and col_idx < len(headers):
         return headers[col_idx]
+    
     result = ""
-    col_idx += 1 
+    col_idx += 1  # Convert to 1-based indexing
     while col_idx > 0:
         col_idx -= 1
         result = chr(65 + (col_idx % 26)) + result
         col_idx //= 26
     return result
 
-def compress_locations(locations: List[int]) -> List[List[int]]:
-    """
-    Compress a list of row numbers into ranges.
-    Example: [1, 2, 3, 5, 7, 8, 9] -> [[1, 3], [5, 5], [7, 9]]
-    """
-    if not locations:
-        return []
-    locations = sorted(set(locations))
-    ranges = []
-    start = locations[0]
-    end = locations[0]
-    for i in range(1, len(locations)):
-        if locations[i] == end + 1:
-            end = locations[i]
-        else:
-            ranges.append([start, end])
-            start = end = locations[i]
-    ranges.append([start, end])
-    return ranges
+def create_range_string(start_row: int, end_row: int, start_col: int, end_col: int) -> str:
+    """Create Excel-style range string like 'A1:A10'."""
+    start_col_name = get_column_name(start_col)
+    end_col_name = get_column_name(end_col)
+    return f"{start_col_name}{start_row}:{end_col_name}{end_row}"
 
-def build_inverted_index(file_path: str, sheet_name: Union[int, str, None] = None, max_locations_per_key: int = 1000) -> Dict:
+def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = None, chunk_size: int = 10) -> Dict:
     """
-    Build an inverted index for a spreadsheet.
+    Build an anchored inverted index for a spreadsheet.
+    Processes data in chunks and uses Ollama for intelligent analysis.
     """
     wb = openpyxl.load_workbook(file_path, data_only=True)
+    
     if isinstance(sheet_name, int):
         sheet = wb.worksheets[sheet_name]
     elif isinstance(sheet_name, str):
         sheet = wb[sheet_name]
     else:
         sheet = wb.active
+    
     max_row = sheet.max_row
     max_col = sheet.max_column
+    
+    # Extract headers from first row
     headers = []
     first_row = list(sheet.iter_rows(min_row=1, max_row=1, values_only=True))[0]
     for i, cell_value in enumerate(first_row):
@@ -75,108 +169,160 @@ def build_inverted_index(file_path: str, sheet_name: Union[int, str, None] = Non
             headers.append(str(cell_value).strip())
         else:
             headers.append(get_column_name(i))
+    
+    # Initialize index structure
     index = {
         "sheet_name": sheet.title,
         "num_rows": max_row,
         "num_cols": max_col,
         "headers": headers,
-        "values": {}
+        "chunk_size": chunk_size,
+        "anchors": {},
+        "metadata": {
+            "total_chunks": 0,
+            "processing_time": 0,
+            "ollama_calls": 0
+        }
     }
-    for row_idx, row in enumerate(sheet.iter_rows(values_only=True), 1):
-        for col_idx, cell_value in enumerate(row):
-            if col_idx >= len(headers):
-                break
-            normalized_key = normalize_value(cell_value)
-            col_name = headers[col_idx] if col_idx < len(headers) else get_column_name(col_idx)
-            cell_address = f"{get_column_name(col_idx)}{row_idx}"
-            if normalized_key not in index["values"]:
-                index["values"][normalized_key] = {
-                    "type": normalized_key.split(":")[0].lower() if ":" in normalized_key else "null",
-                    "count": 0,
-                    "samples": [],
-                    "cols": defaultdict(int),
-                    "locations": defaultdict(list),
-                    "locations_total": 0
-                }
-            entry = index["values"][normalized_key]
-            entry["count"] += 1
-            entry["cols"][col_name] += 1
-            entry["locations_total"] += 1
-            if len(entry["samples"]) < 10:
-                entry["samples"].append(cell_address)
-            if len(entry["locations"][col_name]) < max_locations_per_key:
-                entry["locations"][col_name].append(row_idx)
     
-    for key, entry in index["values"].items():
-        entry["cols"] = dict(entry["cols"])
-        entry["locations_compressed"] = {}
-        entry["min_row"] = float('inf')
-        entry["max_row"] = 0
-        for col_name, locations in entry["locations"].items():
-            if locations:
-                entry["locations_compressed"][col_name] = compress_locations(locations)
-                entry["min_row"] = min(entry["min_row"], min(locations))
-                entry["max_row"] = max(entry["max_row"], max(locations))
+    start_time = time.time()
+    
+    # Process data in chunks
+    chunk_num = 0
+    for start_row in range(1, max_row + 1, chunk_size):
+        end_row = min(start_row + chunk_size - 1, max_row)
+        chunk_range = f"A{start_row}:A{end_row}"
         
-        del entry["locations"]
-        if entry["min_row"] == float('inf'):
-            entry["min_row"] = 0
+        # Extract chunk data
+        chunk_data = []
+        for row_idx in range(start_row, end_row + 1):
+            row_data = []
+            for col_idx in range(max_col):
+                cell_value = sheet.cell(row=row_idx, column=col_idx + 1).value
+                row_data.append(cell_value)
+            chunk_data.append(row_data)
+        
+        # Analyze chunk with Ollama
+        try:
+            print(f"Analyzing chunk {chunk_num + 1}: {chunk_range}")
+            analysis = analyze_chunk_with_ollama(chunk_data, chunk_range)
+            index["metadata"]["ollama_calls"] += 1
+            
+            # Store anchor information
+            anchor_key = f"chunk_{chunk_num}"
+            index["anchors"][anchor_key] = {
+                "range": chunk_range,
+                "start_row": start_row,
+                "end_row": end_row,
+                "analysis": analysis,
+                "chunk_number": chunk_num
+            }
+            
+            chunk_num += 1
+            
+        except Exception as e:
+            print(f"Failed to analyze chunk {chunk_range}: {e}")
+            raise e
+    
+    index["metadata"]["total_chunks"] = chunk_num
+    index["metadata"]["processing_time"] = time.time() - start_time
     
     return {"sheets": {sheet.title: index}}
 
-
-def query_index(index: Dict, query_terms: List[str]) -> Dict:
+def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
     """
-    Query the inverted index for relevant context.
+    Query the anchored index for relevant context.
     """
     results = {}
     
     for sheet_name, sheet_data in index["sheets"].items():
-        sheet_results = {}
+        sheet_results = {
+            "sheet_info": {
+                "name": sheet_data["sheet_name"],
+                "rows": sheet_data["num_rows"],
+                "cols": sheet_data["num_cols"],
+                "headers": sheet_data["headers"],
+                "chunk_size": sheet_data["chunk_size"]
+            },
+            "matching_chunks": []
+        }
         
         for term in query_terms:
             term_lower = term.lower().strip()
-            for key, entry in sheet_data["values"].items():
-                if term_lower in key.lower():
-                    sheet_results[key] = entry
+            
+            # Search in headers
             for header in sheet_data["headers"]:
                 if term_lower in header.lower():
-                    for key, entry in sheet_data["values"].items():
-                        if header in entry["cols"] and entry["cols"][header] > 0:
-                            sheet_results[key] = entry
+                    # Find chunks that contain this header
+                    for anchor_key, anchor_data in sheet_data["anchors"].items():
+                        if anchor_data["analysis"]["data_types"] and any(
+                            term_lower in data_type.lower() for data_type in anchor_data["analysis"]["data_types"]
+                        ):
+                            sheet_results["matching_chunks"].append(anchor_data)
+            
+            # Search in chunk summaries and analysis
+            for anchor_key, anchor_data in sheet_data["anchors"].items():
+                analysis = anchor_data["analysis"]
+                
+                # Check summary
+                if term_lower in analysis.get("summary", "").lower():
+                    sheet_results["matching_chunks"].append(anchor_data)
+                    continue
+                
+                # Check patterns
+                if any(term_lower in pattern.lower() for pattern in analysis.get("patterns", [])):
+                    sheet_results["matching_chunks"].append(anchor_data)
+                    continue
+                
+                # Check key values
+                if any(term_lower in value.lower() for value in analysis.get("key_values", [])):
+                    sheet_results["matching_chunks"].append(anchor_data)
+                    continue
         
-        if sheet_results:
-            results[sheet_name] = {
-                "sheet_info": {
-                    "name": sheet_data["sheet_name"],
-                    "rows": sheet_data["num_rows"],
-                    "cols": sheet_data["num_cols"],
-                    "headers": sheet_data["headers"]
-                },
-                "matching_values": sheet_results
-            }
+        # Remove duplicates
+        seen_ranges = set()
+        unique_chunks = []
+        for chunk in sheet_results["matching_chunks"]:
+            if chunk["range"] not in seen_ranges:
+                seen_ranges.add(chunk["range"])
+                unique_chunks.append(chunk)
+        
+        sheet_results["matching_chunks"] = unique_chunks
+        
+        if sheet_results["matching_chunks"]:
+            results[sheet_name] = sheet_results
+    
     return results
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "/Users/vansh/Documents/Documents/PROJECTS/skopeo-context/context-engine/test.xlsx"  # Replace with your Excel file
+    file_path = "/Users/vansh/Documents/Documents/PROJECTS/skopeo-context/context-engine/test.xlsx"
     
     try:
-        print("Building inverted index...")
-        index = build_inverted_index(file_path)
+        print("Building anchored inverted index...")
+        print("This will use Ollama to analyze each 10-row chunk...")
         
-        print(f"Index built successfully!")
+        index = build_anchored_index(file_path)
+        
+        print(f"Anchored index built successfully!")
         print(f"Found {len(index['sheets'])} sheet(s)")
         
         for sheet_name, sheet_data in index["sheets"].items():
             print(f"Sheet '{sheet_name}': {sheet_data['num_rows']} rows, {sheet_data['num_cols']} cols")
-            print(f"Unique values indexed: {len(sheet_data['values'])}")
-        with open("inverted_index_output.json", "w") as f:
+            print(f"Total chunks: {sheet_data['metadata']['total_chunks']}")
+            print(f"Ollama calls made: {sheet_data['metadata']['ollama_calls']}")
+            print(f"Processing time: {sheet_data['metadata']['processing_time']:.2f} seconds")
+        
+        # Save to file
+        with open("anchored_index_output.json", "w") as f:
             json.dump(index, f, indent=2, default=str)
-        print("Index saved to 'inverted_index_output.json'")
-        print("\nExample query for 'salary':")
-        results = query_index(index, ["D"])
-        print(json.dumps(results, indent=2, default=str))
+        
+        print("Index saved to 'anchored_index_output.json'")
+        
+        # Test query
+        print("\nTesting query...")
+        query_results = query_anchored_index(index, ["salary", "list"])
+        print(f"Query results: {json.dumps(query_results, indent=2, default=str)}")
         
     except FileNotFoundError:
         print(f"File '{file_path}' not found. Please provide a valid Excel file.")
