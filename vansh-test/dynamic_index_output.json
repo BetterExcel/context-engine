@@ -1,0 +1,404 @@
+{
+  "sheets": {
+    "Salary List": {
+      "sheet_name": "Salary List",
+      "num_rows": 115,
+      "num_cols": 25,
+      "headers": [
+        "Company / Role",
+        "Bye World",
+        "Benefits",
+        "Year",
+        "Position",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y"
+      ],
+      "chunk_size": 10,
+      "anchors": {
+        "chunk_0": {
+          "range": "A1:A10",
+          "start_row": 1,
+          "end_row": 10,
+          "analysis": {
+            "summary": "Salary data for various companies and roles",
+            "data_types": [
+              "Company / Role",
+              "Benefits"
+            ],
+            "patterns": [
+              "25-27/hr (3rd coop)",
+              "40/hr, 48/hr (5th coop)"
+            ],
+            "outliers": [
+              "106k USD annual prorated (~$51/hr USD)",
+              "less than 44/hr"
+            ],
+            "key_values": [
+              "2023",
+              "2024",
+              "Algorithms Developer",
+              "Web Developer (Junior)"
+            ],
+            "context": "Salary data for various companies and roles, including benefits",
+            "year": [
+              2023,
+              2024
+            ],
+            "year_confidence": 1.0,
+            "year_sources": [
+              "Key Values"
+            ]
+          },
+          "chunk_number": 0
+        },
+        "chunk_1": {
+          "range": "A11:A20",
+          "start_row": 11,
+          "end_row": 20,
+          "analysis": {
+            "summary": "Company pay and benefits data",
+            "data_types": [
+              "company1",
+              "company2"
+            ],
+            "patterns": [],
+            "outliers": [
+              "null, (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design)"
+            ],
+            "key_values": [
+              "9138 USD/month",
+              "42/hr USD",
+              "3335/mo pretax relocation (3A)",
+              "2024",
+              "Hardware"
+            ],
+            "context": "Data on company pay and benefits",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 1
+        },
+        "chunk_2": {
+          "range": "A21:A30",
+          "start_row": 21,
+          "end_row": 30,
+          "analysis": {
+            "summary": "Company compensation data",
+            "data_types": [
+              "company name",
+              "hourly pay",
+              "other"
+            ],
+            "patterns": [],
+            "outliers": [],
+            "key_values": [
+              "33/hr USD",
+              "1200/mo USD housing stipend (2nd coop) + flights",
+              "5000 USD/mo",
+              "34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop)",
+              "28/hr (5th year (4B?))",
+              "33/hr (4th coop)",
+              "34/hr (5th coop)"
+            ],
+            "context": "",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 2
+        },
+        "chunk_3": {
+          "range": "A31:A40",
+          "start_row": 31,
+          "end_row": 40,
+          "analysis": {
+            "summary": "Company names and their corresponding hourly wage information",
+            "data_types": [
+              "string",
+              "string"
+            ],
+            "patterns": [],
+            "outliers": [
+              "BDO",
+              "Bentley Systems"
+            ],
+            "key_values": [
+              "3000 stipend",
+              "8500/mo",
+              "10,000/mo"
+            ],
+            "context": "This data appears to contain company names and their corresponding hourly wage information.",
+            "year": "the extracted information based on the instruction",
+            "year_confidence": 1.0,
+            "year_sources": [
+              "Key Values: ['3000 stipend', '8500/mo', '10,000/mo']"
+            ]
+          },
+          "chunk_number": 3
+        },
+        "chunk_4": {
+          "range": "A41:A50",
+          "start_row": 41,
+          "end_row": 50,
+          "analysis": {
+            "summary": "Pay rate and stipend data for various companies",
+            "data_types": [
+              "string",
+              "string",
+              "integer"
+            ],
+            "patterns": [],
+            "outliers": [],
+            "key_values": [
+              "Bloomberg: 48/hr + 5100 stipend (5th coop)",
+              "Bluescape: 34/hr (6th coop)"
+            ],
+            "context": "",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 4
+        },
+        "chunk_5": {
+          "range": "A51:A60",
+          "start_row": 51,
+          "end_row": 60,
+          "analysis": {
+            "summary": "Company salary data",
+            "data_types": [
+              "company1",
+              "company2",
+              "company3"
+            ],
+            "patterns": [
+              "mobile dev",
+              "coop average",
+              "full stack dev"
+            ],
+            "outliers": [
+              "6400 USD/mo (+1000/mo relocation in-person)",
+              "$1000 signing bonus"
+            ],
+            "key_values": [
+              "SWE"
+            ],
+            "context": "",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 5
+        },
+        "chunk_6": {
+          "range": "A61:A70",
+          "start_row": 61,
+          "end_row": 70,
+          "analysis": {
+            "summary": "Company names and hourly rates",
+            "data_types": [
+              "string",
+              "string"
+            ],
+            "patterns": [],
+            "outliers": [
+              "7000 USD/month remote (4th coop)"
+            ],
+            "key_values": [
+              "22/hr",
+              "35/hr"
+            ],
+            "context": "List of companies with hourly rates",
+            "year": "22",
+            "year_confidence": 1.0,
+            "year_sources": [
+              "Key Values"
+            ]
+          },
+          "chunk_number": 6
+        },
+        "chunk_7": {
+          "range": "A71:A80",
+          "start_row": 71,
+          "end_row": 80,
+          "analysis": {
+            "summary": "Company data chunk A71:A80",
+            "data_types": [
+              "company",
+              "hourly_wage",
+              "signing_bonus",
+              "year"
+            ],
+            "patterns": [],
+            "outliers": [
+              "Cockroach Labs: 8000/month + 1.5k signing bonus"
+            ],
+            "key_values": [
+              "2000 CAD signing bonus (1st coop)",
+              "10k signing bonus"
+            ],
+            "context": "Salary data from various companies",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 7
+        },
+        "chunk_8": {
+          "range": "A81:A90",
+          "start_row": 81,
+          "end_row": 90,
+          "analysis": {
+            "summary": "Data chunk analysis",
+            "data_types": [
+              "mixed"
+            ],
+            "patterns": [],
+            "outliers": [],
+            "key_values": [],
+            "context": "Analysis completed with fallback",
+            "year": "2023",
+            "year_confidence": 1.0,
+            "year_sources": [
+              "Patterns: []"
+            ]
+          },
+          "chunk_number": 8
+        },
+        "chunk_9": {
+          "range": "A91:A100",
+          "start_row": 91,
+          "end_row": 100,
+          "analysis": {
+            "summary": "Employee job descriptions and hourly rates",
+            "data_types": [
+              "string",
+              "string"
+            ],
+            "patterns": [],
+            "outliers": [
+              "4% of yearly salary (70k) as vacation pay"
+            ],
+            "key_values": [
+              "20/hr (1st coop), 30/hr",
+              "7000/month",
+              "$25/day lunch"
+            ],
+            "context": "Job descriptions and hourly rates for various employees",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 9
+        },
+        "chunk_10": {
+          "range": "A101:A110",
+          "start_row": 101,
+          "end_row": 110,
+          "analysis": {
+            "summary": "Company data with hourly rates and benefits",
+            "data_types": [
+              "company_name",
+              "hourly_rate",
+              "benefit"
+            ],
+            "patterns": [],
+            "outliers": [
+              "1400 USD/week",
+              "co-op average + 20%"
+            ],
+            "key_values": [
+              "75/hr USD",
+              "32-38/hr (increases with work term)"
+            ],
+            "context": "",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'int' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 10
+        },
+        "chunk_11": {
+          "range": "A111:A115",
+          "start_row": 111,
+          "end_row": 115,
+          "analysis": {
+            "summary": "List of companies with average hourly wage and coop average information",
+            "data_types": [
+              "text",
+              "numeric",
+              "numeric"
+            ],
+            "patterns": [
+              "*coop average",
+              "5-10% above the *coop average",
+              "Coop average",
+              "20/hr (2nd *coop)"
+            ],
+            "outliers": [],
+            "key_values": [
+              "1.15*",
+              "25-28/",
+              "5-10%",
+              "Coop",
+              "20/"
+            ],
+            "context": "The data represents companies with their respective hourly wage averages and coop information.",
+            "year": "Extraction failed",
+            "year_confidence": 0.0,
+            "year_sources": [
+              "Error: 'float' object is not subscriptable"
+            ]
+          },
+          "chunk_number": 11
+        }
+      },
+      "metadata": {
+        "total_chunks": 12,
+        "processing_time": 75.68199610710144,
+        "ollama_calls": 12
+      }
+    }
+  },
+  "field_metadata": {
+    "year": {
+      "field_type": "number",
+      "extraction_instruction": "extract year mentioned in chunk data and parse it as a number",
+      "added_at": 1758661235.300724,
+      "confidence": 0.95
+    }
+  }
+}
