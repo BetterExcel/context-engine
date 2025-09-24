@@ -1,0 +1,13 @@
+# Configuration file for API keys and settings
+# Copy this file to config.py and add your actual API keys
+
+import os
+
+# Anthropic Claude API Configuration
+# Get your API key from: https://console.anthropic.com/
+ANTHROPIC_API_KEY = "your_anthropic_api_key_here"
+ANTHROPIC_BASE_URL = "https://api.anthropic.com"
+
+# Alternative: Load from environment variables (recommended for production)
+# ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+# ANTHROPIC_BASE_URL = os.getenv('ANTHROPIC_BASE_URL', 'https://api.anthropic.com')

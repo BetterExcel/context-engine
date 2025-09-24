@@ -137,7 +137,10 @@ def interactive_query_mode():
     print(f"Available fields: {available_fields}")
     print("="*60)
     
-    while True:
+    query_count = 0
+    max_queries = 20  # Prevent infinite loops
+    
+    while query_count < max_queries:
         try:
             print("\nQuery options:")
             print("1. List all available fields")
@@ -146,6 +149,7 @@ def interactive_query_mode():
             print("4. Exit")
             
             choice = input("Enter choice (1-4): ").strip()
+            query_count += 1
             
             if choice == "1":
                 fields = list_available_fields(index)
@@ -181,16 +185,24 @@ def interactive_query_mode():
                     print()
             
             elif choice == "4":
+                print("Exiting...")
                 break
             
             else:
                 print("Invalid choice.")
+                query_count -= 1  # Don't count invalid choices
         
         except KeyboardInterrupt:
             print("\nExiting...")
             break
+        except EOFError:
+            print("\nInput ended. Exiting...")
+            break
         except Exception as e:
             print(f"Error: {e}")
+    
+    if query_count >= max_queries:
+        print(f"\nReached maximum queries ({max_queries}). Exiting...")
 
 def demonstrate_field_queries():
     """Demonstrate how to use the field-based queries."""
@@ -232,15 +244,27 @@ if __name__ == "__main__":
     print("Field-Based Query Processor")
     print("=" * 30)
     
-    print("Choose mode:")
-    print("1. Demonstrate field queries")
-    print("2. Interactive query mode")
-    
-    choice = input("Enter choice (1-2): ").strip()
-    
-    if choice == "1":
+    try:
+        print("Choose mode:")
+        print("1. Demonstrate field queries")
+        print("2. Interactive query mode")
+        
+        choice = input("Enter choice (1-2): ").strip()
+        
+        if choice == "1":
+            demonstrate_field_queries()
+        elif choice == "2":
+            interactive_query_mode()
+        else:
+            print("Invalid choice. Running demonstration mode...")
+            demonstrate_field_queries()
+            
+    except EOFError:
+        print("\nNo input available. Running demonstration mode...")
         demonstrate_field_queries()
-    elif choice == "2":
-        interactive_query_mode()
-    else:
-        print("Invalid choice. Exiting.")
+    
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    
+    except Exception as e:
+        print(f"Error: {e}")

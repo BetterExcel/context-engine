@@ -2,6 +2,27 @@
 
 This system allows you to dynamically add fields to your anchored index based on user queries, making future similar queries much faster and more efficient.
 
+## 🚀 Quick Setup
+
+### 1. Install Dependencies
+```bash
+pip install requests openpyxl
+```
+
+### 2. Configure API Keys
+```bash
+# Copy the example config file
+cp config.py.example config.py
+
+# Edit config.py and add your Anthropic API key
+# Get your API key from: https://console.anthropic.com/
+```
+
+### 3. Run the System
+```bash
+python3 dynamic_index_builder.py
+```
+
 ## 🎯 Concept
 
 Instead of processing queries after indexing, this system:
@@ -227,3 +248,23 @@ Each extracted field includes confidence scores to indicate reliability.
 ## 📄 License
 
 This project is part of the context-engine repository.
+
+
+
+─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Excel File    │───▶│ inverted_index.py │───▶│ anchored_index  │
+│  (test.xlsx)    │    │  (Builds chunks)  │    │  _output.json   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                         │
+                                                         ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ User Query      │───▶│dynamic_index_    │───▶│ dynamic_index   │
+│ "Companies in   │    │ builder.py       │    │ _output.json    │
+│  US?"           │    │ (Adds fields)    │    │ (Enhanced)      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                         │
+                                                         ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ Query Results   │◀───│field_query_      │◀───│ Enhanced Index  │
+│ (Fast!)         │    │ processor.py     │    │ with fields     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘

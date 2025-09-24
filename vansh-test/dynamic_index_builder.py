@@ -1,5 +1,4 @@
 import json
-import openpyxl
 import requests
 import time
 from typing import Dict, List, Any, Union
@@ -7,32 +6,133 @@ from datetime import datetime
 from collections import defaultdict
 import re
 
-# Ollama configuration
-OLLAMA_URL = "http://localhost:11434"
-OLLAMA_MODEL = "llama3.1:8b"
+# Try to import openpyxl
+try:
+    from openpyxl import load_workbook
+    OPENPYXL_AVAILABLE = True
+except ImportError:
+    OPENPYXL_AVAILABLE = False
+    print("Warning: openpyxl not available. Excel reading disabled.")
 
-def call_ollama(prompt: str, max_retries: int = 3) -> str:
-    """Call Ollama API with retry logic."""
+# Import API configuration
+try:
+    from config import ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL
+except ImportError:
+    print("Warning: config.py not found. Please create it with your API keys.")
+    ANTHROPIC_API_KEY = None
+    ANTHROPIC_BASE_URL = "https://api.anthropic.com"
+
+# Ollama configuration (commented out - keeping for future use)
+# OLLAMA_URL = "http://localhost:11434"
+# OLLAMA_MODEL = "llama3.1:8b"
+
+def read_excel_range(excel_file_path: str, start_row: int, end_row: int, sheet_name: str = None) -> str:
+    """
+    Read a specific range of rows from an Excel file and return as formatted text.
+    
+    Args:
+        excel_file_path: Path to the Excel file
+        start_row: Starting row (1-based)
+        end_row: Ending row (1-based)
+        sheet_name: Name of the sheet (if None, uses first sheet)
+        
+    Returns:
+        Formatted string of the cell data
+    """
+    if not OPENPYXL_AVAILABLE:
+        return "Error: openpyxl not available for Excel reading"
+    
+    try:
+        workbook = load_workbook(excel_file_path, read_only=True)
+        
+        if sheet_name:
+            sheet = workbook[sheet_name]
+        else:
+            sheet = workbook.active
+            
+        data_lines = []
+        
+        for row_num in range(start_row, end_row + 1):
+            row_data = []
+            for col_num in range(1, sheet.max_column + 1):
+                cell_value = sheet.cell(row=row_num, column=col_num).value
+                if cell_value is not None:
+                    row_data.append(str(cell_value))
+                else:
+                    row_data.append("")
+            data_lines.append(f"Row {row_num}: {' | '.join(row_data)}")
+        
+        workbook.close()
+        return "\n".join(data_lines)
+        
+    except Exception as e:
+        return f"Error reading Excel range: {str(e)}"
+
+def call_anthropic(prompt: str, max_retries: int = 3) -> str:
+    """Call Anthropic Claude API with retry logic."""
+    if not ANTHROPIC_API_KEY:
+        raise Exception("ANTHROPIC_API_KEY not found. Please check your config.py file.")
+    
+    headers = {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01"
+    }
+    
+    payload = {
+        "model": "claude-3-5-sonnet-20241022",
+        "max_tokens": 4000,
+        "temperature": 0.1,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+    
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                f"{OLLAMA_URL}/api/generate",
-                json={
-                    "model": OLLAMA_MODEL,
-                    "prompt": prompt,
-                    "stream": False
-                },
-                timeout=30
+                f"{ANTHROPIC_BASE_URL}/v1/messages",
+                headers=headers,
+                json=payload,
+                timeout=60
             )
             response.raise_for_status()
             result = response.json()
-            return result.get("response", "").strip()
+            return result["content"][0]["text"]
+            
         except Exception as e:
-            print(f"Ollama attempt {attempt + 1} failed: {e}")
+            print(f"Anthropic attempt {attempt + 1} failed: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # Exponential backoff
             else:
-                raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
+                raise Exception(f"Anthropic failed after {max_retries} attempts: {e}")
+
+# Ollama function (commented out - keeping for future use)
+# def call_ollama(prompt: str, max_retries: int = 3) -> str:
+#     """Call Ollama API with retry logic."""
+#     for attempt in range(max_retries):
+#         try:
+#             response = requests.post(
+#                 f"{OLLAMA_URL}/api/generate",
+#                 json={
+#                     "model": OLLAMA_MODEL,
+#                     "prompt": prompt,
+#                     "stream": False
+#                 },
+#                 timeout=30
+#             )
+#             response.raise_for_status()
+#             result = response.json()
+#             return result.get("response", "").strip()
+#         except Exception as e:
+#             print(f"Ollama attempt {attempt + 1} failed: {e}")
+#             if attempt < max_retries - 1:
+#                 time.sleep(2 ** attempt)  # Exponential backoff
+#             else:
+#                 raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
 
 def parse_intent_for_field(query: str) -> Dict:
     """
@@ -49,27 +149,34 @@ def parse_intent_for_field(query: str) -> Dict:
     
     Return ONLY a valid JSON response with this structure:
     {{
-        "field_name": "name_of_field_to_add",
+        "field_name": "query_specific_field_name",
         "field_type": "list|string|number|boolean",
-        "extraction_instruction": "how to extract this field from chunk data",
+        "extraction_instruction": "specific instruction for extracting exactly what the query asks for",
         "confidence": 0.0-1.0
     }}
     
+    STRATEGY: Create field names that directly answer the user's question and store only the relevant data.
+    
     Examples:
-    - "What companies are in the US?" → field_name: "location", field_type: "list", extraction_instruction: "extract countries, states, cities mentioned"
-    - "Which company has highest salary?" → field_name: "salary_ranking", field_type: "string", extraction_instruction: "extract salary information and rank companies"
-    - "What benefits do companies offer?" → field_name: "benefits", field_type: "list", extraction_instruction: "extract benefit information like health, dental, 401k"
-    - "How many employees work there?" → field_name: "company_size", field_type: "string", extraction_instruction: "extract company size information"
+    - "What companies are in the US?" → field_name: "us_companies", field_type: "list", extraction_instruction: "extract only company names that are located in the US"
+    - "Which company has highest salary?" → field_name: "highest_salary_company", field_type: "string", extraction_instruction: "identify the single company with the highest salary and return just the company name"
+    - "What benefits do companies offer?" → field_name: "company_benefits", field_type: "list", extraction_instruction: "extract all benefit types mentioned (health, dental, 401k, etc.)"
+    - "How many employees work there?" → field_name: "employee_count", field_type: "number", extraction_instruction: "extract numerical employee count information"
+    - "Which companies pay over $50/hr?" → field_name: "high_paying_companies", field_type: "list", extraction_instruction: "extract company names that pay over $50 per hour"
+    - "What roles are available at Google?" → field_name: "google_roles", field_type: "list", extraction_instruction: "extract only job roles/positions available at Google"
+    - "Which companies offer remote work?" → field_name: "remote_work_companies", field_type: "list", extraction_instruction: "extract company names that offer remote work options"
     
     CRITICAL RULES:
-    - Field name should be descriptive and reusable
-    - Extraction instruction should be clear for LLM to follow
+    - Field name should be query-specific and answer the exact question asked
+    - Store only the data needed to answer the query (not extra information)
+    - Extraction instruction should be precise about what to extract
+    - Use snake_case for field names
     - Confidence should be 0.0-1.0
     - Respond with ONLY the JSON object
     """
     
     try:
-        response = call_ollama(prompt)
+        response = call_anthropic(prompt)
         print(f"Intent parsing response: {response[:200]}...")
         
         # Clean up JSON response
@@ -79,11 +186,12 @@ def parse_intent_for_field(query: str) -> Dict:
         try:
             intent = json.loads(cleaned_response)
         except json.JSONDecodeError:
-            # Fallback intent
+            # Fallback intent - create query-specific field name
+            query_lower = query.lower().replace(" ", "_").replace("?", "").replace("what", "").replace("which", "").replace("how", "").replace("where", "").strip()
             intent = {
-                "field_name": "general_info",
+                "field_name": f"query_{query_lower[:20]}",  # Truncate to avoid too long names
                 "field_type": "list",
-                "extraction_instruction": "extract general information relevant to the query",
+                "extraction_instruction": f"extract information relevant to: {query}",
                 "confidence": 0.5
             }
         
@@ -95,24 +203,27 @@ def parse_intent_for_field(query: str) -> Dict:
         
     except Exception as e:
         print(f"Intent parsing failed: {e}")
+        # Create query-specific fallback field name
+        query_lower = query.lower().replace(" ", "_").replace("?", "").replace("what", "").replace("which", "").replace("how", "").replace("where", "").strip()
         return {
             "query": query,
             "field_info": {
-                "field_name": "general_info",
+                "field_name": f"query_{query_lower[:20]}",
                 "field_type": "list", 
-                "extraction_instruction": "extract general information",
+                "extraction_instruction": f"extract information relevant to: {query}",
                 "confidence": 0.3
             },
             "parsed_at": time.time()
         }
 
-def extract_field_data_for_chunks(chunks: Dict, field_info: Dict) -> Dict:
+def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_path: str) -> Dict:
     """
-    Extract the new field data for all chunks using LLM.
+    Extract the new field data for all chunks using LLM by re-reading Excel data.
     
     Args:
         chunks: Dictionary of chunk data
         field_info: Field information from intent parser
+        excel_file_path: Path to the Excel file to re-read
         
     Returns:
         Dictionary mapping chunk_id to extracted field data
@@ -127,54 +238,88 @@ def extract_field_data_for_chunks(chunks: Dict, field_info: Dict) -> Dict:
     
     for chunk_id, chunk_data in chunks.items():
         try:
-            # Prepare chunk data for LLM
-            chunk_summary = chunk_data.get("analysis", {}).get("summary", "")
-            chunk_key_values = chunk_data.get("analysis", {}).get("key_values", [])
-            chunk_patterns = chunk_data.get("analysis", {}).get("patterns", [])
+            # Get the range to re-read from Excel
+            chunk_range = chunk_data.get("range", "")
+            start_row = chunk_data.get("start_row", 1)
+            end_row = chunk_data.get("end_row", 1)
+            
+            # Re-read the actual Excel data for this range
+            raw_cell_data = read_excel_range(excel_file_path, start_row, end_row)
+            
+            # print(f"  Debug - Reading range {chunk_range} (rows {start_row}-{end_row})")
+            # print(f"  Debug - Raw data preview: {raw_cell_data[:200]}...")
             
             prompt = f"""
-            Extraction Instruction: {extraction_instruction}
+            You are a data analyst helping to extract specific information from spreadsheet data.
             
-            Chunk Data:
-            - Summary: {chunk_summary}
-            - Key Values: {chunk_key_values}
-            - Patterns: {chunk_patterns}
+            Task: {extraction_instruction}
             
-            Extract the requested information and return ONLY a valid JSON response:
+            Here is the spreadsheet data from range {chunk_range}:
+            {raw_cell_data}
+            
+            Please analyze this data and extract the requested information. Return ONLY a valid JSON response:
             {{
-                "extracted_data": "the extracted information based on the instruction",
+                "extracted_data": "the specific information requested",
                 "confidence": 0.0-1.0,
                 "source_indicators": ["what parts of the data led to this extraction"]
             }}
             
-            CRITICAL RULES:
+            IMPORTANT:
+            - This is data analysis of spreadsheet content, not web scraping
+            - Only extract information that is clearly present in the data above
             - Be precise and factual
-            - Only extract information that is clearly present
             - Confidence should reflect how certain you are
-            - Respond with ONLY the JSON object
+            - Respond with ONLY the JSON object, no other text
             """
             
-            response = call_ollama(prompt)
+            response = call_anthropic(prompt)
+            # print(f"  Debug - API response: {response[:300]}...")
             
             # Clean up and parse response
             cleaned_response = response.replace('[None]', '[]').replace('None', 'null')
             
-            try:
-                extraction_result = json.loads(cleaned_response)
+            # Try multiple parsing attempts
+            extraction_result = None
+            for attempt in range(3):
+                try:
+                    # print(f"  Debug - Parsing attempt {attempt + 1}: {cleaned_response[:200]}...")
+                    extraction_result = json.loads(cleaned_response)
+                    # print(f"  Debug - Successfully parsed: {extraction_result}")
+                    break
+                except json.JSONDecodeError as e:
+                    # print(f"  Debug - JSON parse error: {e}")
+                    if attempt == 0:
+                        # First attempt: try to fix common issues
+                        cleaned_response = cleaned_response.replace("'", '"')  # Replace single quotes with double
+                    elif attempt == 1:
+                        # Second attempt: try to fix unescaped quotes
+                        import re
+                        cleaned_response = re.sub(r'(?<!\\)"(?=[^,}\]])', '\\"', cleaned_response)
+                    else:
+                        # Final attempt: create fallback
+                        extraction_result = {
+                            "extracted_data": "JSON parsing failed",
+                            "confidence": 0.1,
+                            "source_indicators": ["Parsing error"]
+                        }
+                        break
+            
+            if extraction_result:
                 extracted_data[chunk_id] = {
-                    "value": extraction_result.get("extracted_data", ""),
+                    "value": extraction_result.get("extracted_data", "No data"),
                     "confidence": extraction_result.get("confidence", 0.5),
                     "source_indicators": extraction_result.get("source_indicators", [])
                 }
-            except json.JSONDecodeError:
-                # Fallback extraction
+            else:
+                # Ultimate fallback
                 extracted_data[chunk_id] = {
                     "value": "Unable to extract",
                     "confidence": 0.1,
-                    "source_indicators": ["JSON parsing failed"]
+                    "source_indicators": ["All parsing attempts failed"]
                 }
             
-            print(f"Extracted for {chunk_id}: {extracted_data[chunk_id]['value'][:50]}...")
+            value_preview = str(extracted_data[chunk_id]['value'])
+            print(f"Extracted for {chunk_id}: {value_preview[:50]}...")
             
         except Exception as e:
             print(f"Failed to extract data for {chunk_id}: {e}")
@@ -255,13 +400,14 @@ def save_updated_index(updated_index: Dict, output_file: str = "dynamic_index_ou
     except Exception as e:
         print(f"Error saving index: {e}")
 
-def process_query_for_field_addition(query: str, existing_index: Dict = None) -> Dict:
+def process_query_for_field_addition(query: str, existing_index: Dict = None, excel_file_path: str = "../test.xlsx") -> Dict:
     """
     Main function to process a user query and add the corresponding field to the index.
     
     Args:
         query: User's natural language query
         existing_index: Existing index (if None, will load from file)
+        excel_file_path: Path to the Excel file for re-reading data
         
     Returns:
         Updated index with new field
@@ -299,7 +445,7 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None) ->
         print("No chunks found in existing index.")
         return existing_index
     
-    extracted_data = extract_field_data_for_chunks(all_chunks, field_info)
+    extracted_data = extract_field_data_for_chunks(all_chunks, field_info, excel_file_path)
     
     # Step 3: Update index with new field
     print("\nStep 3: Updating index...")
@@ -330,26 +476,38 @@ def interactive_field_addition_mode():
     # Load existing index
     existing_index = load_existing_index()
     
-    while True:
+    query_count = 0
+    max_queries = 10  # Prevent infinite loops
+    
+    while query_count < max_queries:
         try:
             query = input("\nEnter your query: ").strip()
+            query_count += 1
             
             if query.lower() in ['quit', 'exit', 'q']:
+                print("Exiting interactive mode...")
                 break
             
             if not query:
                 print("Please enter a valid query.")
+                query_count -= 1  # Don't count empty queries
                 continue
             
             # Process query and add field
-            updated_index = process_query_for_field_addition(query, existing_index)
+            updated_index = process_query_for_field_addition(query, existing_index, "../test.xlsx")
             existing_index = updated_index  # Update for next iteration
             
         except KeyboardInterrupt:
             print("\nExiting...")
             break
+        except EOFError:
+            print("\nInput ended. Exiting...")
+            break
         except Exception as e:
             print(f"Error: {e}")
+    
+    if query_count >= max_queries:
+        print(f"\nReached maximum queries ({max_queries}). Exiting...")
 
 if __name__ == "__main__":
     print("Dynamic Index Builder - Field Addition System")
@@ -362,23 +520,38 @@ if __name__ == "__main__":
         "What benefits do companies offer?"
     ]
     
-    print("Choose mode:")
-    print("1. Test with predefined queries")
-    print("2. Interactive mode")
-    
-    choice = input("Enter choice (1-2): ").strip()
-    
-    if choice == "1":
-        # Test with predefined queries
+    try:
+        print("Choose mode:")
+        print("1. Test with predefined queries")
+        print("2. Interactive mode")
+        
+        choice = input("Enter choice (1-2): ").strip()
+        
+        if choice == "1":
+            # Test with predefined queries
+            existing_index = load_existing_index()
+            
+            for query in test_queries:
+                print(f"\n{'='*60}")
+                existing_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
+        
+        elif choice == "2":
+            # Interactive mode
+            interactive_field_addition_mode()
+        
+        else:
+            print("Invalid choice. Exiting.")
+            
+    except EOFError:
+        print("\nNo input available. Running predefined queries...")
         existing_index = load_existing_index()
         
         for query in test_queries:
             print(f"\n{'='*60}")
-            existing_index = process_query_for_field_addition(query, existing_index)
+            existing_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
     
-    elif choice == "2":
-        # Interactive mode
-        interactive_field_addition_mode()
+    except KeyboardInterrupt:
+        print("\nExiting...")
     
-    else:
-        print("Invalid choice. Exiting.")
+    except Exception as e:
+        print(f"Error: {e}")

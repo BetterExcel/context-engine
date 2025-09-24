@@ -58,13 +58,16 @@
               "Web Developer (Junior)"
             ],
             "context": "Salary data for various companies and roles, including benefits",
-            "year": [
-              2023,
-              2024
+            "low_paying_companies": [
+              "Abbott ADD",
+              "Accedo",
+              "AGF Investments"
             ],
-            "year_confidence": 1.0,
-            "year_sources": [
-              "Key Values"
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Abbott ADD: 22.05/hr (2nd coop)",
+              "Accedo: 25-27/hr (3rd coop)",
+              "AGF Investments: 25/hr (2nd coop)"
             ]
           },
           "chunk_number": 0
@@ -91,10 +94,11 @@
               "Hardware"
             ],
             "context": "Data on company pay and benefits",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": "AMD",
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Row 15: AMD | 27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop)",
+              "Shows multiple hourly rates all below $30/hr: $27/hr, $21.88/hr, $29.33/hr"
             ]
           },
           "chunk_number": 1
@@ -122,10 +126,12 @@
               "34/hr (5th coop)"
             ],
             "context": "",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "ATS Corporation"
+            ],
+            "low_paying_companies_confidence": 1.0,
+            "low_paying_companies_sources": [
+              "Row 27: ATS Corporation | 28/hr (5th year (4B?))"
             ]
           },
           "chunk_number": 2
@@ -151,10 +157,18 @@
               "10,000/mo"
             ],
             "context": "This data appears to contain company names and their corresponding hourly wage information.",
-            "year": "the extracted information based on the instruction",
-            "year_confidence": 1.0,
-            "year_sources": [
-              "Key Values: ['3000 stipend', '8500/mo', '10,000/mo']"
+            "low_paying_companies": [
+              "Bank of America",
+              "Bank of America (Merrill Lynch)",
+              "Bitbuy",
+              "Blackberry"
+            ],
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Bank of America: 22/hr",
+              "Bank of America (Merrill Lynch): 20/hr",
+              "Bitbuy: 20/hr",
+              "Blackberry: ~21/hr"
             ]
           },
           "chunk_number": 3
@@ -177,10 +191,18 @@
               "Bluescape: 34/hr (6th coop)"
             ],
             "context": "",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "BMO Business Analyst (2A)",
+              "BMO Product Analyst",
+              "BMO Software Developer",
+              "Bonfire Interactive"
+            ],
+            "low_paying_companies_confidence": 1.0,
+            "low_paying_companies_sources": [
+              "BMO Business Analyst (2A) | 24/hr",
+              "BMO Product Analyst | 28/hr (2nd coop)",
+              "BMO Software Developer | 29.50/hr (1st coop)",
+              "Bonfire Interactive | 24/hr (2nd coop)"
             ]
           },
           "chunk_number": 4
@@ -209,10 +231,16 @@
               "SWE"
             ],
             "context": "",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "Brookfield Renewables",
+              "CAAT Pension Plan",
+              "Canadian Food Inspection Agency"
+            ],
+            "low_paying_companies_confidence": 1.0,
+            "low_paying_companies_sources": [
+              "Brookfield Renewables | 26/hr",
+              "CAAT Pension Plan | 18/hr (2nd coop)",
+              "Canadian Food Inspection Agency (Full Stack Dev) | 24.77/hr (5th coop)"
             ]
           },
           "chunk_number": 5
@@ -236,10 +264,18 @@
               "35/hr"
             ],
             "context": "List of companies with hourly rates",
-            "year": "22",
-            "year_confidence": 1.0,
-            "year_sources": [
-              "Key Values"
+            "low_paying_companies": [
+              "Carfax (Dev)",
+              "CEGN",
+              "C.E. McMahon Professional Corporation",
+              "Ceridian"
+            ],
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Carfax (Dev) shows 26/hr",
+              "CEGN shows Low-Mid 20s",
+              "C.E. McMahon Professional Corporation shows 19/hr",
+              "Ceridian shows 22/hr for Marketing Coordinator role"
             ]
           },
           "chunk_number": 6
@@ -265,10 +301,16 @@
               "10k signing bonus"
             ],
             "context": "Salary data from various companies",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "CGI",
+              "Christie Digital Systems",
+              "CodeWithChris"
+            ],
+            "low_paying_companies_confidence": 1.0,
+            "low_paying_companies_sources": [
+              "CGI shows 18/hr",
+              "Christie Digital Systems shows 18/hr for 1st coop",
+              "CodeWithChris shows 20/hr for 1st coop"
             ]
           },
           "chunk_number": 7
@@ -286,10 +328,15 @@
             "outliers": [],
             "key_values": [],
             "context": "Analysis completed with fallback",
-            "year": "2023",
-            "year_confidence": 1.0,
-            "year_sources": [
-              "Patterns: []"
+            "low_paying_companies": [
+              "Coinsquare (28/hr for 1st coop)",
+              "The Co-operators (21/hr for 1st coop)"
+            ],
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Row 85: Coinsquare explicitly states '28/hr (1st coop)'",
+              "Row 90: The Co-operators explicitly states '~21/hr (1st coop)'",
+              "Both companies have clear hourly rates below $30"
             ]
           },
           "chunk_number": 8
@@ -314,10 +361,16 @@
               "$25/day lunch"
             ],
             "context": "Job descriptions and hourly rates for various employees",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "Core Avionics (20/hr)",
+              "Crawford and Co (20/hr)",
+              "Creospark (18/hr)"
+            ],
+            "low_paying_companies_confidence": 1.0,
+            "low_paying_companies_sources": [
+              "Core Avionics | 20/hr (1st coop)",
+              "Crawford and Co | 20/hr",
+              "Creospark | 18/hr"
             ]
           },
           "chunk_number": 9
@@ -343,10 +396,13 @@
               "32-38/hr (increases with work term)"
             ],
             "context": "",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'int' object is not subscriptable"
+            "low_paying_companies": [
+              "D2L"
+            ],
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Row 104: D2L | 28/hr",
+              "28/hr is clearly below $30/hr threshold"
             ]
           },
           "chunk_number": 10
@@ -377,10 +433,14 @@
               "20/"
             ],
             "context": "The data represents companies with their respective hourly wage averages and coop information.",
-            "year": "Extraction failed",
-            "year_confidence": 0.0,
-            "year_sources": [
-              "Error: 'float' object is not subscriptable"
+            "low_paying_companies": [
+              "Deloitte",
+              "Digital Extremes"
+            ],
+            "low_paying_companies_confidence": 0.95,
+            "low_paying_companies_sources": [
+              "Deloitte shows '25-28/hr' which is below $30/hr",
+              "Digital Extremes explicitly shows '20/hr (2nd coop)' which is below $30/hr"
             ]
           },
           "chunk_number": 11
@@ -394,10 +454,10 @@
     }
   },
   "field_metadata": {
-    "year": {
-      "field_type": "number",
-      "extraction_instruction": "extract year mentioned in chunk data and parse it as a number",
-      "added_at": 1758661235.300724,
+    "low_paying_companies": {
+      "field_type": "list",
+      "extraction_instruction": "extract company names that pay below $30 per hour",
+      "added_at": 1758695744.139922,
       "confidence": 0.95
     }
   }
