@@ -58,16 +58,23 @@
               "Web Developer (Junior)"
             ],
             "context": "Salary data for various companies and roles, including benefits",
-            "low_paying_companies": [
-              "Abbott ADD",
-              "Accedo",
-              "AGF Investments"
+            "companies_above_40_per_hour": [
+              "1password",
+              "Abnormal Security",
+              "Addepar"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Abbott ADD: 22.05/hr (2nd coop)",
-              "Accedo: 25-27/hr (3rd coop)",
-              "AGF Investments: 25/hr (2nd coop)"
+            "companies_above_40_per_hour_confidence": 0.95,
+            "companies_above_40_per_hour_sources": [
+              "1password: 50/hr (4th coop)",
+              "Abnormal Security: 106k USD annual prorated (~$51/hr USD)",
+              "Addepar: 40/hr, 48/hr (5th coop)"
+            ],
+            "usd_paying_companies": [
+              "Abnormal Security"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 4 explicitly shows salary in USD: '106k USD annual prorated (~$51/hr USD)'"
             ]
           },
           "chunk_number": 0
@@ -94,11 +101,29 @@
               "Hardware"
             ],
             "context": "Data on company pay and benefits",
-            "low_paying_companies": "AMD",
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Row 15: AMD | 27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop)",
-              "Shows multiple hourly rates all below $30/hr: $27/hr, $21.88/hr, $29.33/hr"
+            "companies_above_40_per_hour": [
+              "AI Arena",
+              "Akuna Capital",
+              "Apple"
+            ],
+            "companies_above_40_per_hour_confidence": 0.95,
+            "companies_above_40_per_hour_sources": [
+              "AI Arena | 45/hr",
+              "Akuna Capital | 65 USD/hour",
+              "Apple | 42/hr USD (3A)",
+              "Apple | 42/hr USD"
+            ],
+            "usd_paying_companies": [
+              "Akuna Capital",
+              "Amazon",
+              "Apple"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Akuna Capital | 65 USD/hour",
+              "Amazon | 9138 USD/month",
+              "Apple | 42/hr USD (3A)",
+              "Apple | 42/hr USD"
             ]
           },
           "chunk_number": 1
@@ -126,12 +151,25 @@
               "34/hr (5th coop)"
             ],
             "context": "",
-            "low_paying_companies": [
-              "ATS Corporation"
+            "companies_above_40_per_hour": [
+              "Arctic Wolf",
+              "Atolio",
+              "Autonomic"
             ],
-            "low_paying_companies_confidence": 1.0,
-            "low_paying_companies_sources": [
-              "Row 27: ATS Corporation | 28/hr (5th year (4B?))"
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Arctic Wolf: 42/hr (4th coop) in Row 21",
+              "Atolio: 42/hr (6th coop) in Row 26",
+              "Autonomic: 41/hr (5th coop) in Row 30"
+            ],
+            "usd_paying_companies": [
+              "Athelas",
+              "Athos"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 24: Athelas | 33/hr USD | 1200/mo USD housing stipend",
+              "Row 25: Athos | 5000 USD/mo"
             ]
           },
           "chunk_number": 2
@@ -157,18 +195,23 @@
               "10,000/mo"
             ],
             "context": "This data appears to contain company names and their corresponding hourly wage information.",
-            "low_paying_companies": [
+            "companies_above_40_per_hour": [],
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Reviewed all hourly wage entries",
+              "Highest hourly rate found was $34.36 at BDO",
+              "No companies listed pay more than $40/hour"
+            ],
+            "usd_paying_companies": [
               "Bank of America",
               "Bank of America (Merrill Lynch)",
-              "Bitbuy",
-              "Blackberry"
+              "BetterUp"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Bank of America: 22/hr",
-              "Bank of America (Merrill Lynch): 20/hr",
-              "Bitbuy: 20/hr",
-              "Blackberry: ~21/hr"
+            "usd_paying_companies_confidence": 0.8,
+            "usd_paying_companies_sources": [
+              "Bank of America shows rates in $/hr without currency specified but is a US company",
+              "Bank of America (Merrill Lynch) shows rates in $/hr without currency specified but is a US company",
+              "BetterUp shows monthly salary with $ which typically indicates USD for US tech companies"
             ]
           },
           "chunk_number": 3
@@ -191,18 +234,23 @@
               "Bluescape: 34/hr (6th coop)"
             ],
             "context": "",
-            "low_paying_companies": [
-              "BMO Business Analyst (2A)",
-              "BMO Product Analyst",
-              "BMO Software Developer",
-              "Bonfire Interactive"
+            "companies_above_40_per_hour": [
+              "Bloomberg",
+              "Bolt"
             ],
-            "low_paying_companies_confidence": 1.0,
-            "low_paying_companies_sources": [
-              "BMO Business Analyst (2A) | 24/hr",
-              "BMO Product Analyst | 28/hr (2nd coop)",
-              "BMO Software Developer | 29.50/hr (1st coop)",
-              "Bonfire Interactive | 24/hr (2nd coop)"
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Bloomberg: 48/hr + 5100 stipend (5th coop)",
+              "Bolt: 56 USD/hr",
+              "Both companies clearly show hourly rates above $40/hr",
+              "Other companies in data set show rates below $40/hr or non-hourly compensation"
+            ],
+            "usd_paying_companies": [
+              "Bolt"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 48 explicitly shows '56 USD/hr', making it the only entry that specifically mentions USD currency"
             ]
           },
           "chunk_number": 4
@@ -231,16 +279,18 @@
               "SWE"
             ],
             "context": "",
-            "low_paying_companies": [
-              "Brookfield Renewables",
-              "CAAT Pension Plan",
-              "Canadian Food Inspection Agency"
+            "companies_above_40_per_hour": [],
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Reviewed all hourly wage entries",
+              "No companies listed pay more than $40/hr",
+              "Highest wage found was Capital1 at exactly $40/hr"
             ],
-            "low_paying_companies_confidence": 1.0,
-            "low_paying_companies_sources": [
-              "Brookfield Renewables | 26/hr",
-              "CAAT Pension Plan | 18/hr (2nd coop)",
-              "Canadian Food Inspection Agency (Full Stack Dev) | 24.77/hr (5th coop)"
+            "usd_paying_companies": [],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 57 shows USD currency but has no company name associated",
+              "All other salary entries are in /hr format without explicit currency or appear to be in CAD"
             ]
           },
           "chunk_number": 5
@@ -264,18 +314,19 @@
               "35/hr"
             ],
             "context": "List of companies with hourly rates",
-            "low_paying_companies": [
-              "Carfax (Dev)",
-              "CEGN",
-              "C.E. McMahon Professional Corporation",
-              "Ceridian"
+            "companies_above_40_per_hour": [
+              "Carta"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Carfax (Dev) shows 26/hr",
-              "CEGN shows Low-Mid 20s",
-              "C.E. McMahon Professional Corporation shows 19/hr",
-              "Ceridian shows 22/hr for Marketing Coordinator role"
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Row 61: Carta | 40/hr (4th coop), 47/hr (5th coop) - shows wages of $40/hr and $47/hr, both exceeding $40/hr threshold"
+            ],
+            "usd_paying_companies": [
+              "Certik"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 70 explicitly shows salary in 'USD' currency: '7000 USD/month remote (4th coop)'"
             ]
           },
           "chunk_number": 6
@@ -301,16 +352,22 @@
               "10k signing bonus"
             ],
             "context": "Salary data from various companies",
-            "low_paying_companies": [
-              "CGI",
-              "Christie Digital Systems",
-              "CodeWithChris"
+            "companies_above_40_per_hour": [
+              "Cisco Meraki",
+              "Citibank"
             ],
-            "low_paying_companies_confidence": 1.0,
-            "low_paying_companies_sources": [
-              "CGI shows 18/hr",
-              "Christie Digital Systems shows 18/hr for 1st coop",
-              "CodeWithChris shows 20/hr for 1st coop"
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Cisco Meraki shows '(up to) 67/hr + 10k signing bonus'",
+              "Citibank shows '44/hr'"
+            ],
+            "usd_paying_companies": [
+              "Citadel"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Row 77 explicitly shows 'Citadel | 3365 USD/week'",
+              "USD currency is specifically mentioned only for this company"
             ]
           },
           "chunk_number": 7
@@ -328,15 +385,25 @@
             "outliers": [],
             "key_values": [],
             "context": "Analysis completed with fallback",
-            "low_paying_companies": [
-              "Coinsquare (28/hr for 1st coop)",
-              "The Co-operators (21/hr for 1st coop)"
+            "companies_above_40_per_hour": [
+              "Cohesity",
+              "Coinbase",
+              "Coinsquare"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Row 85: Coinsquare explicitly states '28/hr (1st coop)'",
-              "Row 90: The Co-operators explicitly states '~21/hr (1st coop)'",
-              "Both companies have clear hourly rates below $30"
+            "companies_above_40_per_hour_confidence": 0.95,
+            "companies_above_40_per_hour_sources": [
+              "Cohesity: 49/hr",
+              "Coinbase: 50/hr",
+              "Coinsquare: mentions 44/hr for 5th coop dev role"
+            ],
+            "usd_paying_companies": [
+              "Coherent Logix",
+              "Compound"
+            ],
+            "usd_paying_companies_confidence": 0.95,
+            "usd_paying_companies_sources": [
+              "Coherent Logix shows salary with $ symbol: '$1-3 above coop average'",
+              "Compound shows salary with $ symbol: '$10,200/month'"
             ]
           },
           "chunk_number": 8
@@ -361,16 +428,25 @@
               "$25/day lunch"
             ],
             "context": "Job descriptions and hourly rates for various employees",
-            "low_paying_companies": [
-              "Core Avionics (20/hr)",
-              "Crawford and Co (20/hr)",
-              "Creospark (18/hr)"
+            "companies_above_40_per_hour": [
+              "CPP Investments (48/hr)",
+              "Crypto4a (40/hr)"
             ],
-            "low_paying_companies_confidence": 1.0,
-            "low_paying_companies_sources": [
-              "Core Avionics | 20/hr (1st coop)",
-              "Crawford and Co | 20/hr",
-              "Creospark | 18/hr"
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Row 96: CPP Investments | 48/hr (4th coop)",
+              "Row 100: Crypto4a | 40/hr (remote, 6th coop)",
+              "Clear hourly wage values explicitly stated",
+              "Wages are above $40/hr threshold"
+            ],
+            "usd_paying_companies": [
+              "Cover Technologies Inc",
+              "Cresta"
+            ],
+            "usd_paying_companies_confidence": 0.8,
+            "usd_paying_companies_sources": [
+              "Cover Technologies Inc | 30 USD/hr",
+              "Cresta | 40/hr (5th coop) | $25/day lunch"
             ]
           },
           "chunk_number": 9
@@ -396,13 +472,26 @@
               "32-38/hr (increases with work term)"
             ],
             "context": "",
-            "low_paying_companies": [
-              "D2L"
+            "companies_above_40_per_hour": [
+              "Cube Group",
+              "Databrick"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Row 104: D2L | 28/hr",
-              "28/hr is clearly below $30/hr threshold"
+            "companies_above_40_per_hour_confidence": 0.95,
+            "companies_above_40_per_hour_sources": [
+              "Cube Group shows 75/hr USD",
+              "Databrick shows 55 CAD/hr (which converts to >40 USD/hr)",
+              "All other entries either show <40/hr or use different payment structures"
+            ],
+            "usd_paying_companies": [
+              "Cube Group",
+              "Datadog",
+              "data.world"
+            ],
+            "usd_paying_companies_confidence": 1.0,
+            "usd_paying_companies_sources": [
+              "Cube Group | 75/hr USD",
+              "Datadog | 40/hr | 2000 USD/mo housing",
+              "data.world | 1400 USD/week | 100 USD remote stipend"
             ]
           },
           "chunk_number": 10
@@ -433,14 +522,22 @@
               "20/"
             ],
             "context": "The data represents companies with their respective hourly wage averages and coop information.",
-            "low_paying_companies": [
+            "companies_above_40_per_hour": [],
+            "companies_above_40_per_hour_confidence": 1.0,
+            "companies_above_40_per_hour_sources": [
+              "Reviewed all hourly wage values: Deloitte (25-28/hr), Digital Extremes (20/hr)",
+              "No companies listed have confirmed hourly wages above $40/hr",
+              "Other companies list relative wages (coop average, percentage above average) which cannot be definitively determined to be above $40/hr"
+            ],
+            "usd_paying_companies": [
               "Deloitte",
               "Digital Extremes"
             ],
-            "low_paying_companies_confidence": 0.95,
-            "low_paying_companies_sources": [
-              "Deloitte shows '25-28/hr' which is below $30/hr",
-              "Digital Extremes explicitly shows '20/hr (2nd coop)' which is below $30/hr"
+            "usd_paying_companies_confidence": 0.9,
+            "usd_paying_companies_sources": [
+              "Deloitte shows '25-28/hr' indicating hourly rate in dollars",
+              "Digital Extremes shows '20/hr' indicating hourly rate in dollars",
+              "Other companies show relative rates (coop average, percentages) rather than direct USD amounts"
             ]
           },
           "chunk_number": 11
@@ -453,12 +550,36 @@
       }
     }
   },
+  "user_queries": {
+    "comapies paying more than 40 per hpour": {
+      "query": "comapies paying more than 40 per hpour",
+      "fields": [
+        "companies_above_40_per_hour"
+      ],
+      "created_at": 1758696890.6133661
+    },
+    "companies paying in usd": {
+      "query": "companies paying in usd",
+      "fields": [
+        "usd_paying_companies"
+      ],
+      "created_at": 1758696982.368948
+    }
+  },
   "field_metadata": {
-    "low_paying_companies": {
+    "companies_above_40_per_hour": {
       "field_type": "list",
-      "extraction_instruction": "extract company names that pay below $30 per hour",
-      "added_at": 1758695744.139922,
-      "confidence": 0.95
+      "extraction_instruction": "extract company names that pay hourly wages greater than $40 per hour",
+      "added_at": 1758696890.613355,
+      "confidence": 0.95,
+      "user_query": "comapies paying more than 40 per hpour"
+    },
+    "usd_paying_companies": {
+      "field_type": "list",
+      "extraction_instruction": "extract company names that specifically pay salaries in USD currency",
+      "added_at": 1758696982.3689442,
+      "confidence": 0.95,
+      "user_query": "companies paying in usd"
     }
   }
 }

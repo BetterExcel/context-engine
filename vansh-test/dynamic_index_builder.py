@@ -331,37 +331,55 @@ def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_pat
     
     return extracted_data
 
-def update_index_with_new_field(existing_index: Dict, field_info: Dict, extracted_data: Dict) -> Dict:
+def update_index_with_new_field(existing_index: Dict, field_info: Dict, extracted_data: Dict, user_query: str) -> Dict:
     """
-    Update the existing index with the new field.
+    Update the existing index with the new field, organized by user query.
     
     Args:
         existing_index: Current index structure
         field_info: Information about the new field
         extracted_data: Extracted data for all chunks
+        user_query: The user query that generated this field
         
     Returns:
-        Updated index with new field
+        Updated index with new field organized by user query
     """
     
     field_name = field_info["field_name"]
     field_type = field_info["field_type"]
     
-    print(f"Adding '{field_name}' field to index...")
+    print(f"Adding '{field_name}' field to index for query: '{user_query}'...")
     
     # Create a copy of the existing index
     updated_index = json.loads(json.dumps(existing_index))  # Deep copy
     
-    # Add field metadata to the index
+    # Initialize user_queries structure if it doesn't exist
+    if "user_queries" not in updated_index:
+        updated_index["user_queries"] = {}
+    
+    # Initialize field_metadata if it doesn't exist
     if "field_metadata" not in updated_index:
         updated_index["field_metadata"] = {}
     
+    # Add field metadata to the index
     updated_index["field_metadata"][field_name] = {
         "field_type": field_type,
         "extraction_instruction": field_info["extraction_instruction"],
         "added_at": time.time(),
-        "confidence": field_info["confidence"]
+        "confidence": field_info["confidence"],
+        "user_query": user_query
     }
+    
+    # Add field to user_queries structure
+    if user_query not in updated_index["user_queries"]:
+        updated_index["user_queries"][user_query] = {
+            "query": user_query,
+            "fields": [],
+            "created_at": time.time()
+        }
+    
+    # Add field to the user query
+    updated_index["user_queries"][user_query]["fields"].append(field_name)
     
     # Add the field to each chunk's analysis
     for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
@@ -386,10 +404,10 @@ def load_existing_index(file_path: str = "anchored_index_output.json") -> Dict:
         return data
     except FileNotFoundError:
         print(f"Warning: {file_path} not found. Starting with empty index.")
-        return {"sheets": {}, "field_metadata": {}}
+        return {"sheets": {}, "field_metadata": {}, "user_queries": {}}
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON file: {e}")
-        return {"sheets": {}, "field_metadata": {}}
+        return {"sheets": {}, "field_metadata": {}, "user_queries": {}}
 
 def save_updated_index(updated_index: Dict, output_file: str = "dynamic_index_output.json"):
     """Save the updated index to a JSON file."""
@@ -399,6 +417,32 @@ def save_updated_index(updated_index: Dict, output_file: str = "dynamic_index_ou
         print(f"Updated index saved to {output_file}")
     except Exception as e:
         print(f"Error saving index: {e}")
+
+def copy_dynamic_to_anchored():
+    """Copy dynamic_index_output.json to anchored_index_output.json to preserve fields."""
+    try:
+        import shutil
+        shutil.copy2("dynamic_index_output.json", "anchored_index_output.json")
+        print("✅ Fields preserved in anchored_index_output.json for future queries")
+    except Exception as e:
+        print(f"Warning: Could not copy dynamic index to anchored index: {e}")
+
+def display_user_queries(index: Dict):
+    """Display all user queries and their associated fields."""
+    user_queries = index.get("user_queries", {})
+    if not user_queries:
+        print("No user queries found in the index.")
+        return
+    
+    print("\n📋 User Queries and Fields:")
+    print("=" * 50)
+    for query, query_data in user_queries.items():
+        fields = query_data.get("fields", [])
+        created_at = query_data.get("created_at", "Unknown")
+        print(f"Query: '{query}'")
+        print(f"  Fields: {', '.join(fields)}")
+        print(f"  Created: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(created_at))}")
+        print()
 
 def process_query_for_field_addition(query: str, existing_index: Dict = None, excel_file_path: str = "../test.xlsx") -> Dict:
     """
@@ -449,14 +493,21 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None, ex
     
     # Step 3: Update index with new field
     print("\nStep 3: Updating index...")
-    updated_index = update_index_with_new_field(existing_index, field_info, extracted_data)
+    updated_index = update_index_with_new_field(existing_index, field_info, extracted_data, query)
     
-    # Step 4: Save updated index
+    # Step 4: Save updated index and copy to anchored index
     print("\nStep 4: Saving updated index...")
     save_updated_index(updated_index)
     
+    # Step 5: Copy dynamic index to anchored index to preserve fields
+    print("\nStep 5: Preserving fields for future queries...")
+    copy_dynamic_to_anchored()
+    
     print(f"\nSuccessfully added '{field_info['field_name']}' field to the index!")
     print(f"Total fields in index: {len(updated_index.get('field_metadata', {}))}")
+    
+    # Display all user queries and their fields
+    display_user_queries(updated_index)
     
     return updated_index
 
@@ -524,8 +575,9 @@ if __name__ == "__main__":
         print("Choose mode:")
         print("1. Test with predefined queries")
         print("2. Interactive mode")
+        print("3. View existing queries and fields")
         
-        choice = input("Enter choice (1-2): ").strip()
+        choice = input("Enter choice (1-3): ").strip()
         
         if choice == "1":
             # Test with predefined queries
@@ -533,11 +585,16 @@ if __name__ == "__main__":
             
             for query in test_queries:
                 print(f"\n{'='*60}")
-                existing_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
+                existing_index = process_query_for_field_addition(query, existing_index, "../test.xlsx")
         
         elif choice == "2":
             # Interactive mode
             interactive_field_addition_mode()
+        
+        elif choice == "3":
+            # View existing queries and fields
+            existing_index = load_existing_index()
+            display_user_queries(existing_index)
         
         else:
             print("Invalid choice. Exiting.")
