@@ -46,19 +46,12 @@ def analyze_chunk_with_ollama(chunk_data: List[List[Any]], chunk_range: str) -> 
 Analyze this spreadsheet data chunk and provide ONLY a valid JSON response with this exact structure:
 {{
     "summary": "Brief description of what this chunk contains",
-    "data_types": ["type1", "type2", "type3"],
-    "patterns": ["pattern1", "pattern2"],
-    "outliers": ["outlier1", "outlier2"],
-    "key_values": ["important_value1", "important_value2"],
     "context": "Additional context about this data"
 }}
 
 CRITICAL JSON RULES:
 - All strings must be properly escaped (use \\" for quotes inside strings)
 - No unescaped quotes, commas, or special characters in strings
-- All array values must be strings, never null or None
-- If no outliers exist, use empty array: []
-- If no patterns exist, use empty array: []
 - Keep strings short and simple
 - Respond with ONLY the JSON object, no explanations, no markdown, no additional text
 
@@ -93,10 +86,6 @@ Data to analyze:
                     print(f"Creating fallback response for {chunk_range}")
                     analysis = {
                         "summary": "Data chunk analysis",
-                        "data_types": ["mixed"],
-                        "patterns": [],
-                        "outliers": [],
-                        "key_values": [],
                         "context": "Analysis completed with fallback"
                     }
                     break
@@ -104,17 +93,12 @@ Data to analyze:
         if analysis is None:
             raise Exception("Failed to parse JSON after multiple attempts")
         
-        # Ensure all arrays contain only strings and clean them up
-        for key in ['data_types', 'patterns', 'outliers', 'key_values']:
-            if key in analysis:
-                cleaned_items = []
-                for item in analysis[key]:
-                    if item is not None:
-                        # Clean up the string: remove quotes, escape special chars
-                        cleaned_item = str(item).replace('"', '').replace("'", '').strip()
-                        if cleaned_item and cleaned_item != 'null':
-                            cleaned_items.append(cleaned_item)
-                analysis[key] = cleaned_items
+        # Clean up the analysis response
+        for key in ['summary', 'context']:
+            if key in analysis and analysis[key] is not None:
+                # Clean up the string: remove quotes, escape special chars
+                cleaned_item = str(analysis[key]).replace('"', '').replace("'", '').strip()
+                analysis[key] = cleaned_item
         
         return analysis
     except json.JSONDecodeError as e:
@@ -161,14 +145,13 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
     max_row = sheet.max_row
     max_col = sheet.max_column
     
-    # Extract headers from first row
+    # Extract headers from first row - skip null values
     headers = []
     first_row = list(sheet.iter_rows(min_row=1, max_row=1, values_only=True))[0]
     for i, cell_value in enumerate(first_row):
         if cell_value is not None:
             headers.append(str(cell_value).strip())
-        else:
-            headers.append(get_column_name(i))
+        # Skip null values instead of adding column names
     
     # Initialize index structure
     index = {
@@ -193,14 +176,18 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
         end_row = min(start_row + chunk_size - 1, max_row)
         chunk_range = f"A{start_row}:A{end_row}"
         
-        # Extract chunk data
+        # Extract chunk data - skip null values and flatten to single line per row
         chunk_data = []
         for row_idx in range(start_row, end_row + 1):
             row_data = []
             for col_idx in range(max_col):
                 cell_value = sheet.cell(row=row_idx, column=col_idx + 1).value
-                row_data.append(cell_value)
-            chunk_data.append(row_data)
+                if cell_value is not None:  # Skip null values
+                    row_data.append(str(cell_value))
+            
+            # Join non-null values with tab separator for single line
+            if row_data:  # Only add row if it has non-null data
+                chunk_data.append('\t'.join(row_data))
         
         # Analyze chunk with Ollama
         try:
@@ -214,7 +201,9 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
                 "range": chunk_range,
                 "start_row": start_row,
                 "end_row": end_row,
-                "analysis": analysis,
+                "summary": analysis["summary"],
+                "context": analysis["context"],
+                "table": chunk_data,  # 2D array with actual content
                 "chunk_number": chunk_num
             }
             
@@ -255,29 +244,27 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
                 if term_lower in header.lower():
                     # Find chunks that contain this header
                     for anchor_key, anchor_data in sheet_data["anchors"].items():
-                        if anchor_data["analysis"]["data_types"] and any(
-                            term_lower in data_type.lower() for data_type in anchor_data["analysis"]["data_types"]
-                        ):
-                            sheet_results["matching_chunks"].append(anchor_data)
+                        sheet_results["matching_chunks"].append(anchor_data)
             
-            # Search in chunk summaries and analysis
+            # Search in chunk summaries and context
             for anchor_key, anchor_data in sheet_data["anchors"].items():
-                analysis = anchor_data["analysis"]
                 
                 # Check summary
-                if term_lower in analysis.get("summary", "").lower():
+                if term_lower in anchor_data.get("summary", "").lower():
                     sheet_results["matching_chunks"].append(anchor_data)
                     continue
                 
-                # Check patterns
-                if any(term_lower in pattern.lower() for pattern in analysis.get("patterns", [])):
+                # Check context
+                if term_lower in anchor_data.get("context", "").lower():
                     sheet_results["matching_chunks"].append(anchor_data)
                     continue
                 
-                # Check key values
-                if any(term_lower in value.lower() for value in analysis.get("key_values", [])):
-                    sheet_results["matching_chunks"].append(anchor_data)
-                    continue
+                # Check table content
+                table_data = anchor_data.get("table", [])
+                for row in table_data:
+                    if term_lower in row.lower():
+                        sheet_results["matching_chunks"].append(anchor_data)
+                        break
         
         # Remove duplicates
         seen_ranges = set()

@@ -9,27 +9,7 @@
         "Bye World",
         "Benefits",
         "Year",
-        "Position",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y"
+        "Position"
       ],
       "chunk_size": 10,
       "anchors": {
@@ -37,549 +17,243 @@
           "range": "A1:A10",
           "start_row": 1,
           "end_row": 10,
-          "analysis": {
-            "summary": "Salary data for various companies and roles",
-            "data_types": [
-              "Company / Role",
-              "Benefits"
-            ],
-            "patterns": [
-              "25-27/hr (3rd coop)",
-              "40/hr, 48/hr (5th coop)"
-            ],
-            "outliers": [
-              "106k USD annual prorated (~$51/hr USD)",
-              "less than 44/hr"
-            ],
-            "key_values": [
-              "2023",
-              "2024",
-              "Algorithms Developer",
-              "Web Developer (Junior)"
-            ],
-            "context": "Salary data for various companies and roles, including benefits",
-            "companies_above_40_per_hour": [
-              "1password",
-              "Abnormal Security",
-              "Addepar"
-            ],
-            "companies_above_40_per_hour_confidence": 0.95,
-            "companies_above_40_per_hour_sources": [
-              "1password: 50/hr (4th coop)",
-              "Abnormal Security: 106k USD annual prorated (~$51/hr USD)",
-              "Addepar: 40/hr, 48/hr (5th coop)"
-            ],
-            "usd_paying_companies": [
-              "Abnormal Security"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 4 explicitly shows salary in USD: '106k USD annual prorated (~$51/hr USD)'"
-            ]
-          },
+          "summary": "List of company and role information for job offers with hourly wage, year of offer, and position",
+          "context": "Data appears to be related to job market research or salary comparison",
+          "table": [
+            "Company / Role\tBye World\tBenefits\tYear\tPosition",
+            "1password\t50/hr (4th coop)\t2023",
+            "Abbott ADD\t22.05/hr (2nd coop)",
+            "Abnormal Security\t106k USD annual prorated (~$51/hr USD)\t5k relocation",
+            "Accedo\t25-27/hr (3rd coop)",
+            "20-25/hr",
+            "Addepar\t40/hr, 48/hr (5th coop)",
+            "AdHawk Microsystems\t40/hr (5th coop)\t2024\tAlgorithms Developer",
+            "less than 44/hr",
+            "AGF Investments\t25/hr (2nd coop)\t2023\tWeb Developer (Junior)"
+          ],
           "chunk_number": 0
         },
         "chunk_1": {
           "range": "A11:A20",
           "start_row": 11,
           "end_row": 20,
-          "analysis": {
-            "summary": "Company pay and benefits data",
-            "data_types": [
-              "company1",
-              "company2"
-            ],
-            "patterns": [],
-            "outliers": [
-              "null, (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design)"
-            ],
-            "key_values": [
-              "9138 USD/month",
-              "42/hr USD",
-              "3335/mo pretax relocation (3A)",
-              "2024",
-              "Hardware"
-            ],
-            "context": "Data on company pay and benefits",
-            "companies_above_40_per_hour": [
-              "AI Arena",
-              "Akuna Capital",
-              "Apple"
-            ],
-            "companies_above_40_per_hour_confidence": 0.95,
-            "companies_above_40_per_hour_sources": [
-              "AI Arena | 45/hr",
-              "Akuna Capital | 65 USD/hour",
-              "Apple | 42/hr USD (3A)",
-              "Apple | 42/hr USD"
-            ],
-            "usd_paying_companies": [
-              "Akuna Capital",
-              "Amazon",
-              "Apple"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Akuna Capital | 65 USD/hour",
-              "Amazon | 9138 USD/month",
-              "Apple | 42/hr USD (3A)",
-              "Apple | 42/hr USD"
-            ]
-          },
+          "summary": "Pay rates and benefits for various companies",
+          "context": "Data includes hourly wages, monthly stipends, corporate housing, return flights, tax-free relocation, and hardware provided",
+          "table": [
+            "AI Arena\t45/hr",
+            "Akuna Capital\t65 USD/hour\treturn flight + corporate housing",
+            "Altice USA\tmid 30s/hr (6th coop)",
+            "Amazon\t9138 USD/month\t2425/month tax-free relocation stipend",
+            "AMD\t27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop)",
+            "American Express\t34.5/hr",
+            "ANSYS\tmath coop average + 10%",
+            "(34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design)\tStipends listed",
+            "Apple\t42/hr USD (3A)\t3335/mo pretax relocation (3A)\t2024\tHardware",
+            "Apple\t42/hr USD\t1k/mo stipend\t2024\tSystem Level Test Engineer"
+          ],
           "chunk_number": 1
         },
         "chunk_2": {
           "range": "A21:A30",
           "start_row": 21,
           "end_row": 30,
-          "analysis": {
-            "summary": "Company compensation data",
-            "data_types": [
-              "company name",
-              "hourly pay",
-              "other"
-            ],
-            "patterns": [],
-            "outliers": [],
-            "key_values": [
-              "33/hr USD",
-              "1200/mo USD housing stipend (2nd coop) + flights",
-              "5000 USD/mo",
-              "34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop)",
-              "28/hr (5th year (4B?))",
-              "33/hr (4th coop)",
-              "34/hr (5th coop)"
-            ],
-            "context": "",
-            "companies_above_40_per_hour": [
-              "Arctic Wolf",
-              "Atolio",
-              "Autonomic"
-            ],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Arctic Wolf: 42/hr (4th coop) in Row 21",
-              "Atolio: 42/hr (6th coop) in Row 26",
-              "Autonomic: 41/hr (5th coop) in Row 30"
-            ],
-            "usd_paying_companies": [
-              "Athelas",
-              "Athos"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 24: Athelas | 33/hr USD | 1200/mo USD housing stipend",
-              "Row 25: Athos | 5000 USD/mo"
-            ]
-          },
+          "summary": "Salary data for various companies/coops",
+          "context": "The data includes hourly rates and additional benefits for employees of different organizations.",
+          "table": [
+            "Arctic Wolf\t36/hr (3rd coop), 42/hr (4th coop)\t2023",
+            "Arctic Wolf\t38/hr (4th coop)\t2024",
+            "Aterlo Networks\t30/hr (4th coop)",
+            "Athelas\t33/hr USD\t1200/mo USD housing stipend (2nd coop) + flights",
+            "Athos\t5000 USD/mo",
+            "Atolio\t34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop)",
+            "ATS Corporation\t28/hr (5th year (4B?))",
+            "33/hr (4th coop)\t2023",
+            "Autodesk\t34/hr (5th coop)\t2024",
+            "Autonomic\t38-40/hr (4th coop), 41/hr (5th coop)"
+          ],
           "chunk_number": 2
         },
         "chunk_3": {
           "range": "A31:A40",
           "start_row": 31,
           "end_row": 40,
-          "analysis": {
-            "summary": "Company names and their corresponding hourly wage information",
-            "data_types": [
-              "string",
-              "string"
-            ],
-            "patterns": [],
-            "outliers": [
-              "BDO",
-              "Bentley Systems"
-            ],
-            "key_values": [
-              "3000 stipend",
-              "8500/mo",
-              "10,000/mo"
-            ],
-            "context": "This data appears to contain company names and their corresponding hourly wage information.",
-            "companies_above_40_per_hour": [],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Reviewed all hourly wage entries",
-              "Highest hourly rate found was $34.36 at BDO",
-              "No companies listed pay more than $40/hour"
-            ],
-            "usd_paying_companies": [
-              "Bank of America",
-              "Bank of America (Merrill Lynch)",
-              "BetterUp"
-            ],
-            "usd_paying_companies_confidence": 0.8,
-            "usd_paying_companies_sources": [
-              "Bank of America shows rates in $/hr without currency specified but is a US company",
-              "Bank of America (Merrill Lynch) shows rates in $/hr without currency specified but is a US company",
-              "BetterUp shows monthly salary with $ which typically indicates USD for US tech companies"
-            ]
-          },
+          "summary": "List of hourly and monthly stipends for various companies",
+          "context": "Data from spreadsheet chunk A31:A40",
+          "table": [
+            "Axonify\t1100/week (4th coop)\t2024",
+            "Bank of America\t22/hr (2nd coop)",
+            "Bank of America (Merrill Lynch)\t20/hr (1st coop)",
+            "BDO\t34.36/hr, 25/h (2nd coop), 32/h (3rd coop)",
+            "Bentley Systems\t30/hr (1st coop), 33/hr (2nd coop)",
+            "BETS Program\t3000 stipend",
+            "BetterUp\t8500/mo",
+            "Bitbuy\t20/hr (1st coop)",
+            "10,000/mo",
+            "Blackberry\t(about average), ~21/hr"
+          ],
           "chunk_number": 3
         },
         "chunk_4": {
           "range": "A41:A50",
           "start_row": 41,
           "end_row": 50,
-          "analysis": {
-            "summary": "Pay rate and stipend data for various companies",
-            "data_types": [
-              "string",
-              "string",
-              "integer"
-            ],
-            "patterns": [],
-            "outliers": [],
-            "key_values": [
-              "Bloomberg: 48/hr + 5100 stipend (5th coop)",
-              "Bluescape: 34/hr (6th coop)"
-            ],
-            "context": "",
-            "companies_above_40_per_hour": [
-              "Bloomberg",
-              "Bolt"
-            ],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Bloomberg: 48/hr + 5100 stipend (5th coop)",
-              "Bolt: 56 USD/hr",
-              "Both companies clearly show hourly rates above $40/hr",
-              "Other companies in data set show rates below $40/hr or non-hourly compensation"
-            ],
-            "usd_paying_companies": [
-              "Bolt"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 48 explicitly shows '56 USD/hr', making it the only entry that specifically mentions USD currency"
-            ]
-          },
+          "summary": "List of hourly and monthly pay rates for various companies",
+          "context": "This data appears to be a list of internships or co-op programs with their corresponding hourly and/or monthly pay rates.",
+          "table": [
+            "bld.ai\t7000/mo",
+            "Bloomberg\t48/hr + 5100 stipend (5th coop)",
+            "Bloq\t5.4k/mo (2nd coop), 6.2k/mo (3rd coop)\t950/mo benefits (2nd coop, 3rd coop)",
+            "Bluescape\t34/hr (6th coop)",
+            "BMO Business Analyst (2A)\t24/hr",
+            "BMO Product Analyst\t28/hr (2nd coop)",
+            "BMO Software Developer\t29.50/hr (1st coop)",
+            "Bolt\t56 USD/hr",
+            "Bonfire Interactive\t24/hr (2nd coop)",
+            "Boosted.AI\t35/hr"
+          ],
           "chunk_number": 4
         },
         "chunk_5": {
           "range": "A51:A60",
           "start_row": 51,
           "end_row": 60,
-          "analysis": {
-            "summary": "Company salary data",
-            "data_types": [
-              "company1",
-              "company2",
-              "company3"
-            ],
-            "patterns": [
-              "mobile dev",
-              "coop average",
-              "full stack dev"
-            ],
-            "outliers": [
-              "6400 USD/mo (+1000/mo relocation in-person)",
-              "$1000 signing bonus"
-            ],
-            "key_values": [
-              "SWE"
-            ],
-            "context": "",
-            "companies_above_40_per_hour": [],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Reviewed all hourly wage entries",
-              "No companies listed pay more than $40/hr",
-              "Highest wage found was Capital1 at exactly $40/hr"
-            ],
-            "usd_paying_companies": [],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 57 shows USD currency but has no company name associated",
-              "All other salary entries are in /hr format without explicit currency or appear to be in CAD"
-            ]
-          },
+          "summary": "Job listings with hourly rates and work arrangements",
+          "context": "Data appears to be a list of job openings, including company names, hourly wages, and cooperative work arrangements",
+          "table": [
+            "Borrowell\t(mobile dev) 35/hr (5h coop)",
+            "Brookfield Annuity\t35/hr",
+            "Brookfield Renewables\t26/hr",
+            "BusPlanner\tcoop average\t2024",
+            "CAAT Pension Plan\t18/hr (2nd coop)",
+            "Canadian Food Inspection Agency (Full Stack Dev)\t24.77/hr (5th coop)",
+            "6400 USD/mo (+1000/mo relocation in-person)",
+            "25-30/hr",
+            "Capital1\t40/hr (5th coop)\t$1000 signing bonus\t2025",
+            "Carta\t30.75/hr (4th coop), 1230-1400/week\tSWE"
+          ],
           "chunk_number": 5
         },
         "chunk_6": {
           "range": "A61:A70",
           "start_row": 61,
           "end_row": 70,
-          "analysis": {
-            "summary": "Company names and hourly rates",
-            "data_types": [
-              "string",
-              "string"
-            ],
-            "patterns": [],
-            "outliers": [
-              "7000 USD/month remote (4th coop)"
-            ],
-            "key_values": [
-              "22/hr",
-              "35/hr"
-            ],
-            "context": "List of companies with hourly rates",
-            "companies_above_40_per_hour": [
-              "Carta"
-            ],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Row 61: Carta | 40/hr (4th coop), 47/hr (5th coop) - shows wages of $40/hr and $47/hr, both exceeding $40/hr threshold"
-            ],
-            "usd_paying_companies": [
-              "Certik"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 70 explicitly shows salary in 'USD' currency: '7000 USD/month remote (4th coop)'"
-            ]
-          },
+          "summary": "List of companies with their hourly wage rates and other details",
+          "context": "The data contains information about various companies, including their hourly wages, years of operation, and departmental affiliations",
+          "table": [
+            "Carta\t40/hr (4th coop), 47/hr (5th coop)\t2024\tAndroid Engineering",
+            "Carfax (Dev)\t26/hr (2nd coop)",
+            "Castleton Commodities\t38/hr",
+            "CEGN\tLow-Mid 20s",
+            "C.E. McMahon Professional Corporation\t19/hr",
+            "Cepton\t35/hr\t500/mo housing",
+            "Cerebras Systems\t38/hr",
+            "Ceridian\t32/hr (3rd coop)\t2023",
+            "Ceridian\t22/hr\t2022, 2023\tMarketing Coordinator",
+            "Certik\t7000 USD/month remote (4th coop)"
+          ],
           "chunk_number": 6
         },
         "chunk_7": {
           "range": "A71:A80",
           "start_row": 71,
           "end_row": 80,
-          "analysis": {
-            "summary": "Company data chunk A71:A80",
-            "data_types": [
-              "company",
-              "hourly_wage",
-              "signing_bonus",
-              "year"
-            ],
-            "patterns": [],
-            "outliers": [
-              "Cockroach Labs: 8000/month + 1.5k signing bonus"
-            ],
-            "key_values": [
-              "2000 CAD signing bonus (1st coop)",
-              "10k signing bonus"
-            ],
-            "context": "Salary data from various companies",
-            "companies_above_40_per_hour": [
-              "Cisco Meraki",
-              "Citibank"
-            ],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Cisco Meraki shows '(up to) 67/hr + 10k signing bonus'",
-              "Citibank shows '44/hr'"
-            ],
-            "usd_paying_companies": [
-              "Citadel"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Row 77 explicitly shows 'Citadel | 3365 USD/week'",
-              "USD currency is specifically mentioned only for this company"
-            ]
-          },
+          "summary": "Job offers and hourly rates from various companies",
+          "context": "Contains information about co-op terms, hourly wages, and bonuses for specific companies",
+          "table": [
+            "CGI\t18/hr (3rd coop)",
+            "Chisel.ai\t40/hr (5th coop)",
+            "Christie Digital Systems\t18/hr (1st coop), +2/hr every add. coop term",
+            "CIBC\tcoop average + $1",
+            "Cisco (Ottawa Office)\t31-33/hr (1st coop)\t2000 CAD signing bonus (1st coop)\t2024",
+            "Cisco Meraki\t(up to) 67/hr + 10k signing bonus",
+            "Citadel\t3365 USD/week",
+            "Citibank\t44/hr\t2000 CAD housing stipend\t2024",
+            "Cockroach Labs\t8000/month + 1.5k signing bonus",
+            "CodeWithChris\t20/hr (1st coop)"
+          ],
           "chunk_number": 7
         },
         "chunk_8": {
           "range": "A81:A90",
           "start_row": 81,
           "end_row": 90,
-          "analysis": {
-            "summary": "Data chunk analysis",
-            "data_types": [
-              "mixed"
-            ],
-            "patterns": [],
-            "outliers": [],
-            "key_values": [],
-            "context": "Analysis completed with fallback",
-            "companies_above_40_per_hour": [
-              "Cohesity",
-              "Coinbase",
-              "Coinsquare"
-            ],
-            "companies_above_40_per_hour_confidence": 0.95,
-            "companies_above_40_per_hour_sources": [
-              "Cohesity: 49/hr",
-              "Coinbase: 50/hr",
-              "Coinsquare: mentions 44/hr for 5th coop dev role"
-            ],
-            "usd_paying_companies": [
-              "Coherent Logix",
-              "Compound"
-            ],
-            "usd_paying_companies_confidence": 0.95,
-            "usd_paying_companies_sources": [
-              "Coherent Logix shows salary with $ symbol: '$1-3 above coop average'",
-              "Compound shows salary with $ symbol: '$10,200/month'"
-            ]
-          },
+          "summary": "Salary ranges and hourly wages for various companies",
+          "context": "Data includes hourly wage ranges, stipends, and monthly salaries from different organizations",
+          "table": [
+            "Cohere\t20-50/hr based on experience",
+            "Coherent Logix\t$1-3 above coop average",
+            "Cohesity\t49/hr",
+            "Coinbase\t50/hr",
+            "Coinsquare\t28/hr (1st coop), 44/hr (5th coop, any dev role)",
+            "Composer.trade\t9000/month\t500/month stipend\t2024",
+            "Compound\t$10,200/month",
+            "Connected\t37/hr (6th coop)",
+            "Constant Contact\t35/hr (4th coop)\t2023",
+            "The Co-operators\t~21/hr (1st coop)"
+          ],
           "chunk_number": 8
         },
         "chunk_9": {
           "range": "A91:A100",
           "start_row": 91,
           "end_row": 100,
-          "analysis": {
-            "summary": "Employee job descriptions and hourly rates",
-            "data_types": [
-              "string",
-              "string"
-            ],
-            "patterns": [],
-            "outliers": [
-              "4% of yearly salary (70k) as vacation pay"
-            ],
-            "key_values": [
-              "20/hr (1st coop), 30/hr",
-              "7000/month",
-              "$25/day lunch"
-            ],
-            "context": "Job descriptions and hourly rates for various employees",
-            "companies_above_40_per_hour": [
-              "CPP Investments (48/hr)",
-              "Crypto4a (40/hr)"
-            ],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Row 96: CPP Investments | 48/hr (4th coop)",
-              "Row 100: Crypto4a | 40/hr (remote, 6th coop)",
-              "Clear hourly wage values explicitly stated",
-              "Wages are above $40/hr threshold"
-            ],
-            "usd_paying_companies": [
-              "Cover Technologies Inc",
-              "Cresta"
-            ],
-            "usd_paying_companies_confidence": 0.8,
-            "usd_paying_companies_sources": [
-              "Cover Technologies Inc | 30 USD/hr",
-              "Cresta | 40/hr (5th coop) | $25/day lunch"
-            ]
-          },
+          "summary": "Employee salary and hourly rate data from multiple companies",
+          "context": "This data chunk appears to contain employment information for various individuals, including company names, hourly rates, and year of hire.",
+          "table": [
+            "Core Avionics\t20/hr (1st coop), 30/hr",
+            "Coursera\t7000/month",
+            "Cover Technologies Inc\t30 USD/hr",
+            "CPP Investments\t37/hr (2nd coop)\t4% of yearly salary (70k) as vacation pay\t2024\tSWE",
+            "CPP Investments\t34/hr (3rd coop)\t2024\t\"Intern Engineer\"",
+            "CPP Investments\t48/hr (4th coop)\t2024\t\"Intern Analyst\"",
+            "Crawford and Co\t20/hr\t2022\tBusiness Analyst",
+            "Cresta\t40/hr (5th coop)\t$25/day lunch\t2025",
+            "Creospark\t18/hr",
+            "Crypto4a\t40/hr (remote, 6th coop)\t4 days PTO\t2024\tSWE"
+          ],
           "chunk_number": 9
         },
         "chunk_10": {
           "range": "A101:A110",
           "start_row": 101,
           "end_row": 110,
-          "analysis": {
-            "summary": "Company data with hourly rates and benefits",
-            "data_types": [
-              "company_name",
-              "hourly_rate",
-              "benefit"
-            ],
-            "patterns": [],
-            "outliers": [
-              "1400 USD/week",
-              "co-op average + 20%"
-            ],
-            "key_values": [
-              "75/hr USD",
-              "32-38/hr (increases with work term)"
-            ],
-            "context": "",
-            "companies_above_40_per_hour": [
-              "Cube Group",
-              "Databrick"
-            ],
-            "companies_above_40_per_hour_confidence": 0.95,
-            "companies_above_40_per_hour_sources": [
-              "Cube Group shows 75/hr USD",
-              "Databrick shows 55 CAD/hr (which converts to >40 USD/hr)",
-              "All other entries either show <40/hr or use different payment structures"
-            ],
-            "usd_paying_companies": [
-              "Cube Group",
-              "Datadog",
-              "data.world"
-            ],
-            "usd_paying_companies_confidence": 1.0,
-            "usd_paying_companies_sources": [
-              "Cube Group | 75/hr USD",
-              "Datadog | 40/hr | 2000 USD/mo housing",
-              "data.world | 1400 USD/week | 100 USD remote stipend"
-            ]
-          },
+          "summary": "List of companies with their respective hourly wage and other compensation details",
+          "context": "The data appears to be a list of companies, their corresponding hourly wages in different currencies, and some additional notes on benefits or salary structures",
+          "table": [
+            "Cube Group\t75/hr USD\t2024",
+            "Curinos\t34/hr (2b)",
+            "Curvegrid (Japan)\t\u00a5300,000/mo (2nd coop)",
+            "D2L\t28/hr",
+            "Databrick\t55 CAD/hr\t1.3k/mo housing",
+            "Datadog\t40/hr\t2000 USD/mo housing",
+            "data.world\t1400 USD/week\t100 USD remote stipend",
+            "Deep Breathe\tco-op average + 20%",
+            "Deep Genomics\t60k/yr",
+            "DeepHaven\t32-38/hr (increases with work term)\t2024"
+          ],
           "chunk_number": 10
         },
         "chunk_11": {
           "range": "A111:A115",
           "start_row": 111,
           "end_row": 115,
-          "analysis": {
-            "summary": "List of companies with average hourly wage and coop average information",
-            "data_types": [
-              "text",
-              "numeric",
-              "numeric"
-            ],
-            "patterns": [
-              "*coop average",
-              "5-10% above the *coop average",
-              "Coop average",
-              "20/hr (2nd *coop)"
-            ],
-            "outliers": [],
-            "key_values": [
-              "1.15*",
-              "25-28/",
-              "5-10%",
-              "Coop",
-              "20/"
-            ],
-            "context": "The data represents companies with their respective hourly wage averages and coop information.",
-            "companies_above_40_per_hour": [],
-            "companies_above_40_per_hour_confidence": 1.0,
-            "companies_above_40_per_hour_sources": [
-              "Reviewed all hourly wage values: Deloitte (25-28/hr), Digital Extremes (20/hr)",
-              "No companies listed have confirmed hourly wages above $40/hr",
-              "Other companies list relative wages (coop average, percentage above average) which cannot be definitively determined to be above $40/hr"
-            ],
-            "usd_paying_companies": [
-              "Deloitte",
-              "Digital Extremes"
-            ],
-            "usd_paying_companies_confidence": 0.9,
-            "usd_paying_companies_sources": [
-              "Deloitte shows '25-28/hr' indicating hourly rate in dollars",
-              "Digital Extremes shows '20/hr' indicating hourly rate in dollars",
-              "Other companies show relative rates (coop average, percentages) rather than direct USD amounts"
-            ]
-          },
+          "summary": "Salary ranges for various companies",
+          "context": "Data includes salary information from Dejero, Deloitte, Delphia Asset Management, Digitaled, and Digital Extremes (Marketing)",
+          "table": [
+            "Dejero\t1.15*coop average",
+            "Deloitte\t25-28/hr",
+            "Delphia Asset Management\t5-10% above the coop average",
+            "Digitaled\tCoop average",
+            "Digital Extremes (Marketing)\t20/hr (2nd coop)"
+          ],
           "chunk_number": 11
         }
       },
       "metadata": {
         "total_chunks": 12,
-        "processing_time": 75.68199610710144,
+        "processing_time": 28.709911108016968,
         "ollama_calls": 12
       }
-    }
-  },
-  "user_queries": {
-    "comapies paying more than 40 per hpour": {
-      "query": "comapies paying more than 40 per hpour",
-      "fields": [
-        "companies_above_40_per_hour"
-      ],
-      "created_at": 1758696890.6133661
-    },
-    "companies paying in usd": {
-      "query": "companies paying in usd",
-      "fields": [
-        "usd_paying_companies"
-      ],
-      "created_at": 1758696982.368948
-    }
-  },
-  "field_metadata": {
-    "companies_above_40_per_hour": {
-      "field_type": "list",
-      "extraction_instruction": "extract company names that pay hourly wages greater than $40 per hour",
-      "added_at": 1758696890.613355,
-      "confidence": 0.95,
-      "user_query": "comapies paying more than 40 per hpour"
-    },
-    "usd_paying_companies": {
-      "field_type": "list",
-      "extraction_instruction": "extract company names that specifically pay salaries in USD currency",
-      "added_at": 1758696982.3689442,
-      "confidence": 0.95,
-      "user_query": "companies paying in usd"
     }
   }
 }
