@@ -4,6 +4,7 @@ from typing import Dict, List, Any
 import time
 from pinecone import Pinecone, ServerlessSpec
 from pinecone_config import PINECONE_API_KEY, PINECONE_ENVIRONMENT, PINECONE_INDEX_NAME
+from sentence_transformers import SentenceTransformer
 
 def initialize_pinecone():
     """Initialize Pinecone client."""
@@ -27,7 +28,7 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         print(f"🔄 Creating new index '{index_name}'...")
         pc.create_index(
             name=index_name,
-            dimension=1536,  # OpenAI embedding dimension
+            dimension=384,  # all-MiniLM-L6-v2 embedding dimension
             metric="cosine",
             spec=ServerlessSpec(
                 cloud="aws",
@@ -97,21 +98,33 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
     total_chunks = len(chunks_data)
     print(f"🔄 Uploading {total_chunks} chunks to Pinecone...")
     
+    # Initialize sentence transformer model
+    print("🔄 Loading sentence transformer model...")
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    print("✅ Model loaded successfully")
+    
     for i in range(0, total_chunks, batch_size):
         batch = chunks_data[i:i + batch_size]
-        batch_ids = [chunk["id"] for chunk in batch]
         
         try:
-            # For now, we'll use dummy embeddings
-            # In production, you'd use OpenAI or another embedding service
-            dummy_embeddings = [[0.1] * 1536 for _ in batch]
+            # Extract text content for embeddings
+            texts = []
+            for chunk in batch:
+                # Get the text content that was stored in the "values" field
+                text_content = chunk.get("values", "")
+                texts.append(text_content)
+            
+            # Generate real embeddings using sentence transformers
+            print(f"🔄 Generating embeddings for batch {i//batch_size + 1}...")
+            embeddings = model.encode(texts)
+            print(f"✅ Generated {len(embeddings)} embeddings")
             
             # Prepare vectors for upload
             vectors = []
             for j, chunk in enumerate(batch):
                 vectors.append({
                     "id": chunk["id"],
-                    "values": dummy_embeddings[j],
+                    "values": embeddings[j].tolist(),  # Convert numpy array to list
                     "metadata": chunk["metadata"]
                 })
             
