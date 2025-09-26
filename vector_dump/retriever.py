@@ -48,3 +48,6 @@ for i, doc in enumerate(docs):
 ranked = sorted(hybrid_scores.items(), key=lambda x: x[1], reverse=True)
 for doc, score in ranked:
     print(f"{score:.3f} - {doc}")
+
+if __name__ == "__main__":
+    pass
