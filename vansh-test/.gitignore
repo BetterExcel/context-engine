@@ -107,6 +107,5 @@ ehthumbs.db
 Thumbs.db
 
 # Output files
-dynamic_index_output.json
-anchored_index_output.json
+
 bruh.txt
