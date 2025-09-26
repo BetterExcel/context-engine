@@ -159,7 +159,7 @@ def query_index(index: Dict, query_terms: List[str]) -> Dict:
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "/Users/vansh/Documents/Documents/PROJECTS/skopeo-context/context-engine/test.xlsx"  # Replace with your Excel file
+    file_path = "/Users/karman/Desktop/projects/skopeo/context-engine/test.xlsx"  # Replace with your Excel file
     
     try:
         print("Building inverted index...")

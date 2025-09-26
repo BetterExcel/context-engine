@@ -1,0 +1,268 @@
+{
+  "sheets": {
+    "Export Summary": {
+      "sheet_name": "Export Summary",
+      "num_rows": 12,
+      "num_cols": 4,
+      "headers": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "values": {
+        "__NULL__": {
+          "type": "null",
+          "count": 38,
+          "samples": [
+            "A1",
+            "B1",
+            "C1",
+            "D1",
+            "A2",
+            "B2",
+            "C2",
+            "D2",
+            "A3",
+            "C3"
+          ],
+          "cols": {
+            "A": 12,
+            "B": 8,
+            "C": 9,
+            "D": 9
+          },
+          "locations_total": 38,
+          "locations_compressed": {
+            "A": [
+              [
+                1,
+                12
+              ]
+            ],
+            "B": [
+              [
+                1,
+                2
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                8,
+                8
+              ],
+              [
+                10,
+                10
+              ],
+              [
+                12,
+                12
+              ]
+            ],
+            "C": [
+              [
+                1,
+                6
+              ],
+              [
+                8,
+                9
+              ],
+              [
+                11,
+                11
+              ]
+            ],
+            "D": [
+              [
+                1,
+                6
+              ],
+              [
+                8,
+                9
+              ],
+              [
+                11,
+                11
+              ]
+            ]
+          },
+          "min_row": 1,
+          "max_row": 12
+        },
+        "STR:This document was exported from Numbers.  Each table was converted to an Excel worksheet. All other objects on each Numbers sheet were placed on separate worksheets. Please be aware that formula calculations may differ in Excel.": {
+          "type": "str",
+          "count": 1,
+          "samples": [
+            "B3"
+          ],
+          "cols": {
+            "B": 1
+          },
+          "locations_total": 1,
+          "locations_compressed": {
+            "B": [
+              [
+                3,
+                3
+              ]
+            ]
+          },
+          "min_row": 3,
+          "max_row": 3
+        },
+        "STR:Numbers Sheet Name": {
+          "type": "str",
+          "count": 1,
+          "samples": [
+            "B7"
+          ],
+          "cols": {
+            "B": 1
+          },
+          "locations_total": 1,
+          "locations_compressed": {
+            "B": [
+              [
+                7,
+                7
+              ]
+            ]
+          },
+          "min_row": 7,
+          "max_row": 7
+        },
+        "STR:Numbers Table Name": {
+          "type": "str",
+          "count": 1,
+          "samples": [
+            "C7"
+          ],
+          "cols": {
+            "C": 1
+          },
+          "locations_total": 1,
+          "locations_compressed": {
+            "C": [
+              [
+                7,
+                7
+              ]
+            ]
+          },
+          "min_row": 7,
+          "max_row": 7
+        },
+        "STR:Excel Worksheet Name": {
+          "type": "str",
+          "count": 1,
+          "samples": [
+            "D7"
+          ],
+          "cols": {
+            "D": 1
+          },
+          "locations_total": 1,
+          "locations_compressed": {
+            "D": [
+              [
+                7,
+                7
+              ]
+            ]
+          },
+          "min_row": 7,
+          "max_row": 7
+        },
+        "STR:Salary List": {
+          "type": "str",
+          "count": 2,
+          "samples": [
+            "B9",
+            "D10"
+          ],
+          "cols": {
+            "B": 1,
+            "D": 1
+          },
+          "locations_total": 2,
+          "locations_compressed": {
+            "B": [
+              [
+                9,
+                9
+              ]
+            ],
+            "D": [
+              [
+                10,
+                10
+              ]
+            ]
+          },
+          "min_row": 9,
+          "max_row": 10
+        },
+        "STR:Table 1": {
+          "type": "str",
+          "count": 2,
+          "samples": [
+            "C10",
+            "C12"
+          ],
+          "cols": {
+            "C": 2
+          },
+          "locations_total": 2,
+          "locations_compressed": {
+            "C": [
+              [
+                10,
+                10
+              ],
+              [
+                12,
+                12
+              ]
+            ]
+          },
+          "min_row": 10,
+          "max_row": 12
+        },
+        "STR:Blacklist": {
+          "type": "str",
+          "count": 2,
+          "samples": [
+            "B11",
+            "D12"
+          ],
+          "cols": {
+            "B": 1,
+            "D": 1
+          },
+          "locations_total": 2,
+          "locations_compressed": {
+            "B": [
+              [
+                11,
+                11
+              ]
+            ],
+            "D": [
+              [
+                12,
+                12
+              ]
+            ]
+          },
+          "min_row": 11,
+          "max_row": 12
+        }
+      }
+    }
+  }
+}

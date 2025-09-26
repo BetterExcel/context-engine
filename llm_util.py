@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv  # pip install python-dotenv
 
 from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama   # ✅ new
+from langchain_ollama.chat_models import ChatOllama   # ✅ new
 from langchain_core.prompts import ChatPromptTemplate
 
 # Load .env file at startup
@@ -13,14 +13,14 @@ def call_llm(
     prompt: str,
     provider: str = "openai",
     model: str = "gpt-4o-mini",
-    max_tokens: int = 160,
+    max_tokens: int = 2000,
     temperature: float = 0.0,
 ) -> str:
     provider = provider.lower()
 
     # Build the LangChain prompt template
     template = ChatPromptTemplate.from_messages([
-        ("system", "You summarize dataset columns concisely and conservatively."),
+        ("system", "Follow instructions carefully. You are a helpful assistant."),
         ("user", "{user_input}")
     ])
     chain = None
