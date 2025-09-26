@@ -31,7 +31,28 @@
             "less than 44/hr",
             "AGF Investments\t25/hr (2nd coop)\t2023\tWeb Developer (Junior)"
           ],
-          "chunk_number": 0
+          "chunk_number": 0,
+          "high_paying_companies": [
+            "Abnormal Security",
+            "Addepar",
+            "AdHawk Microsystems",
+            "Row ",
+            "Row ",
+            "Abnormal Security\t",
+            "USD annual prorated ",
+            "USD",
+            "Row ",
+            "Addepar\t"
+          ],
+          "high_paying_companies_confidence": 0.3,
+          "high_paying_companies_sources": [
+            "Manual extraction from response"
+          ],
+          "us_companies": "JSON parsing failed",
+          "us_companies_confidence": 0.1,
+          "us_companies_sources": [
+            "Parsing error"
+          ]
         },
         "chunk_1": {
           "range": "A11:A20",
@@ -51,7 +72,33 @@
             "Apple\t42/hr USD (3A)\t3335/mo pretax relocation (3A)\t2024\tHardware",
             "Apple\t42/hr USD\t1k/mo stipend\t2024\tSystem Level Test Engineer"
           ],
-          "chunk_number": 1
+          "chunk_number": 1,
+          "high_paying_companies": [
+            "AI Arena",
+            "Akuna Capital",
+            "Row ",
+            "AI Arena\t",
+            "Row ",
+            "Akuna Capital\t",
+            "USD"
+          ],
+          "high_paying_companies_confidence": 0.3,
+          "high_paying_companies_sources": [
+            "Manual extraction from response"
+          ],
+          "us_companies": [
+            "AI Arena",
+            "Akuna Capital",
+            "Altice USA",
+            "Amazon",
+            "AMD",
+            "American Express",
+            "ANSYS"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Company names present in rows A11:A20, with 'US' or 'USA' mentioned in row 13 indicating US location"
+          ]
         },
         "chunk_2": {
           "range": "A21:A30",
@@ -71,7 +118,28 @@
             "Autodesk\t34/hr (5th coop)\t2024",
             "Autonomic\t38-40/hr (4th coop), 41/hr (5th coop)"
           ],
-          "chunk_number": 2
+          "chunk_number": 2,
+          "high_paying_companies": [
+            "Arctic Wolf",
+            "Autodesk",
+            "Row ",
+            "Arctic Wolf\t",
+            "Row ",
+            "Autodesk\t"
+          ],
+          "high_paying_companies_confidence": 0.3,
+          "high_paying_companies_sources": [
+            "Manual extraction from response"
+          ],
+          "us_companies": [
+            "Arctic Wolf",
+            "ATS Corporation",
+            "Autodesk"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Company names in cell A21:A23 and A29:A30 are located in the US"
+          ]
         },
         "chunk_3": {
           "range": "A31:A40",
@@ -91,7 +159,43 @@
             "10,000/mo",
             "Blackberry\t(about average), ~21/hr"
           ],
-          "chunk_number": 3
+          "chunk_number": 3,
+          "high_paying_companies": [
+            "Axonify",
+            "BDO",
+            "Bentley Systems"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            "cells in range A31:A40 where the data contains an hourly wage greater than $40"
+          ],
+          "us_companies": [
+            {
+              "company_name": "Bank of America"
+            },
+            {
+              "company_name": "Bank of America (Merrill Lynch)"
+            },
+            {
+              "company_name": "BDO"
+            },
+            {
+              "company_name": "Bentley Systems"
+            },
+            {
+              "company_name": "BetterUp"
+            },
+            {
+              "company_name": "Bitbuy"
+            },
+            {
+              "company_name": "Blackberry"
+            }
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "The company names were directly extracted from the 'Axonify' to 'Blackberry' rows, assuming all companies listed are US-based unless explicitly stated otherwise."
+          ]
         },
         "chunk_4": {
           "range": "A41:A50",
@@ -111,7 +215,29 @@
             "Bonfire Interactive\t24/hr (2nd coop)",
             "Boosted.AI\t35/hr"
           ],
-          "chunk_number": 4
+          "chunk_number": 4,
+          "high_paying_companies": [
+            "bld.ai",
+            "Bolt",
+            "Boosted.AI"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            "rows A2, A8, and A10 contain hourly wage values greater than $40"
+          ],
+          "us_companies": [
+            "Bloomberg",
+            "Bluescape",
+            "BMO Business Analyst (2A)",
+            "BMO Product Analyst",
+            "BMO Software Developer",
+            "Bolt",
+            "Bonfire Interactive"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Company names are present in the 'bld.ai | ...' string for each row, excluding rows where there is no company name or it's not located in the US"
+          ]
         },
         "chunk_5": {
           "range": "A51:A60",
@@ -131,7 +257,35 @@
             "Capital1\t40/hr (5th coop)\t$1000 signing bonus\t2025",
             "Carta\t30.75/hr (4th coop), 1230-1400/week\tSWE"
           ],
-          "chunk_number": 5
+          "chunk_number": 5,
+          "high_paying_companies": [
+            {
+              "Company Name": "Borrowell"
+            },
+            {
+              "Company Name": "Brookfield Annuity"
+            },
+            {
+              "Company Name": "Capital1"
+            }
+          ],
+          "high_paying_companies_confidence": 0.9,
+          "high_paying_companies_sources": [
+            "Rows where hourly wage is greater than $40: Row 51, Row 53, Row 59"
+          ],
+          "us_companies": [
+            "Borrowell",
+            "Brookfield Annuity",
+            "Brookfield Renewables",
+            "Capital1"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Row 51: Borrowell (no specific location mentioned)",
+            "Row 52: Brookfield Annuity (no specific location mentioned)",
+            "Row 53: Brookfield Renewables (no specific location mentioned)",
+            "Row 59: Capital1 (relocation in-person in the US, implicit that company is US-based)"
+          ]
         },
         "chunk_6": {
           "range": "A61:A70",
@@ -151,7 +305,26 @@
             "Ceridian\t22/hr\t2022, 2023\tMarketing Coordinator",
             "Certik\t7000 USD/month remote (4th coop)"
           ],
-          "chunk_number": 6
+          "chunk_number": 6,
+          "high_paying_companies": [
+            "Carta",
+            "Castleton Commodities",
+            "Cerebras Systems"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            "Rows A61:A63 and A65: hourly wage is greater than $40"
+          ],
+          "us_companies": [
+            "Carta",
+            "Carfax (Dev)",
+            "Castleton Commodities",
+            "Ceridian"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Cell A61: \"US\" is implied by company presence in the data, Cell A68: \"2023\" which is a US date format"
+          ]
         },
         "chunk_7": {
           "range": "A71:A80",
@@ -171,7 +344,27 @@
             "Cockroach Labs\t8000/month + 1.5k signing bonus",
             "CodeWithChris\t20/hr (1st coop)"
           ],
-          "chunk_number": 7
+          "chunk_number": 7,
+          "high_paying_companies": [
+            "Chisel.ai",
+            "Citibank"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            2,
+            8
+          ],
+          "us_companies": [
+            "CGI",
+            "Christie Digital Systems",
+            "CIBC",
+            "Citadel",
+            "Citibank"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Cell A71:A80 contains company names, US companies were identified by location and job posting"
+          ]
         },
         "chunk_8": {
           "range": "A81:A90",
@@ -191,7 +384,30 @@
             "Constant Contact\t35/hr (4th coop)\t2023",
             "The Co-operators\t~21/hr (1st coop)"
           ],
-          "chunk_number": 8
+          "chunk_number": 8,
+          "high_paying_companies": [
+            "Cohesity",
+            "Coinbase",
+            "Row ",
+            "Cohesity\t",
+            "Row ",
+            "Coinbase\t"
+          ],
+          "high_paying_companies_confidence": 0.3,
+          "high_paying_companies_sources": [
+            "Manual extraction from response"
+          ],
+          "us_companies": [
+            "Cohere",
+            "Coherent Logix",
+            "Cohesity",
+            "Coinbase",
+            "Coinsquare"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "A81:A90 range, company names present in cells A81-A85"
+          ]
         },
         "chunk_9": {
           "range": "A91:A100",
@@ -211,7 +427,45 @@
             "Creospark\t18/hr",
             "Crypto4a\t40/hr (remote, 6th coop)\t4 days PTO\t2024\tSWE"
           ],
-          "chunk_number": 9
+          "chunk_number": 9,
+          "high_paying_companies": [
+            "Core Avionics",
+            "Cover Technologies Inc",
+            "CPP Investments",
+            "Cresta",
+            "Crypto4a"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            "all rows mention hourly wage or rate > $40, and include company name"
+          ],
+          "us_companies": [
+            {
+              "company_name": "Core Avionics"
+            },
+            {
+              "company_name": "Coursera"
+            },
+            {
+              "company_name": "Cover Technologies Inc"
+            },
+            {
+              "company_name": "Crawford and Co"
+            },
+            {
+              "company_name": "Cresta"
+            },
+            {
+              "company_name": "Creospark"
+            },
+            {
+              "company_name": "Crypto4a"
+            }
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Company names are explicitly mentioned in rows A91-A100"
+          ]
         },
         "chunk_10": {
           "range": "A101:A110",
@@ -231,7 +485,26 @@
             "Deep Genomics\t60k/yr",
             "DeepHaven\t32-38/hr (increases with work term)\t2024"
           ],
-          "chunk_number": 10
+          "chunk_number": 10,
+          "high_paying_companies": [
+            "Cube Group",
+            "Databrick"
+          ],
+          "high_paying_companies_confidence": 1.0,
+          "high_paying_companies_sources": [
+            "Rows 1 and 5 show hourly rates above $40: 75/hr USD for Cube Group and 55 CAD/hr (approximately $40 USD) for Databrick, but considering exchange rate, it's clear Databrick pays more than $40 USD"
+          ],
+          "us_companies": [
+            "Cube Group",
+            "Curinos",
+            "D2L",
+            "Datadog",
+            "data.world"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "US dollar (USD) and USD/mo housing are indicators of US location"
+          ]
         },
         "chunk_11": {
           "range": "A111:A115",
@@ -246,7 +519,29 @@
             "Digitaled\tCoop average",
             "Digital Extremes (Marketing)\t20/hr (2nd coop)"
           ],
-          "chunk_number": 11
+          "chunk_number": 11,
+          "high_paying_companies": [
+            "Deloitte",
+            "Digital Extremes ",
+            "Marketing",
+            "Row ",
+            "Deloitte\t",
+            "Row ",
+            "Digital Extremes ",
+            "Marketing"
+          ],
+          "high_paying_companies_confidence": 0.3,
+          "high_paying_companies_sources": [
+            "Manual extraction from response"
+          ],
+          "us_companies": [
+            "Deloitte",
+            "Delphia Asset Management"
+          ],
+          "us_companies_confidence": 1.0,
+          "us_companies_sources": [
+            "Company names in rows 112 and 113 have a clear indication of being US-based (US address or no address mentioned, which is common for large corporations)"
+          ]
         }
       },
       "metadata": {
@@ -254,6 +549,38 @@
         "processing_time": 28.709911108016968,
         "ollama_calls": 12
       }
+    }
+  },
+  "user_queries": {
+    "companies paying more than 40 per hour": {
+      "query": "companies paying more than 40 per hour",
+      "fields": [
+        "high_paying_companies"
+      ],
+      "created_at": 1758924455.504969
+    },
+    "us companies": {
+      "query": "us companies",
+      "fields": [
+        "us_companies"
+      ],
+      "created_at": 1758926507.765186
+    }
+  },
+  "field_metadata": {
+    "high_paying_companies": {
+      "field_type": "list|string",
+      "extraction_instruction": "extract company names that pay more than $40 per hour and store only the relevant data (company name)",
+      "added_at": 1758924455.504964,
+      "confidence": 0.8,
+      "user_query": "companies paying more than 40 per hour"
+    },
+    "us_companies": {
+      "field_type": "list",
+      "extraction_instruction": "extract only company names that are located in the US",
+      "added_at": 1758926507.765185,
+      "confidence": 1.0,
+      "user_query": "us companies"
     }
   }
 }

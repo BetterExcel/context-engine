@@ -6,6 +6,7 @@
 
 # Configuration files with sensitive data
 config.py
+pinecone_config.py
 
 # Python cache files
 __pycache__/

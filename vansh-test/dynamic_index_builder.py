@@ -14,17 +14,17 @@ except ImportError:
     OPENPYXL_AVAILABLE = False
     print("Warning: openpyxl not available. Excel reading disabled.")
 
-# Import API configuration
-try:
-    from config import ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL
-except ImportError:
-    print("Warning: config.py not found. Please create it with your API keys.")
-    ANTHROPIC_API_KEY = None
-    ANTHROPIC_BASE_URL = "https://api.anthropic.com"
+# Import API configuration (commented out - using Ollama instead)
+# try:
+#     from config import ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL
+# except ImportError:
+#     print("Warning: config.py not found. Please create it with your API keys.")
+#     ANTHROPIC_API_KEY = None
+#     ANTHROPIC_BASE_URL = "https://api.anthropic.com"
 
-# Ollama configuration (commented out - keeping for future use)
-# OLLAMA_URL = "http://localhost:11434"
-# OLLAMA_MODEL = "llama3.1:8b"
+# Ollama configuration
+OLLAMA_URL = "http://localhost:11434"
+OLLAMA_MODEL = "llama3.1:8b"
 
 def read_excel_range(excel_file_path: str, start_row: int, end_row: int, sheet_name: str = None) -> str:
     """
@@ -68,71 +68,71 @@ def read_excel_range(excel_file_path: str, start_row: int, end_row: int, sheet_n
     except Exception as e:
         return f"Error reading Excel range: {str(e)}"
 
-def call_anthropic(prompt: str, max_retries: int = 3) -> str:
-    """Call Anthropic Claude API with retry logic."""
-    if not ANTHROPIC_API_KEY:
-        raise Exception("ANTHROPIC_API_KEY not found. Please check your config.py file.")
-    
-    headers = {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01"
-    }
-    
-    payload = {
-        "model": "claude-3-5-sonnet-20241022",
-        "max_tokens": 4000,
-        "temperature": 0.1,
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    }
-    
-    for attempt in range(max_retries):
-        try:
-            response = requests.post(
-                f"{ANTHROPIC_BASE_URL}/v1/messages",
-                headers=headers,
-                json=payload,
-                timeout=60
-            )
-            response.raise_for_status()
-            result = response.json()
-            return result["content"][0]["text"]
-            
-        except Exception as e:
-            print(f"Anthropic attempt {attempt + 1} failed: {e}")
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # Exponential backoff
-            else:
-                raise Exception(f"Anthropic failed after {max_retries} attempts: {e}")
-
-# Ollama function (commented out - keeping for future use)
-# def call_ollama(prompt: str, max_retries: int = 3) -> str:
-#     """Call Ollama API with retry logic."""
+# Anthropic function (commented out - using Ollama instead)
+# def call_anthropic(prompt: str, max_retries: int = 3) -> str:
+#     """Call Anthropic Claude API with retry logic."""
+#     if not ANTHROPIC_API_KEY:
+#         raise Exception("ANTHROPIC_API_KEY not found. Please check your config.py file.")
+#     
+#     headers = {
+#         "x-api-key": ANTHROPIC_API_KEY,
+#         "Content-Type": "application/json",
+#         "anthropic-version": "2023-06-01"
+#     }
+#     
+#     payload = {
+#         "model": "claude-3-5-sonnet-20241022",
+#         "max_tokens": 4000,
+#         "temperature": 0.1,
+#         "messages": [
+#             {
+#                 "role": "user",
+#                 "content": prompt
+#             }
+#         ]
+#     }
+#     
 #     for attempt in range(max_retries):
 #         try:
 #             response = requests.post(
-#                 f"{OLLAMA_URL}/api/generate",
-#                 json={
-#                     "model": OLLAMA_MODEL,
-#                     "prompt": prompt,
-#                     "stream": False
-#                 },
-#                 timeout=30
+#                 f"{ANTHROPIC_BASE_URL}/v1/messages",
+#                 headers=headers,
+#                 json=payload,
+#                 timeout=60
 #             )
 #             response.raise_for_status()
 #             result = response.json()
-#             return result.get("response", "").strip()
+#             return result["content"][0]["text"]
+#             
 #         except Exception as e:
-#             print(f"Ollama attempt {attempt + 1} failed: {e}")
+#             print(f"Anthropic attempt {attempt + 1} failed: {e}")
 #             if attempt < max_retries - 1:
 #                 time.sleep(2 ** attempt)  # Exponential backoff
 #             else:
-#                 raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
+#                 raise Exception(f"Anthropic failed after {max_retries} attempts: {e}")
+
+def call_ollama(prompt: str, max_retries: int = 3) -> str:
+    """Call Ollama API with retry logic."""
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                f"{OLLAMA_URL}/api/generate",
+                json={
+                    "model": OLLAMA_MODEL,
+                    "prompt": prompt,
+                    "stream": False
+                },
+                timeout=30
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result.get("response", "").strip()
+        except Exception as e:
+            print(f"Ollama attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
 
 def parse_intent_for_field(query: str) -> Dict:
     """
@@ -176,7 +176,7 @@ def parse_intent_for_field(query: str) -> Dict:
     """
     
     try:
-        response = call_anthropic(prompt)
+        response = call_ollama(prompt)
         print(f"Intent parsing response: {response[:200]}...")
         
         # Clean up JSON response
@@ -272,7 +272,7 @@ def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_pat
             - Respond with ONLY the JSON object, no other text
             """
             
-            response = call_anthropic(prompt)
+            response = call_ollama(prompt)
             # print(f"  Debug - API response: {response[:300]}...")
             
             # Clean up and parse response
@@ -381,17 +381,17 @@ def update_index_with_new_field(existing_index: Dict, field_info: Dict, extracte
     # Add field to the user query
     updated_index["user_queries"][user_query]["fields"].append(field_name)
     
-    # Add the field to each chunk's analysis
+    # Add the field to each chunk (directly to chunk data since we removed analysis wrapper)
     for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
         for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
             if chunk_id in extracted_data:
-                chunk_data["analysis"][field_name] = extracted_data[chunk_id]["value"]
-                chunk_data["analysis"][f"{field_name}_confidence"] = extracted_data[chunk_id]["confidence"]
-                chunk_data["analysis"][f"{field_name}_sources"] = extracted_data[chunk_id]["source_indicators"]
+                chunk_data[field_name] = extracted_data[chunk_id]["value"]
+                chunk_data[f"{field_name}_confidence"] = extracted_data[chunk_id]["confidence"]
+                chunk_data[f"{field_name}_sources"] = extracted_data[chunk_id]["source_indicators"]
             else:
-                chunk_data["analysis"][field_name] = "Not extracted"
-                chunk_data["analysis"][f"{field_name}_confidence"] = 0.0
-                chunk_data["analysis"][f"{field_name}_sources"] = []
+                chunk_data[field_name] = "Not extracted"
+                chunk_data[f"{field_name}_confidence"] = 0.0
+                chunk_data[f"{field_name}_sources"] = []
     
     return updated_index
 
@@ -426,6 +426,41 @@ def copy_dynamic_to_anchored():
         print("✅ Fields preserved in anchored_index_output.json for future queries")
     except Exception as e:
         print(f"Warning: Could not copy dynamic index to anchored index: {e}")
+
+def update_pinecone_index(updated_index: Dict):
+    """Update Pinecone index with the new field data."""
+    try:
+        from pinecone_uploader import initialize_pinecone, create_index_if_not_exists, prepare_chunk_for_upload, upload_chunks_to_pinecone
+        from pinecone_config import PINECONE_INDEX_NAME
+        
+        print("🔄 Updating Pinecone index with new field data...")
+        
+        # Initialize Pinecone
+        pc = initialize_pinecone()
+        index = create_index_if_not_exists(pc, PINECONE_INDEX_NAME)
+        
+        # Prepare updated chunks for upload
+        chunks_to_upload = []
+        
+        for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
+            print(f"  Processing updated sheet: {sheet_name}")
+            
+            for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
+                prepared_chunk = prepare_chunk_for_upload(chunk_data, sheet_name, chunk_id)
+                chunks_to_upload.append(prepared_chunk)
+        
+        print(f"  Prepared {len(chunks_to_upload)} updated chunks for Pinecone")
+        
+        # Upload updated chunks (this will overwrite existing vectors with same IDs)
+        upload_chunks_to_pinecone(index, chunks_to_upload)
+        
+        print("✅ Pinecone index updated successfully with new field data")
+        
+    except ImportError:
+        print("⚠️  Pinecone uploader not available. Skipping Pinecone update.")
+    except Exception as e:
+        print(f"⚠️  Failed to update Pinecone index: {e}")
+        print("   Index data updated locally, but Pinecone sync failed")
 
 def display_user_queries(index: Dict):
     """Display all user queries and their associated fields."""
@@ -502,6 +537,10 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None, ex
     # Step 5: Copy dynamic index to anchored index to preserve fields
     print("\nStep 5: Preserving fields for future queries...")
     copy_dynamic_to_anchored()
+    
+    # Step 6: Update Pinecone index with new field data
+    print("\nStep 6: Syncing with Pinecone...")
+    update_pinecone_index(updated_index)
     
     print(f"\nSuccessfully added '{field_info['field_name']}' field to the index!")
     print(f"Total fields in index: {len(updated_index.get('field_metadata', {}))}")
