@@ -1,0 +1,82 @@
+2025-09-27 13:53:30,677 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 13:53:30,678 - INFO - Starting RAG query: 'companies paying in usd'
+2025-09-27 13:53:30,678 - INFO - Generating query embedding...
+2025-09-27 13:53:30,974 - INFO - Query embedding generated successfully
+2025-09-27 13:53:30,975 - INFO - Querying Pinecone index...
+2025-09-27 13:53:31,231 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 13:53:31,232 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 13:53:31,232 - INFO - Result 1: Score: 0.595 | ID: Consolidated_usd_paying_companies
+2025-09-27 13:53:31,232 - INFO -   Summary: Comprehensive list of usd paying companies extracted from all data chunks
+2025-09-27 13:53:31,232 - INFO -   Context: This consolidated chunk contains all usd paying companies found across the entire dataset. Data was extracted from 11 source chunks and deduplicated to show 26 unique entries.
+2025-09-27 13:53:31,232 - INFO -   consolidated_at: 1758995609.425859
+2025-09-27 13:53:31,232 - INFO -   table: ["Row 1: Abnormal Security", "Row 2: Akuna Capital", "Row 3: Amazon", "Row 4: Apple", "Row 5: Athelas", "Row 6: Athos", "Row 7: Bank of America", "Row 8: Bank of America (Merrill Lynch)", "Row 9: BDO", "Row 10: Bentley Systems", "Row 11: BetterUp", "Row 12: Bitbuy", "Row 13: Bolt", "Row 14: 6400 USD/mo", "Row 15: Capital1", "Row 16: Certik", "Row 17: Citadel", "Row 18: Coinbase", "Row 19: Coinsquare", "Row 20: Composer.trade", "Row 21: Compound", "Row 22: Cover Technologies Inc", "Row 23: Cresta", "Row 24: Cube Group", "Row 25: Datadog", "Row 26: data.world"]
+2025-09-27 13:53:31,232 - INFO -   usd_paying_companies: ["Abnormal Security", "Akuna Capital", "Amazon", "Apple", "Athelas", "Athos", "Bank of America", "Bank of America (Merrill Lynch)", "BDO", "Bentley Systems", "BetterUp", "Bitbuy", "Bolt", "6400 USD/mo", "Capital1", "Certik", "Citadel", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Cover Technologies Inc", "Cresta", "Cube Group", "Datadog", "data.world"]
+2025-09-27 13:53:31,232 - INFO -   usd_paying_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10"]
+2025-09-27 13:53:31,233 - INFO -   usd_paying_companies_source_count: 11
+2025-09-27 13:53:31,233 - INFO -   usd_paying_companies_total_count: 26
+2025-09-27 13:53:31,233 - INFO - 
+2025-09-27 13:53:31,233 - INFO - Result 2: Score: 0.425 | ID: Salary List_chunk_1
+2025-09-27 13:53:31,233 - INFO -   Summary: Salary and benefits information for various companies
+2025-09-27 13:53:31,233 - INFO -   Context: This data chunk contains hourly wage, annual salary, relocation stipends, and other compensation details from multiple employers
+2025-09-27 13:53:31,233 - INFO -   Complete Table Data:
+2025-09-27 13:53:31,233 - INFO -     Row 1: AI Arena	45/hr
+2025-09-27 13:53:31,233 - INFO -     Row 2: Akuna Capital	65 USD/hour	return flight + corporate housing
+2025-09-27 13:53:31,233 - INFO -     Row 3: Altice USA	mid 30s/hr (6th coop)
+2025-09-27 13:53:31,233 - INFO -     Row 4: Amazon	9138 USD/month	2425/month tax-free relocation stipend
+2025-09-27 13:53:31,233 - INFO -     Row 5: AMD	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop)
+2025-09-27 13:53:31,233 - INFO -     Row 6: American Express	34.5/hr
+2025-09-27 13:53:31,233 - INFO -     Row 7: ANSYS	math coop average + 10%
+2025-09-27 13:53:31,233 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design)	Stipends listed
+2025-09-27 13:53:31,233 - INFO -     Row 9: Apple	42/hr USD (3A)	3335/mo pretax relocation (3A)	2024	Hardware
+2025-09-27 13:53:31,233 - INFO -     Row 10: Apple	42/hr USD	1k/mo stipend	2024	System Level Test Engineer
+2025-09-27 13:53:31,233 - INFO -   usd_paying_companies: ["Akuna Capital", "Amazon", "Apple", "Apple"]
+2025-09-27 13:53:31,233 - INFO - 
+2025-09-27 13:53:31,233 - INFO - Result 3: Score: 0.417 | ID: Salary List_chunk_3
+2025-09-27 13:53:31,233 - INFO -   Summary: A list of companies with their respective hourly or weekly rates and cooperative status
+2025-09-27 13:53:31,234 - INFO -   Context: The data appears to be a collection of internships or job offers from various companies, including Axonify, Bank of America, BDO, Bentley Systems, BETS Program, BetterUp, Bitbuy, and Blackberry
+2025-09-27 13:53:31,234 - INFO -   Complete Table Data:
+2025-09-27 13:53:31,234 - INFO -     Row 1: Axonify	1100/week (4th coop)	2024
+2025-09-27 13:53:31,234 - INFO -     Row 2: Bank of America	22/hr (2nd coop)
+2025-09-27 13:53:31,234 - INFO -     Row 3: Bank of America (Merrill Lynch)	20/hr (1st coop)
+2025-09-27 13:53:31,234 - INFO -     Row 4: BDO	34.36/hr, 25/h (2nd coop), 32/h (3rd coop)
+2025-09-27 13:53:31,234 - INFO -     Row 5: Bentley Systems	30/hr (1st coop), 33/hr (2nd coop)
+2025-09-27 13:53:31,234 - INFO -     Row 6: BETS Program	3000 stipend
+2025-09-27 13:53:31,234 - INFO -     Row 7: BetterUp	8500/mo
+2025-09-27 13:53:31,234 - INFO -     Row 8: Bitbuy	20/hr (1st coop)
+2025-09-27 13:53:31,234 - INFO -     Row 9: 10,000/mo
+2025-09-27 13:53:31,234 - INFO -     Row 10: Blackberry	(about average), ~21/hr
+2025-09-27 13:53:31,234 - INFO -   usd_paying_companies: ["Bank of America", "Bank of America (Merrill Lynch)", "BDO", "Bentley Systems", "BetterUp", "Bitbuy"]
+2025-09-27 13:53:31,234 - INFO - 
+2025-09-27 13:53:31,234 - INFO - Result 4: Score: 0.413 | ID: Salary List_chunk_10
+2025-09-27 13:53:31,234 - INFO -   Summary: A list of cube group costs and compensation details for various companies, including hourly rates and additional benefits.
+2025-09-27 13:53:31,234 - INFO -   Context: This data appears to be related to job postings or salary information for different companies in the cube group industry.
+2025-09-27 13:53:31,234 - INFO -   Complete Table Data:
+2025-09-27 13:53:31,234 - INFO -     Row 1: Cube Group	75/hr USD	2024
+2025-09-27 13:53:31,235 - INFO -     Row 2: Curinos	34/hr (2b)
+2025-09-27 13:53:31,235 - INFO -     Row 3: Curvegrid (Japan)	¥300,000/mo (2nd coop)
+2025-09-27 13:53:31,235 - INFO -     Row 4: D2L	28/hr
+2025-09-27 13:53:31,235 - INFO -     Row 5: Databrick	55 CAD/hr	1.3k/mo housing
+2025-09-27 13:53:31,235 - INFO -     Row 6: Datadog	40/hr	2000 USD/mo housing
+2025-09-27 13:53:31,235 - INFO -     Row 7: data.world	1400 USD/week	100 USD remote stipend
+2025-09-27 13:53:31,235 - INFO -     Row 8: Deep Breathe	co-op average + 20%
+2025-09-27 13:53:31,235 - INFO -     Row 9: Deep Genomics	60k/yr
+2025-09-27 13:53:31,235 - INFO -     Row 10: DeepHaven	32-38/hr (increases with work term)	2024
+2025-09-27 13:53:31,235 - INFO -   usd_paying_companies: ["Cube Group", "Datadog", "data.world"]
+2025-09-27 13:53:31,235 - INFO - 
+2025-09-27 13:53:31,235 - INFO - Result 5: Score: 0.406 | ID: Salary List_chunk_5
+2025-09-27 13:53:31,235 - INFO -   Summary: List of hourly wages from various companies
+2025-09-27 13:53:31,235 - INFO -   Context: This data includes job postings from multiple sources, each with an associated hourly wage
+2025-09-27 13:53:31,235 - INFO -   Complete Table Data:
+2025-09-27 13:53:31,235 - INFO -     Row 1: Borrowell	(mobile dev) 35/hr (5h coop)
+2025-09-27 13:53:31,235 - INFO -     Row 2: Brookfield Annuity	35/hr
+2025-09-27 13:53:31,235 - INFO -     Row 3: Brookfield Renewables	26/hr
+2025-09-27 13:53:31,235 - INFO -     Row 4: BusPlanner	coop average	2024
+2025-09-27 13:53:31,235 - INFO -     Row 5: CAAT Pension Plan	18/hr (2nd coop)
+2025-09-27 13:53:31,236 - INFO -     Row 6: Canadian Food Inspection Agency (Full Stack Dev)	24.77/hr (5th coop)
+2025-09-27 13:53:31,236 - INFO -     Row 7: 6400 USD/mo (+1000/mo relocation in-person)
+2025-09-27 13:53:31,236 - INFO -     Row 8: 25-30/hr
+2025-09-27 13:53:31,236 - INFO -     Row 9: Capital1	40/hr (5th coop)	$1000 signing bonus	2025
+2025-09-27 13:53:31,236 - INFO -     Row 10: Carta	30.75/hr (4th coop), 1230-1400/week	SWE
+2025-09-27 13:53:31,236 - INFO -   usd_paying_companies: ["6400 USD/mo", "Capital1"]
+2025-09-27 13:53:31,236 - INFO - 
+2025-09-27 13:53:31,236 - INFO - === END RAG QUERY RESULTS ===

@@ -569,6 +569,26 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None, ex
     print("\nStep 6: Syncing with Pinecone...")
     update_pinecone_index(updated_index)
     
+    # Step 7: Create consolidated chunk for the new field
+    print("\nStep 7: Creating consolidated chunk...")
+    try:
+        from field_consolidator import consolidate_fields_for_new_field
+        
+        # Collect all extracted field data from all chunks
+        field_data = {}
+        for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
+            for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
+                if field_info['field_name'] in chunk_data:
+                    field_data[chunk_id] = chunk_data[field_info['field_name']]
+        
+        # Create consolidated chunk and upload to Pinecone
+        consolidate_fields_for_new_field(field_info['field_name'], field_data)
+        print(f"✅ Successfully created consolidated chunk for '{field_info['field_name']}'")
+        
+    except Exception as e:
+        print(f"⚠️  Warning: Failed to create consolidated chunk: {e}")
+        print("   (Pipeline will continue without consolidated chunk)")
+    
     print(f"\nSuccessfully added '{field_info['field_name']}' field to the index!")
     print(f"Total fields in index: {len(updated_index.get('field_metadata', {}))}")
     
