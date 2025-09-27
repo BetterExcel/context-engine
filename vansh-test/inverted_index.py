@@ -1,15 +1,20 @@
 import openpyxl
 import json
+import os
 from typing import Dict, List, Any, Union, Tuple
 from datetime import datetime
 from collections import defaultdict
 import re
 import requests
 import time
+from dotenv import load_dotenv
 
-# Ollama configuration
-OLLAMA_URL = "http://localhost:11434"
-OLLAMA_MODEL = "llama3.1:8b"
+# Load environment variables from .env file
+load_dotenv()
+
+# Ollama configuration from environment variables
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 
 def call_ollama(prompt: str, max_retries: int = 3) -> str:
     """Call Ollama API with retry logic."""

@@ -17,8 +17,8 @@
           "range": "A1:A10",
           "start_row": 1,
           "end_row": 10,
-          "summary": "List of company and role information for job offers with hourly wage, year of offer, and position",
-          "context": "Data appears to be related to job market research or salary comparison",
+          "summary": "Salary data for various companies and roles, including hourly rates and benefits",
+          "context": "This data appears to be a list of job listings or offers from different companies, with information about the company, role, hourly wage, and any additional benefits or conditions.",
           "table": [
             "Company / Role\tBye World\tBenefits\tYear\tPosition",
             "1password\t50/hr (4th coop)\t2023",
@@ -31,35 +31,26 @@
             "less than 44/hr",
             "AGF Investments\t25/hr (2nd coop)\t2023\tWeb Developer (Junior)"
           ],
+          "formulas": [],
           "chunk_number": 0,
-          "high_paying_companies": [
+          "tech_companies_list": [
+            "1password",
             "Abnormal Security",
+            "Accedo",
             "Addepar",
-            "AdHawk Microsystems",
-            "Row ",
-            "Row ",
-            "Abnormal Security\t",
-            "USD annual prorated ",
-            "USD",
-            "Row ",
-            "Addepar\t"
+            "AdHawk Microsystems"
           ],
-          "high_paying_companies_confidence": 0.3,
-          "high_paying_companies_sources": [
-            "Manual extraction from response"
-          ],
-          "us_companies": "JSON parsing failed",
-          "us_companies_confidence": 0.1,
-          "us_companies_sources": [
-            "Parsing error"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "The presence of company names that are commonly associated with technology in the provided data."
           ]
         },
         "chunk_1": {
           "range": "A11:A20",
           "start_row": 11,
           "end_row": 20,
-          "summary": "Pay rates and benefits for various companies",
-          "context": "Data includes hourly wages, monthly stipends, corporate housing, return flights, tax-free relocation, and hardware provided",
+          "summary": "Salary and benefit information for various companies",
+          "context": "This data chunk contains hourly wages, monthly salaries, relocation stipends, housing allowances, and other benefits from different companies in the tech industry",
           "table": [
             "AI Arena\t45/hr",
             "Akuna Capital\t65 USD/hour\treturn flight + corporate housing",
@@ -72,40 +63,23 @@
             "Apple\t42/hr USD (3A)\t3335/mo pretax relocation (3A)\t2024\tHardware",
             "Apple\t42/hr USD\t1k/mo stipend\t2024\tSystem Level Test Engineer"
           ],
+          "formulas": [],
           "chunk_number": 1,
-          "high_paying_companies": [
-            "AI Arena",
-            "Akuna Capital",
-            "Row ",
-            "AI Arena\t",
-            "Row ",
-            "Akuna Capital\t",
-            "USD"
+          "tech_companies_list": [
+            "Apple"
           ],
-          "high_paying_companies_confidence": 0.3,
-          "high_paying_companies_sources": [
-            "Manual extraction from response"
-          ],
-          "us_companies": [
-            "AI Arena",
-            "Akuna Capital",
-            "Altice USA",
-            "Amazon",
-            "AMD",
-            "American Express",
-            "ANSYS"
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Company names present in rows A11:A20, with 'US' or 'USA' mentioned in row 13 indicating US location"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "Row 9: Apple 42/hr USD (3A) 3335/mo pretax relocation (3A) Hardware",
+            "Row 10: Apple 42/hr USD 1k/mo stipend 2024 System Level Test Engineer"
           ]
         },
         "chunk_2": {
           "range": "A21:A30",
           "start_row": 21,
           "end_row": 30,
-          "summary": "Salary data for various companies/coops",
-          "context": "The data includes hourly rates and additional benefits for employees of different organizations.",
+          "summary": "A list of hourly wages from various companies, including their name and year or coop number",
+          "context": "This data appears to be a collection of hourly wage information for specific companies, with some entries including additional details such as coop numbers or years worked",
           "table": [
             "Arctic Wolf\t36/hr (3rd coop), 42/hr (4th coop)\t2023",
             "Arctic Wolf\t38/hr (4th coop)\t2024",
@@ -118,35 +92,29 @@
             "Autodesk\t34/hr (5th coop)\t2024",
             "Autonomic\t38-40/hr (4th coop), 41/hr (5th coop)"
           ],
+          "formulas": [],
           "chunk_number": 2,
-          "high_paying_companies": [
+          "tech_companies_list": [
             "Arctic Wolf",
+            "Aterlo Networks",
+            "Athelas",
+            "Athos",
+            "Atolio",
             "Autodesk",
-            "Row ",
-            "Arctic Wolf\t",
-            "Row ",
-            "Autodesk\t"
+            "Autonomic"
           ],
-          "high_paying_companies_confidence": 0.3,
-          "high_paying_companies_sources": [
-            "Manual extraction from response"
-          ],
-          "us_companies": [
-            "Arctic Wolf",
-            "ATS Corporation",
-            "Autodesk"
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Company names in cell A21:A23 and A29:A30 are located in the US"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "The names listed are commonly associated with technology companies.",
+            "The presence of terms like 'Networks', 'Autodesk', and 'Autonomic' suggests a technology focus."
           ]
         },
         "chunk_3": {
           "range": "A31:A40",
           "start_row": 31,
           "end_row": 40,
-          "summary": "List of hourly and monthly stipends for various companies",
-          "context": "Data from spreadsheet chunk A31:A40",
+          "summary": "List of companies with their corresponding hourly wage or stipend information",
+          "context": "The data appears to be a list of co-op experiences with company names and associated hourly wages or stipends, possibly from a spreadsheet",
           "table": [
             "Axonify\t1100/week (4th coop)\t2024",
             "Bank of America\t22/hr (2nd coop)",
@@ -159,50 +127,30 @@
             "10,000/mo",
             "Blackberry\t(about average), ~21/hr"
           ],
+          "formulas": [],
           "chunk_number": 3,
-          "high_paying_companies": [
+          "tech_companies_list": [
             "Axonify",
-            "BDO",
-            "Bentley Systems"
+            "Bentley Systems",
+            "BetterUp",
+            "Bitbuy",
+            "Blackberry"
           ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            "cells in range A31:A40 where the data contains an hourly wage greater than $40"
-          ],
-          "us_companies": [
-            {
-              "company_name": "Bank of America"
-            },
-            {
-              "company_name": "Bank of America (Merrill Lynch)"
-            },
-            {
-              "company_name": "BDO"
-            },
-            {
-              "company_name": "Bentley Systems"
-            },
-            {
-              "company_name": "BetterUp"
-            },
-            {
-              "company_name": "Bitbuy"
-            },
-            {
-              "company_name": "Blackberry"
-            }
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "The company names were directly extracted from the 'Axonify' to 'Blackberry' rows, assuming all companies listed are US-based unless explicitly stated otherwise."
+          "tech_companies_list_confidence": 0.8,
+          "tech_companies_list_sources": [
+            "The names listed in the data are associated with technology-related terms or industries.",
+            "Bentley Systems is known for software in engineering and technology.",
+            "BetterUp is a technology company focused on coaching and personal development.",
+            "Bitbuy is a cryptocurrency exchange, which falls under technology.",
+            "Blackberry has transitioned into software and security technology."
           ]
         },
         "chunk_4": {
           "range": "A41:A50",
           "start_row": 41,
           "end_row": 50,
-          "summary": "List of hourly and monthly pay rates for various companies",
-          "context": "This data appears to be a list of internships or co-op programs with their corresponding hourly and/or monthly pay rates.",
+          "summary": "A list of hourly and monthly compensation rates for various companies, including co-op stipends and benefits.",
+          "context": "This data appears to be a list of internship or job opportunities with associated pay rates.",
           "table": [
             "bld.ai\t7000/mo",
             "Bloomberg\t48/hr + 5100 stipend (5th coop)",
@@ -215,36 +163,28 @@
             "Bonfire Interactive\t24/hr (2nd coop)",
             "Boosted.AI\t35/hr"
           ],
+          "formulas": [],
           "chunk_number": 4,
-          "high_paying_companies": [
+          "tech_companies_list": [
             "bld.ai",
+            "BMO Software Developer",
             "Bolt",
             "Boosted.AI"
           ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            "rows A2, A8, and A10 contain hourly wage values greater than $40"
-          ],
-          "us_companies": [
-            "Bloomberg",
-            "Bluescape",
-            "BMO Business Analyst (2A)",
-            "BMO Product Analyst",
-            "BMO Software Developer",
-            "Bolt",
-            "Bonfire Interactive"
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Company names are present in the 'bld.ai | ...' string for each row, excluding rows where there is no company name or it's not located in the US"
+          "tech_companies_list_confidence": 0.8,
+          "tech_companies_list_sources": [
+            "bld.ai is a known AI technology company.",
+            "BMO Software Developer indicates a role in software development, which is a technology field.",
+            "Bolt is recognized as a technology company in the transportation sector.",
+            "Boosted.AI is explicitly identified as an AI technology company."
           ]
         },
         "chunk_5": {
           "range": "A51:A60",
           "start_row": 51,
           "end_row": 60,
-          "summary": "Job listings with hourly rates and work arrangements",
-          "context": "Data appears to be a list of job openings, including company names, hourly wages, and cooperative work arrangements",
+          "summary": "List of job titles, hourly rates, and other employment details",
+          "context": "Data appears to be a collection of job listings or employment offers",
           "table": [
             "Borrowell\t(mobile dev) 35/hr (5h coop)",
             "Brookfield Annuity\t35/hr",
@@ -257,42 +197,26 @@
             "Capital1\t40/hr (5th coop)\t$1000 signing bonus\t2025",
             "Carta\t30.75/hr (4th coop), 1230-1400/week\tSWE"
           ],
+          "formulas": [],
           "chunk_number": 5,
-          "high_paying_companies": [
-            {
-              "Company Name": "Borrowell"
-            },
-            {
-              "Company Name": "Brookfield Annuity"
-            },
-            {
-              "Company Name": "Capital1"
-            }
-          ],
-          "high_paying_companies_confidence": 0.9,
-          "high_paying_companies_sources": [
-            "Rows where hourly wage is greater than $40: Row 51, Row 53, Row 59"
-          ],
-          "us_companies": [
+          "tech_companies_list": [
             "Borrowell",
-            "Brookfield Annuity",
-            "Brookfield Renewables",
-            "Capital1"
+            "Capital1",
+            "Carta"
           ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Row 51: Borrowell (no specific location mentioned)",
-            "Row 52: Brookfield Annuity (no specific location mentioned)",
-            "Row 53: Brookfield Renewables (no specific location mentioned)",
-            "Row 59: Capital1 (relocation in-person in the US, implicit that company is US-based)"
+          "tech_companies_list_confidence": 0.8,
+          "tech_companies_list_sources": [
+            "Borrowell (mobile dev)",
+            "Capital1 (5th coop)",
+            "Carta (SWE)"
           ]
         },
         "chunk_6": {
           "range": "A61:A70",
           "start_row": 61,
           "end_row": 70,
-          "summary": "List of companies with their hourly wage rates and other details",
-          "context": "The data contains information about various companies, including their hourly wages, years of operation, and departmental affiliations",
+          "summary": "List of companies with hourly wages and additional benefits",
+          "context": "Data chunk A61:A70 from a spreadsheet, containing company names and related work information",
           "table": [
             "Carta\t40/hr (4th coop), 47/hr (5th coop)\t2024\tAndroid Engineering",
             "Carfax (Dev)\t26/hr (2nd coop)",
@@ -305,33 +229,26 @@
             "Ceridian\t22/hr\t2022, 2023\tMarketing Coordinator",
             "Certik\t7000 USD/month remote (4th coop)"
           ],
+          "formulas": [],
           "chunk_number": 6,
-          "high_paying_companies": [
+          "tech_companies_list": [
             "Carta",
-            "Castleton Commodities",
-            "Cerebras Systems"
+            "Cepton",
+            "Cerebras Systems",
+            "Ceridian",
+            "Certik"
           ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            "Rows A61:A63 and A65: hourly wage is greater than $40"
-          ],
-          "us_companies": [
-            "Carta",
-            "Carfax (Dev)",
-            "Castleton Commodities",
-            "Ceridian"
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Cell A61: \"US\" is implied by company presence in the data, Cell A68: \"2023\" which is a US date format"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "The presence of technology-related terms in the company names and their associated roles, such as 'Android Engineering' for Carta, and 'Cerebras Systems' which is known for AI hardware."
           ]
         },
         "chunk_7": {
           "range": "A71:A80",
           "start_row": 71,
           "end_row": 80,
-          "summary": "Job offers and hourly rates from various companies",
-          "context": "Contains information about co-op terms, hourly wages, and bonuses for specific companies",
+          "summary": "Cooperative pay rates for various companies and positions",
+          "context": "Data includes hourly, weekly, and monthly compensation ranges for cooperative programs",
           "table": [
             "CGI\t18/hr (3rd coop)",
             "Chisel.ai\t40/hr (5th coop)",
@@ -344,34 +261,28 @@
             "Cockroach Labs\t8000/month + 1.5k signing bonus",
             "CodeWithChris\t20/hr (1st coop)"
           ],
+          "formulas": [],
           "chunk_number": 7,
-          "high_paying_companies": [
-            "Chisel.ai",
-            "Citibank"
-          ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            2,
-            8
-          ],
-          "us_companies": [
+          "tech_companies_list": [
             "CGI",
+            "Chisel.ai",
             "Christie Digital Systems",
-            "CIBC",
-            "Citadel",
-            "Citibank"
+            "Cisco (Ottawa Office)",
+            "Cisco Meraki",
+            "Cockroach Labs",
+            "CodeWithChris"
           ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Cell A71:A80 contains company names, US companies were identified by location and job posting"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "The presence of company names associated with technology-related terms such as 'AI', 'Digital', 'Cisco', and 'Labs'."
           ]
         },
         "chunk_8": {
           "range": "A81:A90",
           "start_row": 81,
           "end_row": 90,
-          "summary": "Salary ranges and hourly wages for various companies",
-          "context": "Data includes hourly wage ranges, stipends, and monthly salaries from different organizations",
+          "summary": "List of hourly rates for various companies",
+          "context": "Data likely related to job postings or salary information",
           "table": [
             "Cohere\t20-50/hr based on experience",
             "Coherent Logix\t$1-3 above coop average",
@@ -384,37 +295,30 @@
             "Constant Contact\t35/hr (4th coop)\t2023",
             "The Co-operators\t~21/hr (1st coop)"
           ],
+          "formulas": [],
           "chunk_number": 8,
-          "high_paying_companies": [
-            "Cohesity",
-            "Coinbase",
-            "Row ",
-            "Cohesity\t",
-            "Row ",
-            "Coinbase\t"
-          ],
-          "high_paying_companies_confidence": 0.3,
-          "high_paying_companies_sources": [
-            "Manual extraction from response"
-          ],
-          "us_companies": [
+          "tech_companies_list": [
             "Cohere",
-            "Coherent Logix",
             "Cohesity",
             "Coinbase",
-            "Coinsquare"
+            "Coinsquare",
+            "Composer.trade",
+            "Compound",
+            "Connected",
+            "Constant Contact"
           ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "A81:A90 range, company names present in cells A81-A85"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "The names listed are commonly associated with technology companies.",
+            "The presence of terms like 'trade', 'coin', and 'contact' suggests a technology focus."
           ]
         },
         "chunk_9": {
           "range": "A91:A100",
           "start_row": 91,
           "end_row": 100,
-          "summary": "Employee salary and hourly rate data from multiple companies",
-          "context": "This data chunk appears to contain employment information for various individuals, including company names, hourly rates, and year of hire.",
+          "summary": "A list of hourly wages and other job information for various companies",
+          "context": "The data appears to be a collection of job listings or salaries for different positions",
           "table": [
             "Core Avionics\t20/hr (1st coop), 30/hr",
             "Coursera\t7000/month",
@@ -427,52 +331,26 @@
             "Creospark\t18/hr",
             "Crypto4a\t40/hr (remote, 6th coop)\t4 days PTO\t2024\tSWE"
           ],
+          "formulas": [],
           "chunk_number": 9,
-          "high_paying_companies": [
-            "Core Avionics",
+          "tech_companies_list": [
+            "Coursera",
             "Cover Technologies Inc",
-            "CPP Investments",
-            "Cresta",
             "Crypto4a"
           ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            "all rows mention hourly wage or rate > $40, and include company name"
-          ],
-          "us_companies": [
-            {
-              "company_name": "Core Avionics"
-            },
-            {
-              "company_name": "Coursera"
-            },
-            {
-              "company_name": "Cover Technologies Inc"
-            },
-            {
-              "company_name": "Crawford and Co"
-            },
-            {
-              "company_name": "Cresta"
-            },
-            {
-              "company_name": "Creospark"
-            },
-            {
-              "company_name": "Crypto4a"
-            }
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Company names are explicitly mentioned in rows A91-A100"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "Coursera is known as an online learning platform focused on technology education.",
+            "Cover Technologies Inc is categorized under technology due to its name indicating a focus on technology solutions.",
+            "Crypto4a is associated with cryptocurrency technology."
           ]
         },
         "chunk_10": {
           "range": "A101:A110",
           "start_row": 101,
           "end_row": 110,
-          "summary": "List of companies with their respective hourly wage and other compensation details",
-          "context": "The data appears to be a list of companies, their corresponding hourly wages in different currencies, and some additional notes on benefits or salary structures",
+          "summary": "Salary and compensation ranges for various companies, including hourly rates, annual salaries, and benefits",
+          "context": "This data appears to be a list of different organizations with their respective salary or compensation information",
           "table": [
             "Cube Group\t75/hr USD\t2024",
             "Curinos\t34/hr (2b)",
@@ -485,33 +363,29 @@
             "Deep Genomics\t60k/yr",
             "DeepHaven\t32-38/hr (increases with work term)\t2024"
           ],
+          "formulas": [
+            "Row104: R1:D2"
+          ],
           "chunk_number": 10,
-          "high_paying_companies": [
-            "Cube Group",
-            "Databrick"
-          ],
-          "high_paying_companies_confidence": 1.0,
-          "high_paying_companies_sources": [
-            "Rows 1 and 5 show hourly rates above $40: 75/hr USD for Cube Group and 55 CAD/hr (approximately $40 USD) for Databrick, but considering exchange rate, it's clear Databrick pays more than $40 USD"
-          ],
-          "us_companies": [
-            "Cube Group",
-            "Curinos",
-            "D2L",
+          "tech_companies_list": [
+            "Databrick",
             "Datadog",
-            "data.world"
+            "data.world",
+            "Deep Genomics"
           ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "US dollar (USD) and USD/mo housing are indicators of US location"
+          "tech_companies_list_confidence": 0.9,
+          "tech_companies_list_sources": [
+            "Databrick and Datadog are known technology companies.",
+            "data.world is a platform for data collaboration and is categorized under technology.",
+            "Deep Genomics focuses on AI and genomics, placing it in the technology sector."
           ]
         },
         "chunk_11": {
           "range": "A111:A115",
           "start_row": 111,
           "end_row": 115,
-          "summary": "Salary ranges for various companies",
-          "context": "Data includes salary information from Dejero, Deloitte, Delphia Asset Management, Digitaled, and Digital Extremes (Marketing)",
+          "summary": "Company rates, in various formats (coop avg, hourly range)",
+          "context": "Salary or rate information for several companies",
           "table": [
             "Dejero\t1.15*coop average",
             "Deloitte\t25-28/hr",
@@ -519,99 +393,41 @@
             "Digitaled\tCoop average",
             "Digital Extremes (Marketing)\t20/hr (2nd coop)"
           ],
-          "chunk_number": 11,
-          "high_paying_companies": [
-            "Deloitte",
-            "Digital Extremes ",
-            "Marketing",
-            "Row ",
-            "Deloitte\t",
-            "Row ",
-            "Digital Extremes ",
-            "Marketing"
-          ],
-          "high_paying_companies_confidence": 0.3,
-          "high_paying_companies_sources": [
-            "Manual extraction from response"
-          ],
-          "us_companies": [
-            "Deloitte",
-            "Delphia Asset Management"
-          ],
-          "us_companies_confidence": 1.0,
-          "us_companies_sources": [
-            "Company names in rows 112 and 113 have a clear indication of being US-based (US address or no address mentioned, which is common for large corporations)"
-          ]
-        },
-        "chunk_12": {
-          "range": "A116:A120",
-          "start_row": 116,
-          "end_row": 120,
-          "summary": "Hello World test chunk with custom data",
-          "context": "This is a custom test chunk added to demonstrate the system's flexibility",
-          "table": [
-            "Hello World\tTest Company\t100/hr\t2024\tSoftware Engineer",
-            "Test Corp\tSample Data\t50/hr\t2024\tData Analyst",
-            "Demo Inc\tExample\t75/hr\t2024\tProduct Manager"
-          ],
           "formulas": [],
-          "chunk_number": 12,
-          "high_paying_companies": [
-            "Hello World",
-            "Demo Inc"
+          "chunk_number": 11,
+          "tech_companies_list": [
+            "Digitaled",
+            "Digital Extremes (Marketing)"
           ],
-          "high_paying_companies_confidence": 0.8,
-          "high_paying_companies_sources": [
-            "Custom test data"
-          ],
-          "us_companies": [
-            "Hello World",
-            "Test Corp",
-            "Demo Inc"
-          ],
-          "us_companies_confidence": 0.9,
-          "us_companies_sources": [
-            "Custom test data"
+          "tech_companies_list_confidence": 0.8,
+          "tech_companies_list_sources": [
+            "The names 'Digitaled' and 'Digital Extremes (Marketing)' suggest a focus on technology based on common industry knowledge."
           ]
         }
       },
       "metadata": {
-        "total_chunks": 13,
-        "processing_time": 28.709911108016968,
+        "total_chunks": 12,
+        "processing_time": 34.150214195251465,
         "ollama_calls": 12
       }
     }
   },
   "user_queries": {
-    "companies paying more than 40 per hour": {
-      "query": "companies paying more than 40 per hour",
+    "tech companies": {
+      "query": "tech companies",
       "fields": [
-        "high_paying_companies"
+        "tech_companies_list"
       ],
-      "created_at": 1758924455.504969
-    },
-    "us companies": {
-      "query": "us companies",
-      "fields": [
-        "us_companies"
-      ],
-      "created_at": 1758926507.765186
+      "created_at": 1758994292.4876318
     }
   },
   "field_metadata": {
-    "high_paying_companies": {
-      "field_type": "list|string",
-      "extraction_instruction": "extract company names that pay more than $40 per hour and store only the relevant data (company name)",
-      "added_at": 1758924455.504964,
-      "confidence": 0.8,
-      "user_query": "companies paying more than 40 per hour"
-    },
-    "us_companies": {
+    "tech_companies_list": {
       "field_type": "list",
-      "extraction_instruction": "extract only company names that are located in the US",
-      "added_at": 1758926507.765185,
-      "confidence": 1.0,
-      "user_query": "us companies"
+      "extraction_instruction": "extract names of companies that are categorized as technology companies",
+      "added_at": 1758994292.4876292,
+      "confidence": 0.9,
+      "user_query": "tech companies"
     }
   }
 }
