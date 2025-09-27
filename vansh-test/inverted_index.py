@@ -178,16 +178,41 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
         
         # Extract chunk data - skip null values and flatten to single line per row
         chunk_data = []
+        formulas_data = []  # Store formulas and cell references
+        
         for row_idx in range(start_row, end_row + 1):
             row_data = []
+            row_formulas = []
+            
             for col_idx in range(max_col):
-                cell_value = sheet.cell(row=row_idx, column=col_idx + 1).value
+                cell = sheet.cell(row=row_idx, column=col_idx + 1)
+                cell_value = cell.value
+                
+                # Check for formulas and cell references
+                if cell.data_type == 'f':  # Formula cell
+                    formula = cell.value
+                    if formula and formula.startswith('='):
+                        row_formulas.append(f"F{col_idx+1}:{formula}")
+                
+                # Check for cell references in the value (even if not a formula)
+                if cell_value is not None:
+                    cell_str = str(cell_value)
+                    # Look for cell references like A1, B2, etc.
+                    import re
+                    cell_refs = re.findall(r'[A-Z]+\d+', cell_str)
+                    if cell_refs:
+                        row_formulas.append(f"R{col_idx+1}:{','.join(cell_refs)}")
+                
                 if cell_value is not None:  # Skip null values
                     row_data.append(str(cell_value))
             
             # Join non-null values with tab separator for single line
             if row_data:  # Only add row if it has non-null data
                 chunk_data.append('\t'.join(row_data))
+            
+            # Store formulas for this row
+            if row_formulas:
+                formulas_data.append(f"Row{row_idx}: {'; '.join(row_formulas)}")
         
         # Analyze chunk with Ollama
         try:
@@ -204,6 +229,7 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
                 "summary": analysis["summary"],
                 "context": analysis["context"],
                 "table": chunk_data,  # 2D array with actual content
+                "formulas": formulas_data,  # Formulas and cell references
                 "chunk_number": chunk_num
             }
             
@@ -263,6 +289,13 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
                 table_data = anchor_data.get("table", [])
                 for row in table_data:
                     if term_lower in row.lower():
+                        sheet_results["matching_chunks"].append(anchor_data)
+                        break
+                
+                # Check formulas and cell references
+                formulas_data = anchor_data.get("formulas", [])
+                for formula_row in formulas_data:
+                    if term_lower in formula_row.lower():
                         sheet_results["matching_chunks"].append(anchor_data)
                         break
         

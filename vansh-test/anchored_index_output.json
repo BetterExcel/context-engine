@@ -542,10 +542,41 @@
           "us_companies_sources": [
             "Company names in rows 112 and 113 have a clear indication of being US-based (US address or no address mentioned, which is common for large corporations)"
           ]
+        },
+        "chunk_12": {
+          "range": "A116:A120",
+          "start_row": 116,
+          "end_row": 120,
+          "summary": "Hello World test chunk with custom data",
+          "context": "This is a custom test chunk added to demonstrate the system's flexibility",
+          "table": [
+            "Hello World\tTest Company\t100/hr\t2024\tSoftware Engineer",
+            "Test Corp\tSample Data\t50/hr\t2024\tData Analyst",
+            "Demo Inc\tExample\t75/hr\t2024\tProduct Manager"
+          ],
+          "formulas": [],
+          "chunk_number": 12,
+          "high_paying_companies": [
+            "Hello World",
+            "Demo Inc"
+          ],
+          "high_paying_companies_confidence": 0.8,
+          "high_paying_companies_sources": [
+            "Custom test data"
+          ],
+          "us_companies": [
+            "Hello World",
+            "Test Corp",
+            "Demo Inc"
+          ],
+          "us_companies_confidence": 0.9,
+          "us_companies_sources": [
+            "Custom test data"
+          ]
         }
       },
       "metadata": {
-        "total_chunks": 12,
+        "total_chunks": 13,
         "processing_time": 28.709911108016968,
         "ollama_calls": 12
       }
