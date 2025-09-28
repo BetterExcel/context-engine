@@ -181,7 +181,7 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
         end_row = min(start_row + chunk_size - 1, max_row)
         chunk_range = f"A{start_row}:A{end_row}"
         
-        # Extract chunk data - skip null values and flatten to single line per row
+        # Extract chunk data - skip null values and include cell references
         chunk_data = []
         formulas_data = []  # Store formulas and cell references
         
@@ -192,6 +192,7 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
             for col_idx in range(max_col):
                 cell = sheet.cell(row=row_idx, column=col_idx + 1)
                 cell_value = cell.value
+                cell_ref = f"{chr(65 + col_idx)}{row_idx}"  # Convert to A1, B1, C1, etc.
                 
                 # Check for formulas and cell references
                 if cell.data_type == 'f':  # Formula cell
@@ -209,7 +210,8 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
                         row_formulas.append(f"R{col_idx+1}:{','.join(cell_refs)}")
                 
                 if cell_value is not None:  # Skip null values
-                    row_data.append(str(cell_value))
+                    # Include cell reference in the data: "value [A1]"
+                    row_data.append(f"{str(cell_value)} [{cell_ref}]")
             
             # Join non-null values with tab separator for single line
             if row_data:  # Only add row if it has non-null data
