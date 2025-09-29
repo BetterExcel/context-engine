@@ -870,3 +870,13 @@
 2025-09-27 19:28:44,557 - INFO -   tech_companies_list: ["AI Arena", "Amazon", "AMD", "Apple"]
 2025-09-27 19:28:44,557 - INFO - 
 2025-09-27 19:28:44,557 - INFO - === END RAG QUERY RESULTS ===
+2025-09-29 13:54:53,804 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-29 13:54:53,805 - INFO - Starting RAG query: 'hello world test '
+2025-09-29 13:54:53,805 - INFO - Generating query embedding...
+2025-09-29 13:54:55,393 - INFO - Query embedding generated successfully
+2025-09-29 13:54:55,393 - INFO - Querying Pinecone index...
+2025-09-29 13:54:56,260 - ERROR - Error during RAG query: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Mon, 29 Sep 2025 17:54:56 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '113', 'x-pinecone-request-id': '8513601741597255060', 'x-envoy-upstream-service-time': '63', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 1024","details":[]}
+
