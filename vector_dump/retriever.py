@@ -1,53 +1,43 @@
 import pinecone
-from rank_bm25 import BM25Okapi
-from sentence_transformers import SentenceTransformer, util
-import numpy as np
+from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv
+import os
+
+# --- Load environment ---
+print(1)
+load_dotenv()
+api_key = os.getenv("PINECONE_API_KEY")
+index_name = os.getenv("PINECONE_INDEX_NAME")
+print(2)
 
 # --- Initialize Pinecone ---
-pinecone.init(api_key="YOUR_PINECONE_KEY", environment="us-east1-gcp")
-index = pinecone.Index("hybrid-demo")
+pinecone.init(api_key=api_key, environment="us-east1-gcp")
+print(3)
+index = pinecone.Index(index_name)
+print(4)
 
+print(f"Connected to Pinecone index: {index_name}")
 # --- Semantic Model ---
 model = SentenceTransformer("all-MiniLM-L6-v2")
+print(5)
 
-# --- BM25 Setup ---
-docs = [
-    "The Eiffel Tower is in Paris.",
-    "The Louvre is a famous museum in France.",
-    "Mount Everest is the tallest mountain."
-]
-tokenized_docs = [d.split(" ") for d in docs]
-bm25 = BM25Okapi(tokenized_docs)
+# --- Hardcoded test query ---
+def test_query(query="hello world test "):
+    query = ""   # change this as needed
+    print(f"\nQuery: {query}\n")
 
-# Insert embeddings into Pinecone
-for i, doc in enumerate(docs):
-    emb = model.encode(doc).tolist()
-    index.upsert([(str(i), emb, {"text": doc})])
+    # Embed query
+    query_emb = model.encode(query).tolist()
 
-# --- Query ---
-query = "famous landmark in Paris"
-query_emb = model.encode(query).tolist()
+    # Query Pinecone for top 5 chunks
+    res = index.query(vector=query_emb, top_k=5, include_metadata=True)
 
-# Semantic search (Pinecone)
-pinecone_res = index.query(vector=query_emb, top_k=3, include_metadata=True)
-semantic_hits = {match["id"]: match["score"] for match in pinecone_res["matches"]}
+    # Display results
+    print("Top 5 results:")
+    for match in res["matches"]:
+        doc_text = match["metadata"].get("text", "[no metadata]")
+        print(f"Score: {match['score']:.3f} | ID: {match['id']} | Text: {doc_text}")
 
-# Lexical (BM25)
-bm25_scores = bm25.get_scores(query.split())
-bm25_norm = (bm25_scores - np.min(bm25_scores)) / (np.max(bm25_scores) - np.min(bm25_scores))
-
-# Fuse results
-alpha = 0.3  # 30% lexical, 70% semantic
-hybrid_scores = {}
-for i, doc in enumerate(docs):
-    semantic = semantic_hits.get(str(i), 0.0)
-    lexical = bm25_norm[i]
-    hybrid_scores[doc] = alpha * lexical + (1 - alpha) * semantic
-
-# Rank
-ranked = sorted(hybrid_scores.items(), key=lambda x: x[1], reverse=True)
-for doc, score in ranked:
-    print(f"{score:.3f} - {doc}")
 
 if __name__ == "__main__":
-    pass
+    test_query()
