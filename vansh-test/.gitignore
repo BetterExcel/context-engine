@@ -108,4 +108,6 @@ Thumbs.db
 
 # Output files
 
-bruh.txt
+context-engine/vansh-test/anchored_index_output.json
+context-engine/vansh-test/dynamic_index_output.json
+context-engine/vansh-test/rag_queries.log

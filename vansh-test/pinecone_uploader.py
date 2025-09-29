@@ -1,10 +1,21 @@
 import json
 import hashlib
+import os
 from typing import Dict, List, Any
 import time
+import requests
 from pinecone import Pinecone, ServerlessSpec
-from pinecone_config import PINECONE_API_KEY, PINECONE_ENVIRONMENT, PINECONE_INDEX_NAME
-from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configuration from environment variables
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
+PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
 def initialize_pinecone():
     """Initialize Pinecone client."""
@@ -28,7 +39,7 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         print(f"🔄 Creating new index '{index_name}'...")
         pc.create_index(
             name=index_name,
-            dimension=384,  # all-MiniLM-L6-v2 embedding dimension
+            dimension=1536,  # OpenAI text-embedding-3-small embedding dimension
             metric="cosine",
             spec=ServerlessSpec(
                 cloud="aws",
@@ -45,6 +56,37 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         
     except Exception as e:
         print(f"❌ Failed to create index: {e}")
+        raise e
+
+def generate_openai_embeddings(texts: List[str]) -> List[List[float]]:
+    """Generate embeddings using OpenAI API."""
+    try:
+        headers = {
+            "Authorization": f"Bearer {OPENAI_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "input": texts,
+            "model": OPENAI_EMBEDDING_MODEL
+        }
+        
+        response = requests.post(
+            "https://api.openai.com/v1/embeddings",
+            headers=headers,
+            json=data,
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return [item["embedding"] for item in result["data"]]
+        else:
+            print(f"❌ OpenAI API error: {response.status_code} - {response.text}")
+            raise Exception(f"OpenAI API error: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Failed to generate OpenAI embeddings: {e}")
         raise e
 
 def generate_chunk_id(sheet_name: str, chunk_id: str) -> str:
@@ -98,11 +140,6 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
     total_chunks = len(chunks_data)
     print(f"🔄 Uploading {total_chunks} chunks to Pinecone...")
     
-    # Initialize sentence transformer model
-    print("🔄 Loading sentence transformer model...")
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-    print("✅ Model loaded successfully")
-    
     for i in range(0, total_chunks, batch_size):
         batch = chunks_data[i:i + batch_size]
         
@@ -114,9 +151,9 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
                 text_content = chunk.get("values", "")
                 texts.append(text_content)
             
-            # Generate real embeddings using sentence transformers
-            print(f"🔄 Generating embeddings for batch {i//batch_size + 1}...")
-            embeddings = model.encode(texts)
+            # Generate embeddings using OpenAI API
+            print(f"🔄 Generating OpenAI embeddings for batch {i//batch_size + 1}...")
+            embeddings = generate_openai_embeddings(texts)
             print(f"✅ Generated {len(embeddings)} embeddings")
             
             # Prepare vectors for upload
@@ -124,7 +161,7 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
             for j, chunk in enumerate(batch):
                 vectors.append({
                     "id": chunk["id"],
-                    "values": embeddings[j].tolist(),  # Convert numpy array to list
+                    "values": embeddings[j],  # OpenAI returns list directly
                     "metadata": chunk["metadata"]
                 })
             
@@ -132,7 +169,7 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
             index.upsert(vectors=vectors)
             print(f"✅ Uploaded batch {i//batch_size + 1}/{(total_chunks + batch_size - 1)//batch_size}")
             
-            # Rate limiting
+            # Rate limiting for OpenAI API
             time.sleep(0.1)
             
         except Exception as e:

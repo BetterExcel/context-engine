@@ -6,6 +6,7 @@ from datetime import datetime
 from collections import defaultdict
 import re
 
+
 # Try to import openpyxl
 try:
     from openpyxl import load_workbook
@@ -14,17 +15,20 @@ except ImportError:
     OPENPYXL_AVAILABLE = False
     print("Warning: openpyxl not available. Excel reading disabled.")
 
-# Import API configuration (commented out - using Ollama instead)
-# try:
-#     from config import ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL
-# except ImportError:
-#     print("Warning: config.py not found. Please create it with your API keys.")
-#     ANTHROPIC_API_KEY = None
-#     ANTHROPIC_BASE_URL = "https://api.anthropic.com"
+import os
+from dotenv import load_dotenv
 
-# Ollama configuration
-OLLAMA_URL = "http://localhost:11434"
-OLLAMA_MODEL = "llama3.1:8b"
+# Load environment variables from .env file
+load_dotenv()
+
+# OpenAI Configuration from environment variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "4000"))
+OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.1"))
+
+if not OPENAI_API_KEY:
+    print("Warning: OPENAI_API_KEY not found in environment variables. Please check your .env file.")
 
 def read_excel_range(excel_file_path: str, start_row: int, end_row: int, sheet_name: str = None) -> str:
     """
@@ -111,28 +115,39 @@ def read_excel_range(excel_file_path: str, start_row: int, end_row: int, sheet_n
 #             else:
 #                 raise Exception(f"Anthropic failed after {max_retries} attempts: {e}")
 
-def call_ollama(prompt: str, max_retries: int = 3) -> str:
-    """Call Ollama API with retry logic."""
+def call_openai(prompt: str, max_retries: int = 3) -> str:
+    """Call OpenAI API with retry logic."""
     for attempt in range(max_retries):
         try:
+            headers = {
+                "Authorization": f"Bearer {OPENAI_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            
+            data = {
+                "model": OPENAI_MODEL,
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": OPENAI_MAX_TOKENS,
+                "temperature": OPENAI_TEMPERATURE
+            }
+            
             response = requests.post(
-                f"{OLLAMA_URL}/api/generate",
-                json={
-                    "model": OLLAMA_MODEL,
-                    "prompt": prompt,
-                    "stream": False
-                },
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json=data,
                 timeout=30
             )
             response.raise_for_status()
             result = response.json()
-            return result.get("response", "").strip()
+            return result["choices"][0]["message"]["content"].strip()
         except Exception as e:
-            print(f"Ollama attempt {attempt + 1} failed: {e}")
+            print(f"OpenAI attempt {attempt + 1} failed: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # Exponential backoff
             else:
-                raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
+                raise Exception(f"OpenAI failed after {max_retries} attempts: {e}")
 
 def parse_intent_for_field(query: str) -> Dict:
     """
@@ -176,7 +191,7 @@ def parse_intent_for_field(query: str) -> Dict:
     """
     
     try:
-        response = call_ollama(prompt)
+        response = call_openai(prompt)
         print(f"Intent parsing response: {response[:200]}...")
         
         # Clean up JSON response
@@ -218,12 +233,12 @@ def parse_intent_for_field(query: str) -> Dict:
 
 def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_path: str) -> Dict:
     """
-    Extract the new field data for all chunks using LLM by re-reading Excel data.
+    Extract the new field data for all chunks using LLM with existing JSON table data.
     
     Args:
         chunks: Dictionary of chunk data
         field_info: Field information from intent parser
-        excel_file_path: Path to the Excel file to re-read
+        excel_file_path: Path to the Excel file (not used anymore, kept for compatibility)
         
     Returns:
         Dictionary mapping chunk_id to extracted field data
@@ -238,13 +253,15 @@ def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_pat
     
     for chunk_id, chunk_data in chunks.items():
         try:
-            # Get the range to re-read from Excel
+            # Get the table data from the JSON (no need to re-read Excel)
             chunk_range = chunk_data.get("range", "")
-            start_row = chunk_data.get("start_row", 1)
-            end_row = chunk_data.get("end_row", 1)
+            table_data = chunk_data.get("table", [])
             
-            # Re-read the actual Excel data for this range
-            raw_cell_data = read_excel_range(excel_file_path, start_row, end_row)
+            # Convert table data to a readable format
+            if table_data:
+                raw_cell_data = "\n".join([f"Row {i+1}: {row}" for i, row in enumerate(table_data)])
+            else:
+                raw_cell_data = "No table data available"
             
             # print(f"  Debug - Reading range {chunk_range} (rows {start_row}-{end_row})")
             # print(f"  Debug - Raw data preview: {raw_cell_data[:200]}...")
@@ -272,22 +289,28 @@ def extract_field_data_for_chunks(chunks: Dict, field_info: Dict, excel_file_pat
             - Respond with ONLY the JSON object, no other text
             """
             
-            response = call_ollama(prompt)
-            # print(f"  Debug - API response: {response[:300]}...")
+            response = call_openai(prompt)
+            print(f"  Debug - API response: {response[:500]}...")
             
             # Clean up and parse response
             cleaned_response = response.replace('[None]', '[]').replace('None', 'null')
+            
+            # Remove markdown code blocks if present
+            if cleaned_response.startswith('```json'):
+                cleaned_response = cleaned_response.replace('```json', '').replace('```', '').strip()
+            elif cleaned_response.startswith('```'):
+                cleaned_response = cleaned_response.replace('```', '').strip()
             
             # Try multiple parsing attempts
             extraction_result = None
             for attempt in range(3):
                 try:
-                    # print(f"  Debug - Parsing attempt {attempt + 1}: {cleaned_response[:200]}...")
+                    print(f"  Debug - Parsing attempt {attempt + 1}: {cleaned_response[:200]}...")
                     extraction_result = json.loads(cleaned_response)
-                    # print(f"  Debug - Successfully parsed: {extraction_result}")
+                    print(f"  Debug - Successfully parsed: {extraction_result}")
                     break
                 except json.JSONDecodeError as e:
-                    # print(f"  Debug - JSON parse error: {e}")
+                    print(f"  Debug - JSON parse error: {e}")
                     if attempt == 0:
                         # First attempt: try to fix common issues
                         cleaned_response = cleaned_response.replace("'", '"')  # Replace single quotes with double
@@ -431,7 +454,11 @@ def update_pinecone_index(updated_index: Dict):
     """Update Pinecone index with the new field data."""
     try:
         from pinecone_uploader import initialize_pinecone, create_index_if_not_exists, prepare_chunk_for_upload, upload_chunks_to_pinecone
-        from pinecone_config import PINECONE_INDEX_NAME
+        import os
+        from dotenv import load_dotenv
+        
+        load_dotenv()
+        PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
         
         print("🔄 Updating Pinecone index with new field data...")
         
@@ -541,6 +568,26 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None, ex
     # Step 6: Update Pinecone index with new field data
     print("\nStep 6: Syncing with Pinecone...")
     update_pinecone_index(updated_index)
+    
+    # Step 7: Create consolidated chunk for the new field
+    print("\nStep 7: Creating consolidated chunk...")
+    try:
+        from field_consolidator import consolidate_fields_for_new_field
+        
+        # Collect all extracted field data from all chunks
+        field_data = {}
+        for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
+            for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
+                if field_info['field_name'] in chunk_data:
+                    field_data[chunk_id] = chunk_data[field_info['field_name']]
+        
+        # Create consolidated chunk and upload to Pinecone
+        consolidate_fields_for_new_field(field_info['field_name'], field_data)
+        print(f"✅ Successfully created consolidated chunk for '{field_info['field_name']}'")
+        
+    except Exception as e:
+        print(f"⚠️  Warning: Failed to create consolidated chunk: {e}")
+        print("   (Pipeline will continue without consolidated chunk)")
     
     print(f"\nSuccessfully added '{field_info['field_name']}' field to the index!")
     print(f"Total fields in index: {len(updated_index.get('field_metadata', {}))}")
