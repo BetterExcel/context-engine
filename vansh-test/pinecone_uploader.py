@@ -192,7 +192,8 @@ def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
         print(f"❌ Error parsing JSON file: {e}")
         raise
 
-def main():
+
+def chunk_and_upload_to_pinecone(pinecone_index_name: str = PINECONE_INDEX_NAME,sparse: bool = False):
     """Main function to upload anchored index to Pinecone."""
     print("🚀 Starting Pinecone upload process...")
     print("=" * 50)
@@ -208,7 +209,7 @@ def main():
         
         # Step 3: Create or get index
         print("\nStep 3: Setting up Pinecone index...")
-        index = create_index_if_not_exists(pc, PINECONE_INDEX_NAME)
+        index = create_index_if_not_exists(pc, pinecone_index_name)
         
         # Step 4: Prepare chunks for upload
         print("\nStep 4: Preparing chunks for upload...")
@@ -236,4 +237,4 @@ def main():
         raise
 
 if __name__ == "__main__":
-    main()
+    chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")

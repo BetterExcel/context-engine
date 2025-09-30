@@ -278,6 +278,17 @@ def hybrid_search(query: str, alpha: float = 0.5, top_k: int = 5):
         logger.error(f"Error during HYBRID query: {e}")
         raise e
 
+
+def give_chatbot_answer(context, question):
+    from llm_util import call_llm   
+    context=hybrid_search(question, alpha=0.5, top_k=5)
+    return call_llm(
+        prompt=f"Given the context {context}, answer the question: {question}",
+        provider="openai",
+        model="gpt-4o-mini",
+        max_tokens=1000,
+        temperature=0.0
+    )
 if __name__ == "__main__":
     dense_query()
     sparse_query()
