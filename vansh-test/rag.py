@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import torch
 import numpy as np
-
+from embedding_generation import EmbeddingGenerator
 # Load environment variables from .env file
 load_dotenv()
 
@@ -55,6 +55,9 @@ dense_index = pc.Index(PINECONE_INDEX_NAME_DENSE)
 
 logger.info(f"Connected to Pinecone index: {PINECONE_INDEX_NAME}")
 
+
+
+
 def generate_openai_query_embedding(query: str) -> list:
     """Generate embedding for query using OpenAI API."""
     try:
@@ -98,7 +101,8 @@ def dense_query(query="hello world test "):
     try:
         # Embed query using OpenAI
         logger.info("Generating query embedding...")
-        dense_query = generate_openai_query_embedding(query)
+        embedding_models=EmbeddingGenerator()
+        dense_query = embedding_models.generate(query)
         logger.info("Query embedding generated successfully")
 
         # Query Pinecone for top 5 chunks
@@ -195,8 +199,6 @@ def sparse_query(query='hello world test'):
     except Exception as e:
         logger.error(f"Error during RAG query: {e}")
         raise e
-
-
 
 def hybrid_search(query: str, alpha: float = 0.5, top_k: int = 5):
     """

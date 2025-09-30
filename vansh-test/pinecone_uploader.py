@@ -169,6 +169,51 @@ class PineconeUploader:
                 chunks_to_upload.append(prepared_chunk)
         return chunks_to_upload
 
+    def __rerank_results(self, results: List[Dict], query: str) -> List[Dict]:
+        """Rerank results using OpenAI."""
+        try:
+            # Prepare prompt for reranking
+            prompt = "Rerank the following results based on relevance to the query.\n"
+            prompt += f"Query: {query}\n"
+            prompt += "Results:\n"
+            for i, res in enumerate(results):
+                prompt += f"{i+1}. ID: {res['id']}, Score: {res['score']:.4f}, Metadata: {res['metadata']}\n"
+            prompt += "Provide a new ranking of the IDs only, in order of relevance."
+            
+            # Call OpenAI for reranking
+            print("🔄 Reranking results using OpenAI...")
+            response = requests.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": OPENAI_EMBEDDING_MODEL,
+                    "messages": [
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "max_tokens": 100,
+                    "temperature": 0.0
+                }
+            )
+            response.raise_for_status()
+            resp_json = response.json()
+            ranked_ids = resp_json['choices'][0]['message']['content'].strip().split('\n')
+            ranked_ids = [line.split('.')[1].strip() for line in ranked_ids if '.' in line]
+            
+            # Create a mapping from ID to result for easy lookup
+            id_to_result = {res['id']: res for res in results}
+            
+            # Reorder results based on OpenAI ranking
+            reranked_results = [id_to_result[rid] for rid in ranked_ids if rid in id_to_result]
+            
+            print("✅ Reranking completed")
+            return reranked_results
+        except Exception as e:
+            print(f"❌ Failed to rerank results: {e}")
+            return results  # Return original order if reranking fails
     def upload_data(self, data: Dict,batch_size: int = 100,embedding_method: str = "openai"):
         """Upload chunks to Pinecone in batches."""
         self.embedding_method = embedding_method
@@ -188,9 +233,37 @@ class PineconeUploader:
         except Exception as e:
             print(f" Failed to delete index: {e}")
 
+    def query_index(self, query: str, top_k: int = 5):
+        """Query Pinecone index."""
+        try:
+            # Generate embedding for the query
+            self.embedding_method = self.embedding_method or "openai"
+            print(f" Generating embedding for query: {query}  using {self.embedding_method}...")
+            query_embedding = self.embedding_generator.generate(query,method=self.embedding_method)
+            # query_embedding = generate_openai_query_embedding(query)
+            print(" Query embedding generated successfully")
+            
+            # Query Pinecone
+            print(f" Querying Pinecone index '{self.index_name}'...")
+            results = self.index.query(
+                vector=query_embedding,
+                top_k=top_k,
+                include_metadata=True
+            )
+            print(f" Retrieved {len(results['matches'])} results")
+            print(" Results:")
+            for match in results['matches']:
+                print(f" - ID: {match['id']}, Score: {match['score']:.4f}, Metadata: {match['metadata']}")
+            return results
+        except Exception as e:
+            print(f" Failed to query index: {e}")
+            return None
+
+
 if __name__ == "__main__":
     # chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")
     index_data = load_anchored_index()
     skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-sparse')
     skopeo_context_index_dense.upload_data(index_data,embedding_method="sbert")
+    skopeo_context_index_dense.query_index("List all companies with high paying jobs")
     # skopeo_context_index_dense.delete_index_if_exists()
