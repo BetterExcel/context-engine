@@ -323,7 +323,7 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "/Users/vansh/Documents/Documents/PROJECTS/skopeo-context/context-engine/test.xlsx"
+    file_path = "test.xlsx"
     
     try:
         print("Building anchored inverted index...")

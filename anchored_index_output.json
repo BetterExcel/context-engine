@@ -1,0 +1,46 @@
+{
+  "sheets": {
+    "Export Summary": {
+      "sheet_name": "Export Summary",
+      "num_rows": 12,
+      "num_cols": 4,
+      "headers": [],
+      "chunk_size": 10,
+      "anchors": {
+        "chunk_0": {
+          "range": "A1:A10",
+          "start_row": 1,
+          "end_row": 10,
+          "summary": "Data chunk containing exported Numbers document information",
+          "context": "Summary of table and worksheet names from original Numbers export",
+          "table": [
+            "This document was exported from Numbers.  Each table was converted to an Excel worksheet. All other objects on each Numbers sheet were placed on separate worksheets. Please be aware that formula calculations may differ in Excel. [B3]",
+            "Numbers Sheet Name [B7]\tNumbers Table Name [C7]\tExcel Worksheet Name [D7]",
+            "Salary List [B9]",
+            "Table 1 [C10]\tSalary List [D10]"
+          ],
+          "formulas": [],
+          "chunk_number": 0
+        },
+        "chunk_1": {
+          "range": "A11:A12",
+          "start_row": 11,
+          "end_row": 12,
+          "summary": "Two rows of data with blacklist and table labels",
+          "context": "Data ranges from columns B to D, row 11 to 12",
+          "table": [
+            "Blacklist [B11]",
+            "Table 1 [C12]\tBlacklist [D12]"
+          ],
+          "formulas": [],
+          "chunk_number": 1
+        }
+      },
+      "metadata": {
+        "total_chunks": 2,
+        "processing_time": 7.365341901779175,
+        "ollama_calls": 2
+      }
+    }
+  }
+}

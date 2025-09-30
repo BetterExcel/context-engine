@@ -6,16 +6,18 @@ import time
 import requests
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
-
+from embedding_generation import EmbeddingGenerator
 # Load environment variables from .env file
 load_dotenv()
 
 # Configuration from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
-PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
+PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
+
+
 
 def initialize_pinecone():
     """Initialize Pinecone client."""
@@ -56,37 +58,6 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         
     except Exception as e:
         print(f"❌ Failed to create index: {e}")
-        raise e
-
-def generate_openai_embeddings(texts: List[str]) -> List[List[float]]:
-    """Generate embeddings using OpenAI API."""
-    try:
-        headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        
-        data = {
-            "input": texts,
-            "model": OPENAI_EMBEDDING_MODEL
-        }
-        
-        response = requests.post(
-            "https://api.openai.com/v1/embeddings",
-            headers=headers,
-            json=data,
-            timeout=30
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            return [item["embedding"] for item in result["data"]]
-        else:
-            print(f"❌ OpenAI API error: {response.status_code} - {response.text}")
-            raise Exception(f"OpenAI API error: {response.status_code}")
-            
-    except Exception as e:
-        print(f"❌ Failed to generate OpenAI embeddings: {e}")
         raise e
 
 def generate_chunk_id(sheet_name: str, chunk_id: str) -> str:
@@ -135,6 +106,16 @@ def prepare_chunk_for_upload(chunk_data: Dict, sheet_name: str, chunk_id: str) -
         "metadata": metadata
     }
 
+def delete_index_if_exists(pc: Pinecone, index_name: str):
+    """Delete Pinecone index if it exists."""
+    try:
+        if index_name in pc.list_indexes().names():
+            pc.delete_index(index_name)
+        else:
+            print(f" Index '{index_name}' does not exist, no need to delete")
+    except Exception as e:
+        print(f" Failed to delete index: {e}")
+
 def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 100):
     """Upload chunks to Pinecone in batches."""
     total_chunks = len(chunks_data)
@@ -153,7 +134,9 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
             
             # Generate embeddings using OpenAI API
             print(f"🔄 Generating OpenAI embeddings for batch {i//batch_size + 1}...")
-            embeddings = generate_openai_embeddings(texts)
+            gen = EmbeddingGenerator()
+            embeddings=[gen.embed_openai(text) for text in texts]
+            # embeddings = generate_openai_embeddings(texts)
             print(f"✅ Generated {len(embeddings)} embeddings")
             
             # Prepare vectors for upload
@@ -202,11 +185,13 @@ def chunk_and_upload_to_pinecone(pinecone_index_name: str = PINECONE_INDEX_NAME,
         # Step 1: Load anchored index
         print("Step 1: Loading anchored index...")
         index_data = load_anchored_index()
-        
+
         # Step 2: Initialize Pinecone
         print("\nStep 2: Initializing Pinecone...")
         pc = initialize_pinecone()
-        
+        delete_index_if_exists(pc, pinecone_index_name)
+        index_list = pc.list_indexes()
+        print(f"Existing indexes: {index_list.names()}")
         # Step 3: Create or get index
         print("\nStep 3: Setting up Pinecone index...")
         index = create_index_if_not_exists(pc, pinecone_index_name)
@@ -235,6 +220,91 @@ def chunk_and_upload_to_pinecone(pinecone_index_name: str = PINECONE_INDEX_NAME,
     except Exception as e:
         print(f"\n❌ Upload failed: {e}")
         raise
+
+class PineconeUploader:
+    def __init__(self, api_key: str=os.getenv("PINECONE_API_KEY"),):
+        self.api_key = api_key
+        # self.environment = environment
+        # self.index_name = index_name
+        self.pc = Pinecone(api_key=PINECONE_API_KEY)
+        self.embedding_generator = EmbeddingGenerator()
+
+    def __create_index_if_not_exists(self,pc: Pinecone, index_name: str):
+        """Create Pinecone index if it doesn't exist."""
+        try:
+            # Check if index exists
+            if index_name in pc.list_indexes().names():
+                print(f"✅ Index '{index_name}' already exists")
+                return pc.Index(index_name)
+            # Create new index
+            print(f"🔄 Creating new index '{index_name}'...")
+            pc.create_index(
+                name=index_name,
+                dimension=1536,  # OpenAI text-embedding-3-small embedding dimension
+                metric="cosine",
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region=PINECONE_ENVIRONMENT
+                )
+            )
+            # Wait for index to be ready
+            print("⏳ Waiting for index to be ready...")
+            time.sleep(5)
+            print(f"✅ Index '{index_name}' created successfully")
+            return pc.Index(index_name)
+        except Exception as e:
+            print(f"❌ Failed to create index: {e}")
+            raise e
+    
+    def __upload_chunks_to_pinecone(self,index, chunks_data: List[Dict], batch_size: int = 100):
+        """Upload chunks to Pinecone in batches."""
+        total_chunks = len(chunks_data)
+        print(f"🔄 Uploading {total_chunks} chunks to Pinecone...")
+        
+        for i in range(0, total_chunks, batch_size):
+            batch = chunks_data[i:i + batch_size]
+            
+            try:
+                # Extract text content for embeddings
+                texts = []
+                for chunk in batch:
+                    # Get the text content that was stored in the "values" field
+                    text_content = chunk.get("values", "")
+                    texts.append(text_content)
+                
+                # Generate embeddings using OpenAI API
+                print(f"🔄 Generating OpenAI embeddings for batch {i//batch_size + 1}...")
+                gen = EmbeddingGenerator()
+                embeddings=[gen.embed_openai(text) for text in texts]
+                # embeddings = generate_openai_embeddings(texts)
+                print(f"✅ Generated {len(embeddings)} embeddings")
+                
+                # Prepare vectors for upload
+                vectors = []
+                for j, chunk in enumerate(batch):
+                    vectors.append({
+                        "id": chunk["id"],
+                        "values": embeddings[j],  # OpenAI returns list directly
+                        "metadata": chunk["metadata"]
+                    })
+                
+                # Upload batch
+                index.upsert(vectors=vectors)
+                print(f"✅ Uploaded batch {i//batch_size + 1}/{(total_chunks + batch_size - 1)//batch_size}")
+                
+                # Rate limiting for OpenAI API
+                time.sleep(0.1)
+                
+            except Exception as e:
+                print(f"❌ Failed to upload batch {i//batch_size + 1}: {e}")
+                continue
+        
+        print(f"✅ Successfully uploaded {total_chunks} chunks to Pinecone")
+
+    def upload_chunks(self, index:str, chunks_data: List[Dict], batch_size: int = 100):
+        """Upload chunks to Pinecone in batches."""
+        self.index = self.__create_index_if_not_exists(self.pc, index)        
+        self.__upload_chunks_to_pinecone(self.index, chunks_data, batch_size)
 
 if __name__ == "__main__":
     chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")
