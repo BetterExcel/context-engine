@@ -80,6 +80,26 @@ class EmbeddingGenerator:
             return self.embed_splade(text)
         else:
             raise ValueError(f"Unknown method: {method}")
+    def get_embedding_dim(self, method: str = "sbert") -> int:
+        """
+        Return the embedding dimension for a given method.
+        method: one of ["openai", "cohere", "sbert", "splade"]
+        """
+        if method == "openai":
+            # Example: text-embedding-3-small = 1536, text-embedding-3-large = 3072
+            return 1536  
+        elif method == "cohere":
+            # Cohere default embed-english-v3 model
+            return 1024
+        elif method == "sbert":
+            # all-MiniLM-L6-v2
+            return 384
+        elif method == "splade":
+            # Sparse model returns variable-length dictionary of {indices, values}
+            # Use vocab size as upper bound (approx)
+            return 30522  
+        else:
+            raise ValueError(f"Unknown method: {method}")
 
 if __name__ == "__main__":
     gen = EmbeddingGenerator()
