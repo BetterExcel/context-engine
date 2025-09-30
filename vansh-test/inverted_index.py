@@ -323,7 +323,7 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "test.xlsx"
+    file_path = "test2.xlsx"
     
     try:
         print("Building anchored inverted index...")

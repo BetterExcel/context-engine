@@ -257,11 +257,35 @@ class PineconeUploader:
             print(f" Failed to query index: {e}")
             return None
 
+class HybridSearcher:
+    def __init__(self,sparse_index:PineconeUploader,dense_index:PineconeUploader, alpha: float = 0.5, top_k: int = 5):
+        self.alpha = alpha
+        self.top_k = top_k
+        self.pc = Pinecone(api_key=PINECONE_API_KEY)
+        self.sparse_index = sparse_index
+        self.dense_index = dense_index
+    def hybrid_query(self, query: str,sparse_embedding_method: str = "sbert",dense_embedding_method: str = "openai"):
+        """
+        Hybrid search: combines keyword (sparse) and semantic search (dense).   
+        Args:
+            query: The search query string
+        """
+        sparse_result=self.sparse_index.query_index(query,top_k=self.top_k,embedding_method=sparse_embedding_method)
+        dense_result=self.dense_index.query_index(query,top_k=self.top_k,embedding_method=dense_embedding_method)
 
+        # Step 3: Blend scores manually (alpha controls weighting)
+        chunked_results={ "sparse":sparse_result,"dense":dense_result}
+        return chunked_results
+        pass
+
+        
 if __name__ == "__main__":
     # chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")
     index_data = load_anchored_index()
-    skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-sparse')
-    skopeo_context_index_dense.upload_data(index_data,embedding_method="sbert")
+    skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-dense')
+    skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
     skopeo_context_index_dense.query_index("List all companies with high paying jobs")
+    skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
+    skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
+    skopeo_context_index_sparse.query_index("List all companies with high paying jobs")
     # skopeo_context_index_dense.delete_index_if_exists()
