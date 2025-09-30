@@ -7,6 +7,7 @@ import requests
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 from embedding_generation import EmbeddingGenerator
+from reranker import ReRanker
 # Load environment variables from .env file
 load_dotenv()
 
@@ -42,7 +43,7 @@ class PineconeUploader:
         self.index_name = index_name
         self.pc = Pinecone(api_key=PINECONE_API_KEY)
         self.embedding_generator = EmbeddingGenerator()
-
+        self.re_ranker= ReRanker()
     def __create_index_if_not_exists(self):
         """Create Pinecone index if it doesn't exist."""
         try:
@@ -168,52 +169,46 @@ class PineconeUploader:
                 prepared_chunk = self.__prepare_chunk_for_upload(chunk_data, sheet_name, chunk_id)
                 chunks_to_upload.append(prepared_chunk)
         return chunks_to_upload
-
-    def __rerank_results(self, results: List[Dict], query: str) -> List[Dict]:
-        """Rerank results using OpenAI."""
+    
+    def __rerank_results(self, results: List[Dict], query: str, method: str = "cross_encoder", top_k: int = 5) -> List[Dict]:
+        """Rerank Pinecone results using the ReRanker class."""
         try:
-            # Prepare prompt for reranking
-            prompt = "Rerank the following results based on relevance to the query.\n"
-            prompt += f"Query: {query}\n"
-            prompt += "Results:\n"
-            for i, res in enumerate(results):
-                prompt += f"{i+1}. ID: {res['id']}, Score: {res['score']:.4f}, Metadata: {res['metadata']}\n"
-            prompt += "Provide a new ranking of the IDs only, in order of relevance."
-            
-            # Call OpenAI for reranking
-            print("🔄 Reranking results using OpenAI...")
-            response = requests.post(
-                "https://api.openai.com/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {OPENAI_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": OPENAI_EMBEDDING_MODEL,
-                    "messages": [
-                        {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    "max_tokens": 100,
-                    "temperature": 0.0
-                }
-            )
-            response.raise_for_status()
-            resp_json = response.json()
-            ranked_ids = resp_json['choices'][0]['message']['content'].strip().split('\n')
-            ranked_ids = [line.split('.')[1].strip() for line in ranked_ids if '.' in line]
-            
-            # Create a mapping from ID to result for easy lookup
-            id_to_result = {res['id']: res for res in results}
-            
-            # Reorder results based on OpenAI ranking
-            reranked_results = [id_to_result[rid] for rid in ranked_ids if rid in id_to_result]
-            
+            print(f"🔄 Reranking {len(results)} results using {method}...")
+
+            # Extract docs (use metadata summary/context if available)
+            docs = []
+            for r in results:
+                meta = r.get("metadata", {})
+                text = meta.get("text") or meta.get("summary") or meta.get("context") or str(meta)
+                docs.append(text)
+
+            # Run reranker
+            reranked = self.re_ranker.rerank(query, docs, method=method, top_k=top_k)
+
+            # Map reranked docs back to Pinecone matches
+            doc_to_result = { 
+                (r.get("metadata", {}).get("text") or r.get("metadata", {}).get("summary") or str(r.get("metadata"))): r 
+                for r in results 
+            }
+
+            reranked_results = []
+            for item in reranked:
+                doc = item["doc"]
+                if doc in doc_to_result:
+                    updated = doc_to_result[doc].copy()
+                    updated["rerank_score"] = item["score"]
+                    reranked_results.append(updated)
+
             print("✅ Reranking completed")
+            for rr in reranked_results:
+                print(f" - ID: {rr['id']}, base={rr['score']:.4f}, rerank={rr['rerank_score']:.4f}")
+
             return reranked_results
+
         except Exception as e:
             print(f"❌ Failed to rerank results: {e}")
-            return results  # Return original order if reranking fails
+            return results
+
     def upload_data(self, data: Dict,batch_size: int = 100,embedding_method: str = "openai"):
         """Upload chunks to Pinecone in batches."""
         self.embedding_method = embedding_method
@@ -233,11 +228,11 @@ class PineconeUploader:
         except Exception as e:
             print(f" Failed to delete index: {e}")
 
-    def query_index(self, query: str, top_k: int = 5):
+    def query_index(self, query: str, top_k: int = 5,rerank_method: str = 'cohere',embedding_method: str = "openai"):
         """Query Pinecone index."""
         try:
             # Generate embedding for the query
-            self.embedding_method = self.embedding_method or "openai"
+            self.embedding_method = self.embedding_method or embedding_method or "openai"
             print(f" Generating embedding for query: {query}  using {self.embedding_method}...")
             query_embedding = self.embedding_generator.generate(query,method=self.embedding_method)
             # query_embedding = generate_openai_query_embedding(query)
@@ -252,6 +247,9 @@ class PineconeUploader:
             )
             print(f" Retrieved {len(results['matches'])} results")
             print(" Results:")
+            if rerank_method:
+                results=self.re_ranker.rerank(query,results=[],method=rerank_method,top_k=top_k)
+                print(" Reranked Results:")
             for match in results['matches']:
                 print(f" - ID: {match['id']}, Score: {match['score']:.4f}, Metadata: {match['metadata']}")
             return results
