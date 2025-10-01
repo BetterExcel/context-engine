@@ -8,6 +8,7 @@ import re
 import requests
 import time
 from dotenv import load_dotenv
+from llm_util import call_llm  # ✅ import your wrapper
 
 # Load environment variables from .env file
 load_dotenv()
@@ -38,6 +39,82 @@ def call_ollama(prompt: str, max_retries: int = 3) -> str:
                 time.sleep(2 ** attempt)  # Exponential backoff
             else:
                 raise Exception(f"Ollama failed after {max_retries} attempts: {e}")
+
+
+def analyze_chunk_with_llm(
+    chunk_data: List[List[Any]],
+    chunk_range: str,
+    provider: str = "openai",   # or "ollama"
+    model: str = "gpt-4o-mini"
+) -> Dict:
+    """Use LLM (OpenAI or Ollama via LangChain) to analyze a chunk and generate summary/context."""
+
+    # Prepare data for prompt
+    data_text = f"Data chunk {chunk_range}:\n"
+    for row_idx, row in enumerate(chunk_data):
+        data_text += f"Row {row_idx + 1}: {row}\n"
+
+    prompt = f"""
+Analyze this spreadsheet data chunk and provide ONLY a valid JSON response with this exact structure:
+{{
+    "summary": "Brief description of what this chunk contains",
+    "context": "Additional context about this data"
+}}
+
+CRITICAL JSON RULES:
+- All strings must be properly escaped (use \\" for quotes inside strings)
+- No unescaped quotes, commas, or special characters in strings
+- Keep strings short and simple
+- Respond with ONLY the JSON object, no explanations, no markdown, no additional text
+
+Data to analyze:
+{data_text}
+"""
+    try:
+        # ✅ Use your unified LLM wrapper
+        response = call_llm(
+            prompt,
+            provider=provider,
+            model=model,
+            max_tokens=500,
+            temperature=0.0,
+        )
+        print(f"Raw {provider} response for {chunk_range}: {response[:200]}...")
+
+        # Clean up + parse JSON
+        cleaned_response = response.replace('[None]', '[]').replace('None', 'null')
+        analysis = None
+        for attempt in range(3):
+            try:
+                analysis = json.loads(cleaned_response)
+                break
+            except json.JSONDecodeError:
+                if attempt == 0:
+                    cleaned_response = cleaned_response.replace("'", '"')
+                elif attempt == 1:
+                    import re
+                    cleaned_response = re.sub(r'(?<!\\)"(?=[^,}\]])', '\\"', cleaned_response)
+                else:
+                    print(f"Creating fallback response for {chunk_range}")
+                    analysis = {
+                        "summary": "Data chunk analysis",
+                        "context": "Analysis completed with fallback"
+                    }
+                    break
+
+        # Cleanup final strings
+        if analysis:
+            for key in ["summary", "context"]:
+                if key in analysis and analysis[key] is not None:
+                    cleaned_item = str(analysis[key]).replace('"', "").replace("'", "").strip()
+                    analysis[key] = cleaned_item
+
+        return analysis
+
+    except Exception as e:
+        print(f"{provider} analysis failed for {chunk_range}: {e}")
+        raise e
+
 
 def analyze_chunk_with_ollama(chunk_data: List[List[Any]], chunk_range: str) -> Dict:
     """Use Ollama to analyze a 10-row chunk and generate intelligent summary."""
@@ -224,7 +301,9 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
         # Analyze chunk with Ollama
         try:
             print(f"Analyzing chunk {chunk_num + 1}: {chunk_range}")
-            analysis = analyze_chunk_with_ollama(chunk_data, chunk_range)
+            # analysis = analyze_chunk_with_ollama(chunk_data, chunk_range)
+            analysis = analyze_chunk_with_llm(chunk_data, chunk_range)
+
             index["metadata"]["ollama_calls"] += 1
             
             # Store anchor information
@@ -329,7 +408,7 @@ if __name__ == "__main__":
         print("Building anchored inverted index...")
         print("This will use Ollama to analyze each 10-row chunk...")
         
-        index = build_anchored_index(file_path)
+        index = build_anchored_index(file_path,chunk_size=50)
         
         print(f"Anchored index built successfully!")
         print(f"Found {len(index['sheets'])} sheet(s)")
