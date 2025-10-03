@@ -33,15 +33,23 @@ def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
         print(f"❌ Error parsing JSON file: {e}")
         raise
 
-
+def get_chunk_ranges(results: Dict) -> List[str]:
+    """Extract ranges from the anchored index results."""
+    print 
+    ranges = []
+    for matches in results.get("matches", []):
+        metadata = matches.get("metadata", {})
+        if "range" in metadata:
+            ranges.append(metadata["range"])
+    return ranges
 
 class PineconeUploader:
     def __init__(self, api_key: str=os.getenv("PINECONE_API_KEY"),environment:str=os.getenv('PINECONE_ENVIRONMENT'),index_name: str = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")):
         self.api_key = api_key
         self.environment = environment
-        self.index= index_name
         self.index_name = index_name
         self.pc = Pinecone(api_key=PINECONE_API_KEY)
+        self.index= self.pc.Index(index_name)  
         self.embedding_generator = EmbeddingGenerator()
         self.re_ranker= ReRanker()
     def __create_index_if_not_exists(self):
@@ -88,7 +96,7 @@ class PineconeUploader:
                     texts.append(text_content)
                 
                 # Generate embeddings using OpenAI API
-                print(f"🔄 Generating OpenAI embeddings for batch {i//batch_size + 1}...")
+                print(f"🔄 Generating {self.embedding_method} embeddings for batch {i//batch_size + 1}...")
 
                 embeddings=[self.embedding_generator.generate(text,method=self.embedding_method) for text in texts]
                 # embeddings = generate_openai_embeddings(texts)
@@ -232,7 +240,7 @@ class PineconeUploader:
         """Query Pinecone index."""
         try:
             # Generate embedding for the query
-            self.embedding_method = self.embedding_method or embedding_method or "openai"
+            self.embedding_method = embedding_method or "openai"
             print(f" Generating embedding for query: {query}  using {self.embedding_method}...")
             query_embedding = self.embedding_generator.generate(query,method=self.embedding_method)
             # query_embedding = generate_openai_query_embedding(query)
@@ -282,10 +290,17 @@ class HybridSearcher:
 if __name__ == "__main__":
     # chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")
     index_data = load_anchored_index()
+    
     skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-dense')
-    skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
-    skopeo_context_index_dense.query_index("List all companies with high paying jobs")
     skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
-    skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
-    skopeo_context_index_sparse.query_index("List all companies with high paying jobs")
+
+    # skopeo_context_index_dense.delete_index_if_exists()
+    # skopeo_context_index_sparse.delete_index_if_exists()
+
+    # skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
+    # skopeo_context_index_dense.query_index("List all companies with high paying jobs")
+
+    # skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
+    results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
+    print(get_chunk_ranges(results))
     # skopeo_context_index_dense.delete_index_if_exists()
