@@ -11,8 +11,8 @@
           "range": "A1:A12",
           "start_row": 1,
           "end_row": 12,
-          "summary": "Excel worksheet metadata and table mapping information from a Numbers document export",
-          "context": "This data chunk appears to contain the Excel worksheet names and their corresponding Numbers table names",
+          "summary": "This chunk contains metadata about a document exported from Numbers to Excel.",
+          "context": "It includes information on sheet and table names along with potential differences in formula calculations.",
           "table": [
             "B3:This document was exported from Numbers.  Each table was converted to an Excel worksheet. All other objects on each Numbers sheet were placed on separate worksheets. Please be aware that formula calculations may differ in Excel.",
             "B7:Numbers Sheet Name, C7:Numbers Table Name, D7:Excel Worksheet Name",
@@ -27,8 +27,8 @@
       },
       "metadata": {
         "total_chunks": 1,
-        "processing_time": 5.738163948059082,
-        "ollama_calls": 1
+        "processing_time": 2.1835598945617676,
+        "openai_calls": 1
       }
     },
     "Salary List": {
@@ -48,8 +48,8 @@
           "range": "A1:A50",
           "start_row": 1,
           "end_row": 50,
-          "summary": "Salary data for various companies with role information",
-          "context": "Contains hourly salary rates and other benefits for co-op positions at multiple tech companies",
+          "summary": "This data chunk contains information about various companies, their roles, hourly rates, benefits, and years of co-op positions.",
+          "context": "The data includes details on compensation and benefits for co-op positions across multiple companies, highlighting variations in pay rates and additional perks.",
           "table": [
             "A1:Company / Role, B1:Bye World, C1:Benefits, D1:Year, E1:Position",
             "A2:1password, B2:50/hr (4th coop), D2:2023",
@@ -109,8 +109,8 @@
           "range": "A51:A100",
           "start_row": 51,
           "end_row": 100,
-          "summary": "A list of companies with their respective hourly wages and additional benefits",
-          "context": "This data chunk represents a collection of companies with their corresponding hourly wage ranges or fixed rates, as well as additional details such as coop terms, relocation stipends, housing allowances, signing bonuses, vacation pay, and job roles.",
+          "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions, including hourly rates, bonuses, and additional benefits.",
+          "context": "The data includes details on job roles, co-op terms, and specific conditions related to compensation for students or interns in the tech industry.",
           "table": [
             "A51:Borrowell, B51:(mobile dev) 35/hr (5h coop)",
             "A52:Brookfield Annuity, B52:35/hr",
@@ -170,8 +170,8 @@
           "range": "A101:A150",
           "start_row": 101,
           "end_row": 150,
-          "summary": "Pay rate data for various companies in hourly and monthly USD/CAD currency",
-          "context": "This data chunk contains pay rates for various companies, including hourly wages, annual salaries, and additional stipends or benefits.",
+          "summary": "This data chunk contains information about various companies and their compensation rates for different roles and co-op terms.",
+          "context": "The data includes hourly rates, monthly salaries, and additional notes on compensation structures for internships and co-op positions.",
           "table": [
             "A101:Cube Group, B101:75/hr USD, D101:2024",
             "A102:Curinos, B102:34/hr (2b)",
@@ -233,8 +233,8 @@
           "range": "A151:A200",
           "start_row": 151,
           "end_row": 200,
-          "summary": "Pay rate ranges for various companies in the data chunk",
-          "context": "This JSON object summarizes pay rate ranges from a specific spreadsheet data chunk covering company names and hourly or monthly rates.",
+          "summary": "This data chunk contains information about various companies, their hourly rates or monthly salaries, and additional details related to co-op positions.",
+          "context": "The data includes compensation details for co-op positions across different companies, with some entries specifying stipends and variations based on location or experience level.",
           "table": [
             "A151:GIP (Green Infrastructure Program), B151:31/hr (6th coop), D151:2024",
             "A152:Glu, B152:30/hr (4th coop), 25/hr (2nd coop)",
@@ -297,8 +297,8 @@
           "range": "A201:A250",
           "start_row": 201,
           "end_row": 250,
-          "summary": "Salary data from various companies in range A201:A250 of a spreadsheet",
-          "context": "Data includes hourly rates, weekly salaries, stipends, and other compensation details for co-op students",
+          "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions, internships, and full-time roles.",
+          "context": "The data includes hourly rates, monthly salaries, stipends, and additional benefits for different roles across multiple companies.",
           "table": [
             "A201:LCBO, B201:1100/wk (PM role)",
             "A202:League, B202:33/hr (4th coop), 41/hr (6th coop)",
@@ -358,8 +358,8 @@
           "range": "A251:A300",
           "start_row": 251,
           "end_row": 300,
-          "summary": "List of companies with hourly wages for co-op students",
-          "context": "This data appears to be a list of companies that offer co-op positions, along with the hourly wage ranges and other details such as coop year, housing stipends, etc.",
+          "summary": "This data chunk contains information about various co-op positions, including company names, hourly rates, and additional details such as housing stipends and job roles.",
+          "context": "The data includes a mix of hourly wages, co-op terms, and specific job roles across different companies, highlighting the diversity in compensation and positions available for co-op students.",
           "table": [
             "A251:Pienso, B251:67/hr (5th coop), D251:2025",
             "A252:PlayStation, B252:31/hr (2nd coop), D252:2023",
@@ -419,8 +419,8 @@
           "range": "A301:A350",
           "start_row": 301,
           "end_row": 350,
-          "summary": "List of companies and their offered hourly wages for co-op students",
-          "context": "The data appears to be a list of companies that offer co-op positions with varying hourly wage ranges for different coop terms. The data includes company names, hourly wages, and sometimes additional stipends or relocation benefits.",
+          "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions in 2023 and beyond.",
+          "context": "The data includes hourly rates, yearly salaries, stipends, and additional benefits for co-op roles across different companies.",
           "table": [
             "A301:Spotwork, B301:22/hr (2nd coop), D301:2023, E301:Mobile SWE",
             "A302:SPS Commerce, B302:30/hr (3rd coop), D302:2023",
@@ -480,8 +480,8 @@
           "range": "A351:A379",
           "start_row": 351,
           "end_row": 379,
-          "summary": "List of company hourly rates and stipends",
-          "context": "Data chunk containing company names, hourly rates, and stipend information",
+          "summary": "This data chunk contains hourly and monthly compensation rates for various companies and positions, including details about co-op terms and stipends.",
+          "context": "The data includes a mix of hourly rates, monthly salaries, and stipends for internships or co-op positions across different companies in 2023.",
           "table": [
             "B351:29.33/hr (for 2B)",
             "A352:UHN (DATA Team), B352:20.00/hr, D352:2023, E352:SWE",
@@ -518,8 +518,8 @@
       },
       "metadata": {
         "total_chunks": 8,
-        "processing_time": 63.39677381515503,
-        "ollama_calls": 8
+        "processing_time": 17.30055594444275,
+        "openai_calls": 8
       }
     },
     "Blacklist": {
@@ -535,8 +535,8 @@
           "range": "A1:A21",
           "start_row": 1,
           "end_row": 21,
-          "summary": "A list of companies that have been reported for problematic behavior on a subreddit",
-          "context": "The list is based on user reports and may help students avoid working with companies that have a history of misconduct",
+          "summary": "This data chunk contains a list of companies that have been reported for problematic behavior, along with notes and links to related discussions.",
+          "context": "The information is intended to help students avoid negative experiences with these companies, based on reports from a community forum.",
           "table": [
             "A1:Given the number of companies that have been name-and-shamed on the sub before, this list might help students avoid falling into traps. Here are some that have been mentioned on the sub. DM u/epic_waterman if you'd like something added to this list or would like to contribute another report",
             "A3:Companies are added to the blacklist after 2+ accounts of problematic behavior are reported (see candidates list on megathread)",
@@ -564,8 +564,8 @@
       },
       "metadata": {
         "total_chunks": 1,
-        "processing_time": 4.862919807434082,
-        "ollama_calls": 1
+        "processing_time": 1.6671552658081055,
+        "openai_calls": 1
       }
     }
   }
