@@ -29,9 +29,10 @@ def col_based_processing(path: str,sheet_name: Union[int,str,None]=None) -> str:
         col_parts = []
         for cell in col:
             ctype = detect_type(cell.value)
-            col_parts.append(f"|{cell.coordinate}, {cell.value}, {ctype}|")
-        parts.append(" ".join(col_parts))
-    return " || ".join(parts)  # separator between columns
+            col_parts.append(f"| {cell.coordinate}, {cell.value}, {ctype} ")
+        parts.append("".join(col_parts))
+    parts.append("|")  # close the last cell in the column
+    return " ".join(parts)  # separator between columns
 
 def row_based_processing(path: str,sheet_name: Union[int,str,None]=None) -> str:
     """
@@ -51,9 +52,10 @@ def row_based_processing(path: str,sheet_name: Union[int,str,None]=None) -> str:
         row_parts = []
         for cell in row:
             ctype = detect_type(cell.value)
-            row_parts.append(f"|{cell.coordinate}, {cell.value}, {ctype}|")
+            row_parts.append(f"| {cell.coordinate}, {cell.value}, {ctype} ")
         parts.append(" ".join(row_parts))
-    return " || ".join(parts)  # separator between rows
+        parts.append("|")  # close the last cell in the row
+    return " ".join(parts)  # separator between rows
 
 
 if __name__ == "__main__":

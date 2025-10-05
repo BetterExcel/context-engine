@@ -56,31 +56,6 @@ echo "Step 4: Adding dynamic fields..."
 echo "================================"
 echo "Query: '$USER_QUERY'"
 
-# Create a simple Python script to run dynamic field addition
-cat > run_dynamic.py << 'EOF'
-import sys
-from dynamic_index_builder import process_query_for_field_addition, load_existing_index
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python3 run_dynamic.py <query>")
-        sys.exit(1)
-    
-    query = " ".join(sys.argv[1:])
-    print(f"Processing query: '{query}'")
-    
-    # Load existing index
-    existing_index = load_existing_index()
-    
-    # Process the query and add fields
-    updated_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
-    
-    print(f"✅ Successfully processed query: '{query}'")
-    return updated_index
-
-if __name__ == "__main__":
-    main()
-EOF
 
 # Run the dynamic field addition
 python3 run_dynamic.py "$USER_QUERY"
