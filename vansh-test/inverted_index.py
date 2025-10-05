@@ -8,7 +8,7 @@ import re
 import requests
 import time
 from dotenv import load_dotenv
-from llm_util import call_llm  # ✅ import your wrapper
+# from llm_util import call_llm  # ✅ import your wrapper - commented out, using call_ollama instead
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,8 +51,8 @@ def analyze_chunk_with_llm(
 
     # Prepare data for prompt
     data_text = f"Data chunk {chunk_range}:\n"
-    for row_idx, row in enumerate(chunk_data):
-        data_text += f"Row {row_idx + 1}: {row}\n"
+    for row_idx, row_line in enumerate(chunk_data):
+        data_text += f"Row {row_idx + 1}: {row_line}\n"
 
     prompt = f"""
 Analyze this spreadsheet data chunk and provide ONLY a valid JSON response with this exact structure:
@@ -72,13 +72,7 @@ Data to analyze:
 """
     try:
         # ✅ Use your unified LLM wrapper
-        response = call_llm(
-            prompt,
-            provider=provider,
-            model=model,
-            max_tokens=500,
-            temperature=0.0,
-        )
+        response = call_ollama(prompt)
         print(f"Raw {provider} response for {chunk_range}: {response[:200]}...")
 
         # Clean up + parse JSON
@@ -214,15 +208,31 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
     """
     Build an anchored inverted index for a spreadsheet.
     Processes data in chunks and uses Ollama for intelligent analysis.
+    If sheet_name is None, processes ALL sheets in the workbook.
     """
     wb = openpyxl.load_workbook(file_path, data_only=True)
     
-    if isinstance(sheet_name, int):
-        sheet = wb.worksheets[sheet_name]
+    # If no specific sheet is requested, process ALL sheets
+    if sheet_name is None:
+        sheets_to_process = wb.worksheets
+    elif isinstance(sheet_name, int):
+        sheets_to_process = [wb.worksheets[sheet_name]]
     elif isinstance(sheet_name, str):
-        sheet = wb[sheet_name]
+        sheets_to_process = [wb[sheet_name]]
     else:
-        sheet = wb.active
+        sheets_to_process = [wb.active]
+    
+    all_sheets_index = {"sheets": {}}
+    
+    # Process each sheet
+    for sheet in sheets_to_process:
+        print(f"Processing sheet: {sheet.title}")
+        sheet_index = _process_single_sheet(sheet, chunk_size)
+        all_sheets_index["sheets"][sheet.title] = sheet_index
+    
+    return all_sheets_index
+
+def _process_single_sheet(sheet, chunk_size: int = 10) -> Dict:
     
     max_row = sheet.max_row
     max_col = sheet.max_column
@@ -258,12 +268,12 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
         end_row = min(start_row + chunk_size - 1, max_row)
         chunk_range = f"A{start_row}:A{end_row}"
         
-        # Extract chunk data - skip null values and include cell references
+        # Extract chunk data as simple key-value pairs (cell_ref: value)
         chunk_data = []
         formulas_data = []  # Store formulas and cell references
         
         for row_idx in range(start_row, end_row + 1):
-            row_data = []
+            row_data = {}
             row_formulas = []
             
             for col_idx in range(max_col):
@@ -287,12 +297,14 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
                         row_formulas.append(f"R{col_idx+1}:{','.join(cell_refs)}")
                 
                 if cell_value is not None:  # Skip null values
-                    # Include cell reference in the data: "value [A1]"
-                    row_data.append(f"{str(cell_value)} [{cell_ref}]")
+                    # Simple key-value: cell_ref -> cell_value
+                    row_data[cell_ref] = str(cell_value)
             
-            # Join non-null values with tab separator for single line
-            if row_data:  # Only add row if it has non-null data
-                chunk_data.append('\t'.join(row_data))
+            # Only add row if it has non-null data - format as single line
+            if row_data:
+                # Create single line format: "A1:value, B2:value, C3:value"
+                row_line = ", ".join([f"{cell_ref}:{value}" for cell_ref, value in row_data.items()])
+                chunk_data.append(row_line)
             
             # Store formulas for this row
             if row_formulas:
@@ -328,7 +340,7 @@ def build_anchored_index(file_path: str, sheet_name: Union[int, str, None] = Non
     index["metadata"]["total_chunks"] = chunk_num
     index["metadata"]["processing_time"] = time.time() - start_time
     
-    return {"sheets": {sheet.title: index}}
+    return index
 
 def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
     """
@@ -374,6 +386,7 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
                 # Check table content
                 table_data = anchor_data.get("table", [])
                 for row in table_data:
+                    # row is now a single line string
                     if term_lower in row.lower():
                         sheet_results["matching_chunks"].append(anchor_data)
                         break
@@ -402,7 +415,7 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "test2.xlsx"
+    file_path = "test.xlsx"
     
     try:
         print("Building anchored inverted index...")
