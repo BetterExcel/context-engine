@@ -14,8 +14,8 @@ load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
 PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+COHERE_EMBEDDING_MODEL = os.getenv("COHERE_EMBEDDING_MODEL", "embed-english-v3.0")
 
 def initialize_pinecone():
     """Initialize Pinecone client."""
@@ -39,7 +39,7 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         print(f"🔄 Creating new index '{index_name}'...")
         pc.create_index(
             name=index_name,
-            dimension=3072,  # OpenAI text-embedding-3-large embedding dimension
+            dimension=1024,  # Cohere embed-english-v3.0 embedding dimension
             metric="cosine",
             spec=ServerlessSpec(
                 cloud="aws",
@@ -58,21 +58,22 @@ def create_index_if_not_exists(pc: Pinecone, index_name: str):
         print(f"❌ Failed to create index: {e}")
         raise e
 
-def generate_openai_embeddings(texts: List[str]) -> List[List[float]]:
-    """Generate embeddings using OpenAI API."""
+def generate_cohere_embeddings(texts: List[str]) -> List[List[float]]:
+    """Generate embeddings using Cohere API."""
     try:
         headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
+            "Authorization": f"Bearer {COHERE_API_KEY}",
             "Content-Type": "application/json"
         }
         
         data = {
-            "input": texts,
-            "model": OPENAI_EMBEDDING_MODEL
+            "texts": texts,
+            "model": COHERE_EMBEDDING_MODEL,
+            "input_type": "search_document"
         }
         
         response = requests.post(
-            "https://api.openai.com/v1/embeddings",
+            "https://api.cohere.ai/v1/embed",
             headers=headers,
             json=data,
             timeout=30
@@ -80,13 +81,13 @@ def generate_openai_embeddings(texts: List[str]) -> List[List[float]]:
         
         if response.status_code == 200:
             result = response.json()
-            return [item["embedding"] for item in result["data"]]
+            return result["embeddings"]
         else:
-            print(f"❌ OpenAI API error: {response.status_code} - {response.text}")
-            raise Exception(f"OpenAI API error: {response.status_code}")
+            print(f"❌ Cohere API error: {response.status_code} - {response.text}")
+            raise Exception(f"Cohere API error: {response.status_code}")
             
     except Exception as e:
-        print(f"❌ Failed to generate OpenAI embeddings: {e}")
+        print(f"❌ Failed to generate Cohere embeddings: {e}")
         raise e
 
 def generate_chunk_id(sheet_name: str, chunk_id: str) -> str:
@@ -151,9 +152,9 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
                 text_content = chunk.get("values", "")
                 texts.append(text_content)
             
-            # Generate embeddings using OpenAI API
-            print(f"🔄 Generating OpenAI embeddings for batch {i//batch_size + 1}...")
-            embeddings = generate_openai_embeddings(texts)
+            # Generate embeddings using Cohere API
+            print(f"🔄 Generating Cohere embeddings for batch {i//batch_size + 1}...")
+            embeddings = generate_cohere_embeddings(texts)
             print(f"✅ Generated {len(embeddings)} embeddings")
             
             # Prepare vectors for upload
@@ -161,7 +162,7 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
             for j, chunk in enumerate(batch):
                 vectors.append({
                     "id": chunk["id"],
-                    "values": embeddings[j],  # OpenAI returns list directly
+                    "values": embeddings[j],  # Cohere returns list directly
                     "metadata": chunk["metadata"]
                 })
             
@@ -169,7 +170,7 @@ def upload_chunks_to_pinecone(index, chunks_data: List[Dict], batch_size: int = 
             index.upsert(vectors=vectors)
             print(f"✅ Uploaded batch {i//batch_size + 1}/{(total_chunks + batch_size - 1)//batch_size}")
             
-            # Rate limiting for OpenAI API
+            # Rate limiting for Cohere API
             time.sleep(0.1)
             
         except Exception as e:
@@ -194,7 +195,7 @@ def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
 
 def main():
     """Main function to upload anchored index to Pinecone."""
-    print("🚀 Starting Pinecone upload process...")
+    print("🚀 Starting Pinecone upload process with Cohere embeddings...")
     print("=" * 50)
     
     try:

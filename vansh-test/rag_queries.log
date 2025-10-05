@@ -870,3 +870,510 @@
 2025-09-27 19:28:44,557 - INFO -   tech_companies_list: ["AI Arena", "Amazon", "AMD", "Apple"]
 2025-09-27 19:28:44,557 - INFO - 
 2025-09-27 19:28:44,557 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:07:25,762 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:07:25,763 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:07:25,763 - INFO - Generating query embedding...
+2025-09-27 23:07:26,066 - INFO - Query embedding generated successfully
+2025-09-27 23:07:26,066 - INFO - Querying Pinecone index...
+2025-09-27 23:07:26,322 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:07:26,322 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:07:26,322 - INFO - Result 1: Score: 0.518 | ID: Consolidated_tech_companies_list
+2025-09-27 23:07:26,322 - INFO -   Summary: Comprehensive list of tech companies list extracted from all data chunks
+2025-09-27 23:07:26,322 - INFO -   Context: This consolidated chunk contains all tech companies list found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:07:26,322 - INFO -   consolidated_at: 1759028775.492051
+2025-09-27 23:07:26,322 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:07:26,322 - INFO -   tech_companies_list: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:07:26,322 - INFO -   tech_companies_list_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:07:26,322 - INFO -   tech_companies_list_source_count: 12
+2025-09-27 23:07:26,322 - INFO -   tech_companies_list_total_count: 58
+2025-09-27 23:07:26,322 - INFO - 
+2025-09-27 23:07:26,322 - INFO - Result 2: Score: 0.347 | ID: Salary List_chunk_1
+2025-09-27 23:07:26,322 - INFO -   Summary: Salary information for various companies across different regions and job titles
+2025-09-27 23:07:26,322 - INFO -   Context: Data includes hourly rates, monthly stipends, relocation costs, and job descriptions
+2025-09-27 23:07:26,322 - INFO -   Complete Table Data:
+2025-09-27 23:07:26,322 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:07:26,322 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:07:26,322 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:07:26,323 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:07:26,323 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:07:26,323 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:07:26,323 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:07:26,323 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:07:26,323 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:07:26,323 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:07:26,323 - INFO -   tech_companies_list: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:07:26,323 - INFO - 
+2025-09-27 23:07:26,323 - INFO - Result 3: Score: 0.311 | ID: Salary List_chunk_7
+2025-09-27 23:07:26,323 - INFO -   Summary: Salary information for various companies
+2025-09-27 23:07:26,323 - INFO -   Context: This data chunk contains hourly and weekly salaries, as well as additional benefits like signing bonuses and housing stipends for various companies in a 10-row list.
+2025-09-27 23:07:26,323 - INFO -   Complete Table Data:
+2025-09-27 23:07:26,323 - INFO -     Row 1: CGI [A71]	18/hr (3rd coop) [B71]
+2025-09-27 23:07:26,323 - INFO -     Row 2: Chisel.ai [A72]	40/hr (5th coop) [B72]
+2025-09-27 23:07:26,323 - INFO -     Row 3: Christie Digital Systems [A73]	18/hr (1st coop), +2/hr every add. coop term [B73]
+2025-09-27 23:07:26,323 - INFO -     Row 4: CIBC [A74]	coop average + $1 [B74]
+2025-09-27 23:07:26,323 - INFO -     Row 5: Cisco (Ottawa Office) [A75]	31-33/hr (1st coop) [B75]	2000 CAD signing bonus (1st coop) [C75]	2024 [D75]
+2025-09-27 23:07:26,323 - INFO -     Row 6: Cisco Meraki [A76]	(up to) 67/hr + 10k signing bonus [B76]
+2025-09-27 23:07:26,323 - INFO -     Row 7: Citadel [A77]	3365 USD/week [B77]
+2025-09-27 23:07:26,323 - INFO -     Row 8: Citibank [A78]	44/hr [B78]	2000 CAD housing stipend [C78]	2024 [D78]
+2025-09-27 23:07:26,323 - INFO -     Row 9: Cockroach Labs [A79]	8000/month + 1.5k signing bonus [B79]
+2025-09-27 23:07:26,323 - INFO -     Row 10: CodeWithChris [A80]	20/hr (1st coop) [B80]
+2025-09-27 23:07:26,323 - INFO -   tech_companies_list: ["Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris"]
+2025-09-27 23:07:26,323 - INFO - 
+2025-09-27 23:07:26,323 - INFO - Result 4: Score: 0.306 | ID: Salary List_chunk_3
+2025-09-27 23:07:26,323 - INFO -   Summary: List of companies with hourly or monthly stipend/co-op pay information
+2025-09-27 23:07:26,323 - INFO -   Context: Data is organized into rows, each representing a company and its compensation details
+2025-09-27 23:07:26,323 - INFO -   Complete Table Data:
+2025-09-27 23:07:26,323 - INFO -     Row 1: Axonify [A31]	1100/week (4th coop) [B31]	2024 [D31]
+2025-09-27 23:07:26,323 - INFO -     Row 2: Bank of America [A32]	22/hr (2nd coop) [B32]
+2025-09-27 23:07:26,323 - INFO -     Row 3: Bank of America (Merrill Lynch) [A33]	20/hr (1st coop) [B33]
+2025-09-27 23:07:26,323 - INFO -     Row 4: BDO [A34]	34.36/hr, 25/h (2nd coop), 32/h (3rd coop) [B34]
+2025-09-27 23:07:26,323 - INFO -     Row 5: Bentley Systems [A35]	30/hr (1st coop), 33/hr (2nd coop) [B35]
+2025-09-27 23:07:26,324 - INFO -     Row 6: BETS Program [A36]	3000 stipend [B36]
+2025-09-27 23:07:26,324 - INFO -     Row 7: BetterUp [A37]	8500/mo [B37]
+2025-09-27 23:07:26,324 - INFO -     Row 8: Bitbuy [A38]	20/hr (1st coop) [B38]
+2025-09-27 23:07:26,324 - INFO -     Row 9: 10,000/mo [B39]
+2025-09-27 23:07:26,324 - INFO -     Row 10: Blackberry [A40]	(about average), ~21/hr [B40]
+2025-09-27 23:07:26,324 - INFO -   tech_companies_list: ["Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry"]
+2025-09-27 23:07:26,324 - INFO - 
+2025-09-27 23:07:26,325 - INFO - Result 5: Score: 0.298 | ID: Salary List_chunk_0
+2025-09-27 23:07:26,325 - INFO -   Summary: Company roles with hourly wages and positions
+2025-09-27 23:07:26,325 - INFO -   Context: This data chunk contains information about 10 different companies, including their roles, hourly wages, benefits, and years of employment or starting dates.
+2025-09-27 23:07:26,325 - INFO -   Complete Table Data:
+2025-09-27 23:07:26,325 - INFO -     Row 1: Company / Role [A1]	Bye World [B1]	Benefits [C1]	Year [D1]	Position [E1]
+2025-09-27 23:07:26,326 - INFO -     Row 2: 1password [A2]	50/hr (4th coop) [B2]	2023 [D2]
+2025-09-27 23:07:26,326 - INFO -     Row 3: Abbott ADD [A3]	22.05/hr (2nd coop) [B3]
+2025-09-27 23:07:26,326 - INFO -     Row 4: Abnormal Security [A4]	106k USD annual prorated (~$51/hr USD) [B4]	5k relocation [C4]
+2025-09-27 23:07:26,326 - INFO -     Row 5: Accedo [A5]	25-27/hr (3rd coop) [B5]
+2025-09-27 23:07:26,326 - INFO -     Row 6: 20-25/hr [B6]
+2025-09-27 23:07:26,326 - INFO -     Row 7: Addepar [A7]	40/hr, 48/hr (5th coop) [B7]
+2025-09-27 23:07:26,326 - INFO -     Row 8: AdHawk Microsystems [A8]	40/hr (5th coop) [B8]	2024 [D8]	Algorithms Developer [E8]
+2025-09-27 23:07:26,326 - INFO -     Row 9: less than 44/hr [B9]
+2025-09-27 23:07:26,326 - INFO -     Row 10: AGF Investments [A10]	25/hr (2nd coop) [B10]	2023 [D10]	Web Developer (Junior) [E10]
+2025-09-27 23:07:26,326 - INFO -   tech_companies_list: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems"]
+2025-09-27 23:07:26,326 - INFO - 
+2025-09-27 23:07:26,326 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:19:34,841 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:19:34,842 - INFO - Starting RAG query: 'non-tech companies'
+2025-09-27 23:19:34,842 - INFO - Generating query embedding...
+2025-09-27 23:19:35,131 - INFO - Query embedding generated successfully
+2025-09-27 23:19:35,132 - INFO - Querying Pinecone index...
+2025-09-27 23:19:35,370 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:19:35,370 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:19:35,370 - INFO - Result 1: Score: 0.530 | ID: Consolidated_non_tech_companies
+2025-09-27 23:19:35,370 - INFO -   Summary: Comprehensive list of non tech companies extracted from all data chunks
+2025-09-27 23:19:35,370 - INFO -   Context: This consolidated chunk contains all non tech companies found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 40 unique entries.
+2025-09-27 23:19:35,370 - INFO -   consolidated_at: 1759029141.417652
+2025-09-27 23:19:35,370 - INFO -   non_tech_companies: ["Abbott ADD", "AGF Investments", "American Express", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "ATS Corporation", "Bank of America", "Bank of America (Merrill Lynch)", "BDO", "Bloomberg", "BMO Business Analyst (2A)", "BMO Product Analyst", "BMO Software Developer", "Bonfire Interactive", "Brookfield Annuity", "Brookfield Renewables", "CAAT Pension Plan", "Canadian Food Inspection Agency", "Castleton Commodities", "C.E. McMahon Professional Corporation", "CGI", "CIBC", "Citibank", "Constant Contact", "The Co-operators", "CPP Investments", "Crawford and Co", "Cube Group", "Curinos", "Curvegrid (Japan)", "D2L", "Deep Breathe", "Deep Genomics", "DeepHaven", "Dejero", "Deloitte", "Delphia Asset Management"]
+2025-09-27 23:19:35,370 - INFO -   non_tech_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:19:35,370 - INFO -   non_tech_companies_source_count: 12
+2025-09-27 23:19:35,370 - INFO -   non_tech_companies_total_count: 40
+2025-09-27 23:19:35,370 - INFO -   table: ["Row 1: Abbott ADD", "Row 2: AGF Investments", "Row 3: American Express", "Row 4: Arctic Wolf", "Row 5: Aterlo Networks", "Row 6: Athelas", "Row 7: Athos", "Row 8: Atolio", "Row 9: ATS Corporation", "Row 10: Bank of America", "Row 11: Bank of America (Merrill Lynch)", "Row 12: BDO", "Row 13: Bloomberg", "Row 14: BMO Business Analyst (2A)", "Row 15: BMO Product Analyst", "Row 16: BMO Software Developer", "Row 17: Bonfire Interactive", "Row 18: Brookfield Annuity", "Row 19: Brookfield Renewables", "Row 20: CAAT Pension Plan", "Row 21: Canadian Food Inspection Agency", "Row 22: Castleton Commodities", "Row 23: C.E. McMahon Professional Corporation", "Row 24: CGI", "Row 25: CIBC", "Row 26: Citibank", "Row 27: Constant Contact", "Row 28: The Co-operators", "Row 29: CPP Investments", "Row 30: Crawford and Co", "Row 31: Cube Group", "Row 32: Curinos", "Row 33: Curvegrid (Japan)", "Row 34: D2L", "Row 35: Deep Breathe", "Row 36: Deep Genomics", "Row 37: DeepHaven", "Row 38: Dejero", "Row 39: Deloitte", "Row 40: Delphia Asset Management"]
+2025-09-27 23:19:35,371 - INFO - 
+2025-09-27 23:19:35,371 - INFO - Result 2: Score: 0.521 | ID: Consolidated_tech_companies_list
+2025-09-27 23:19:35,371 - INFO -   Summary: Comprehensive list of tech companies list extracted from all data chunks
+2025-09-27 23:19:35,371 - INFO -   Context: This consolidated chunk contains all tech companies list found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:19:35,371 - INFO -   consolidated_at: 1759028775.492051
+2025-09-27 23:19:35,371 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:19:35,371 - INFO -   tech_companies_list: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:19:35,371 - INFO -   tech_companies_list_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:19:35,371 - INFO -   tech_companies_list_source_count: 12
+2025-09-27 23:19:35,371 - INFO -   tech_companies_list_total_count: 58
+2025-09-27 23:19:35,371 - INFO - 
+2025-09-27 23:19:35,371 - INFO - Result 3: Score: 0.340 | ID: Salary List_chunk_1
+2025-09-27 23:19:35,371 - INFO -   Summary: Salary information for various companies across different regions and job titles
+2025-09-27 23:19:35,371 - INFO -   Context: Data includes hourly rates, monthly stipends, relocation costs, and job descriptions
+2025-09-27 23:19:35,371 - INFO -   Complete Table Data:
+2025-09-27 23:19:35,371 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:19:35,371 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:19:35,371 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:19:35,371 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:19:35,371 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:19:35,371 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:19:35,371 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:19:35,372 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:19:35,372 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:19:35,372 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:19:35,372 - INFO -   non_tech_companies: ["American Express"]
+2025-09-27 23:19:35,372 - INFO -   tech_companies_list: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:19:35,372 - INFO - 
+2025-09-27 23:19:35,372 - INFO - Result 4: Score: 0.334 | ID: Salary List_chunk_3
+2025-09-27 23:19:35,372 - INFO -   Summary: List of companies with hourly or monthly stipend/co-op pay information
+2025-09-27 23:19:35,372 - INFO -   Context: Data is organized into rows, each representing a company and its compensation details
+2025-09-27 23:19:35,372 - INFO -   Complete Table Data:
+2025-09-27 23:19:35,372 - INFO -     Row 1: Axonify [A31]	1100/week (4th coop) [B31]	2024 [D31]
+2025-09-27 23:19:35,372 - INFO -     Row 2: Bank of America [A32]	22/hr (2nd coop) [B32]
+2025-09-27 23:19:35,372 - INFO -     Row 3: Bank of America (Merrill Lynch) [A33]	20/hr (1st coop) [B33]
+2025-09-27 23:19:35,372 - INFO -     Row 4: BDO [A34]	34.36/hr, 25/h (2nd coop), 32/h (3rd coop) [B34]
+2025-09-27 23:19:35,372 - INFO -     Row 5: Bentley Systems [A35]	30/hr (1st coop), 33/hr (2nd coop) [B35]
+2025-09-27 23:19:35,372 - INFO -     Row 6: BETS Program [A36]	3000 stipend [B36]
+2025-09-27 23:19:35,372 - INFO -     Row 7: BetterUp [A37]	8500/mo [B37]
+2025-09-27 23:19:35,372 - INFO -     Row 8: Bitbuy [A38]	20/hr (1st coop) [B38]
+2025-09-27 23:19:35,372 - INFO -     Row 9: 10,000/mo [B39]
+2025-09-27 23:19:35,372 - INFO -     Row 10: Blackberry [A40]	(about average), ~21/hr [B40]
+2025-09-27 23:19:35,372 - INFO -   non_tech_companies: ["Bank of America", "Bank of America (Merrill Lynch)", "BDO"]
+2025-09-27 23:19:35,372 - INFO -   tech_companies_list: ["Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry"]
+2025-09-27 23:19:35,372 - INFO - 
+2025-09-27 23:19:35,372 - INFO - Result 5: Score: 0.319 | ID: Salary List_chunk_0
+2025-09-27 23:19:35,372 - INFO -   Summary: Company roles with hourly wages and positions
+2025-09-27 23:19:35,372 - INFO -   Context: This data chunk contains information about 10 different companies, including their roles, hourly wages, benefits, and years of employment or starting dates.
+2025-09-27 23:19:35,372 - INFO -   Complete Table Data:
+2025-09-27 23:19:35,372 - INFO -     Row 1: Company / Role [A1]	Bye World [B1]	Benefits [C1]	Year [D1]	Position [E1]
+2025-09-27 23:19:35,372 - INFO -     Row 2: 1password [A2]	50/hr (4th coop) [B2]	2023 [D2]
+2025-09-27 23:19:35,373 - INFO -     Row 3: Abbott ADD [A3]	22.05/hr (2nd coop) [B3]
+2025-09-27 23:19:35,373 - INFO -     Row 4: Abnormal Security [A4]	106k USD annual prorated (~$51/hr USD) [B4]	5k relocation [C4]
+2025-09-27 23:19:35,373 - INFO -     Row 5: Accedo [A5]	25-27/hr (3rd coop) [B5]
+2025-09-27 23:19:35,373 - INFO -     Row 6: 20-25/hr [B6]
+2025-09-27 23:19:35,373 - INFO -     Row 7: Addepar [A7]	40/hr, 48/hr (5th coop) [B7]
+2025-09-27 23:19:35,373 - INFO -     Row 8: AdHawk Microsystems [A8]	40/hr (5th coop) [B8]	2024 [D8]	Algorithms Developer [E8]
+2025-09-27 23:19:35,373 - INFO -     Row 9: less than 44/hr [B9]
+2025-09-27 23:19:35,373 - INFO -     Row 10: AGF Investments [A10]	25/hr (2nd coop) [B10]	2023 [D10]	Web Developer (Junior) [E10]
+2025-09-27 23:19:35,373 - INFO -   non_tech_companies: ["Abbott ADD", "AGF Investments"]
+2025-09-27 23:19:35,373 - INFO -   tech_companies_list: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems"]
+2025-09-27 23:19:35,373 - INFO - 
+2025-09-27 23:19:35,373 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:47:27,788 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:47:27,788 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:47:27,788 - INFO - Generating query embedding...
+2025-09-27 23:47:28,060 - INFO - Query embedding generated successfully
+2025-09-27 23:47:28,060 - INFO - Querying Pinecone index...
+2025-09-27 23:47:28,258 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:47:28,258 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:47:28,258 - INFO - Result 1: Score: 0.522 | ID: Consolidated_tech_companies
+2025-09-27 23:47:28,258 - INFO -   Summary: Comprehensive list of tech companies extracted from all data chunks
+2025-09-27 23:47:28,258 - INFO -   Context: This consolidated chunk contains all tech companies found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:47:28,258 - INFO -   consolidated_at: 1759031226.190903
+2025-09-27 23:47:28,258 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:47:28,258 - INFO -   tech_companies: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:47:28,259 - INFO -   tech_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:47:28,259 - INFO -   tech_companies_source_count: 12
+2025-09-27 23:47:28,259 - INFO -   tech_companies_total_count: 58
+2025-09-27 23:47:28,259 - INFO - 
+2025-09-27 23:47:28,259 - INFO - Result 2: Score: 0.367 | ID: Salary List_chunk_6
+2025-09-27 23:47:28,259 - INFO -   Summary: List of companies with hourly wages and additional information
+2025-09-27 23:47:28,259 - INFO -   Context: Data chunk A61:A70, contains company names and corresponding hourly wages
+2025-09-27 23:47:28,259 - INFO -   Complete Table Data:
+2025-09-27 23:47:28,259 - INFO -     Row 1: Carta [A61]	40/hr (4th coop), 47/hr (5th coop) [B61]	2024 [D61]	Android Engineering [E61]
+2025-09-27 23:47:28,259 - INFO -     Row 2: Carfax (Dev) [A62]	26/hr (2nd coop) [B62]
+2025-09-27 23:47:28,259 - INFO -     Row 3: Castleton Commodities [A63]	38/hr [B63]
+2025-09-27 23:47:28,259 - INFO -     Row 4: CEGN [A64]	Low-Mid 20s [B64]
+2025-09-27 23:47:28,259 - INFO -     Row 5: C.E. McMahon Professional Corporation [A65]	19/hr [B65]
+2025-09-27 23:47:28,259 - INFO -     Row 6: Cepton [A66]	35/hr [B66]	500/mo housing [C66]
+2025-09-27 23:47:28,259 - INFO -     Row 7: Cerebras Systems [A67]	38/hr [B67]
+2025-09-27 23:47:28,260 - INFO -     Row 8: Ceridian [A68]	32/hr (3rd coop) [B68]	2023 [D68]
+2025-09-27 23:47:28,260 - INFO -     Row 9: Ceridian [A69]	22/hr [B69]	2022, 2023 [D69]	Marketing Coordinator [E69]
+2025-09-27 23:47:28,260 - INFO -     Row 10: Certik [A70]	7000 USD/month remote (4th coop) [B70]
+2025-09-27 23:47:28,260 - INFO -   tech_companies: ["Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik"]
+2025-09-27 23:47:28,260 - INFO - 
+2025-09-27 23:47:28,260 - INFO - Result 3: Score: 0.348 | ID: Salary List_chunk_1
+2025-09-27 23:47:28,260 - INFO -   Summary: List of companies with hourly or monthly salary ranges, some including relocation stipends and other benefits
+2025-09-27 23:47:28,260 - INFO -   Context: The data appears to be from a job listing or salary database, showing various companies compensation packages for specific roles
+2025-09-27 23:47:28,260 - INFO -   Complete Table Data:
+2025-09-27 23:47:28,260 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:47:28,260 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:47:28,260 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:47:28,260 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:47:28,260 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:47:28,260 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:47:28,260 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:47:28,260 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:47:28,260 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:47:28,260 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:47:28,261 - INFO -   tech_companies: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:47:28,261 - INFO - 
+2025-09-27 23:47:28,261 - INFO - Result 4: Score: 0.337 | ID: Salary List_chunk_7
+2025-09-27 23:47:28,261 - INFO -   Summary: Salary and compensation data for various companies, including hourly rates and signing bonuses
+2025-09-27 23:47:28,261 - INFO -   Context: Data represents salary and compensation information for co-op students at multiple organizations
+2025-09-27 23:47:28,261 - INFO -   Complete Table Data:
+2025-09-27 23:47:28,261 - INFO -     Row 1: CGI [A71]	18/hr (3rd coop) [B71]
+2025-09-27 23:47:28,261 - INFO -     Row 2: Chisel.ai [A72]	40/hr (5th coop) [B72]
+2025-09-27 23:47:28,261 - INFO -     Row 3: Christie Digital Systems [A73]	18/hr (1st coop), +2/hr every add. coop term [B73]
+2025-09-27 23:47:28,261 - INFO -     Row 4: CIBC [A74]	coop average + $1 [B74]
+2025-09-27 23:47:28,261 - INFO -     Row 5: Cisco (Ottawa Office) [A75]	31-33/hr (1st coop) [B75]	2000 CAD signing bonus (1st coop) [C75]	2024 [D75]
+2025-09-27 23:47:28,261 - INFO -     Row 6: Cisco Meraki [A76]	(up to) 67/hr + 10k signing bonus [B76]
+2025-09-27 23:47:28,261 - INFO -     Row 7: Citadel [A77]	3365 USD/week [B77]
+2025-09-27 23:47:28,261 - INFO -     Row 8: Citibank [A78]	44/hr [B78]	2000 CAD housing stipend [C78]	2024 [D78]
+2025-09-27 23:47:28,261 - INFO -     Row 9: Cockroach Labs [A79]	8000/month + 1.5k signing bonus [B79]
+2025-09-27 23:47:28,261 - INFO -     Row 10: CodeWithChris [A80]	20/hr (1st coop) [B80]
+2025-09-27 23:47:28,261 - INFO -   tech_companies: ["Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris"]
+2025-09-27 23:47:28,261 - INFO - 
+2025-09-27 23:47:28,261 - INFO - Result 5: Score: 0.332 | ID: Salary List_chunk_2
+2025-09-27 23:47:28,261 - INFO -   Summary: List of companies with hourly wages and other benefits
+2025-09-27 23:47:28,261 - INFO -   Context: This data chunk appears to contain a list of organizations with their respective hourly wages, year, and additional benefits. The format is not consistent throughout the data, with some entries including coop numbers and others only including hourly wage.
+2025-09-27 23:47:28,261 - INFO -   Complete Table Data:
+2025-09-27 23:47:28,261 - INFO -     Row 1: Arctic Wolf [A21]	36/hr (3rd coop), 42/hr (4th coop) [B21]	2023 [D21]
+2025-09-27 23:47:28,262 - INFO -     Row 2: Arctic Wolf [A22]	38/hr (4th coop) [B22]	2024 [D22]
+2025-09-27 23:47:28,262 - INFO -     Row 3: Aterlo Networks [A23]	30/hr (4th coop) [B23]
+2025-09-27 23:47:28,262 - INFO -     Row 4: Athelas [A24]	33/hr USD [B24]	1200/mo USD housing stipend (2nd coop) + flights [C24]
+2025-09-27 23:47:28,262 - INFO -     Row 5: Athos [A25]	5000 USD/mo [B25]
+2025-09-27 23:47:28,262 - INFO -     Row 6: Atolio [A26]	34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop) [B26]
+2025-09-27 23:47:28,262 - INFO -     Row 7: ATS Corporation [A27]	28/hr (5th year (4B?)) [B27]
+2025-09-27 23:47:28,262 - INFO -     Row 8: 33/hr (4th coop) [B28]	2023 [D28]
+2025-09-27 23:47:28,262 - INFO -     Row 9: Autodesk [A29]	34/hr (5th coop) [B29]	2024 [D29]
+2025-09-27 23:47:28,262 - INFO -     Row 10: Autonomic [A30]	38-40/hr (4th coop), 41/hr (5th coop) [B30]
+2025-09-27 23:47:28,262 - INFO -   tech_companies: ["Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic"]
+2025-09-27 23:47:28,262 - INFO - 
+2025-09-27 23:47:28,262 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:48:47,705 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:48:47,705 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:48:47,705 - INFO - Generating query embedding...
+2025-09-27 23:48:48,628 - INFO - Query embedding generated successfully
+2025-09-27 23:48:48,628 - INFO - Querying Pinecone index...
+2025-09-27 23:48:48,906 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:48:48,906 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:48:48,906 - INFO - Result 1: Score: 0.522 | ID: Consolidated_tech_companies
+2025-09-27 23:48:48,907 - INFO -   Summary: Comprehensive list of tech companies extracted from all data chunks
+2025-09-27 23:48:48,907 - INFO -   Context: This consolidated chunk contains all tech companies found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:48:48,907 - INFO -   consolidated_at: 1759031226.190903
+2025-09-27 23:48:48,907 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:48:48,907 - INFO -   tech_companies: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:48:48,907 - INFO -   tech_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:48:48,907 - INFO -   tech_companies_source_count: 12
+2025-09-27 23:48:48,907 - INFO -   tech_companies_total_count: 58
+2025-09-27 23:48:48,907 - INFO - 
+2025-09-27 23:48:48,907 - INFO - Result 2: Score: 0.367 | ID: Salary List_chunk_6
+2025-09-27 23:48:48,907 - INFO -   Summary: List of companies with hourly wages and additional information
+2025-09-27 23:48:48,907 - INFO -   Context: Data chunk A61:A70, contains company names and corresponding hourly wages
+2025-09-27 23:48:48,907 - INFO -   Complete Table Data:
+2025-09-27 23:48:48,907 - INFO -     Row 1: Carta [A61]	40/hr (4th coop), 47/hr (5th coop) [B61]	2024 [D61]	Android Engineering [E61]
+2025-09-27 23:48:48,907 - INFO -     Row 2: Carfax (Dev) [A62]	26/hr (2nd coop) [B62]
+2025-09-27 23:48:48,907 - INFO -     Row 3: Castleton Commodities [A63]	38/hr [B63]
+2025-09-27 23:48:48,907 - INFO -     Row 4: CEGN [A64]	Low-Mid 20s [B64]
+2025-09-27 23:48:48,907 - INFO -     Row 5: C.E. McMahon Professional Corporation [A65]	19/hr [B65]
+2025-09-27 23:48:48,907 - INFO -     Row 6: Cepton [A66]	35/hr [B66]	500/mo housing [C66]
+2025-09-27 23:48:48,907 - INFO -     Row 7: Cerebras Systems [A67]	38/hr [B67]
+2025-09-27 23:48:48,907 - INFO -     Row 8: Ceridian [A68]	32/hr (3rd coop) [B68]	2023 [D68]
+2025-09-27 23:48:48,907 - INFO -     Row 9: Ceridian [A69]	22/hr [B69]	2022, 2023 [D69]	Marketing Coordinator [E69]
+2025-09-27 23:48:48,907 - INFO -     Row 10: Certik [A70]	7000 USD/month remote (4th coop) [B70]
+2025-09-27 23:48:48,907 - INFO -   tech_companies: ["Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik"]
+2025-09-27 23:48:48,907 - INFO - 
+2025-09-27 23:48:48,907 - INFO - Result 3: Score: 0.348 | ID: Salary List_chunk_1
+2025-09-27 23:48:48,907 - INFO -   Summary: List of companies with hourly or monthly salary ranges, some including relocation stipends and other benefits
+2025-09-27 23:48:48,907 - INFO -   Context: The data appears to be from a job listing or salary database, showing various companies compensation packages for specific roles
+2025-09-27 23:48:48,907 - INFO -   Complete Table Data:
+2025-09-27 23:48:48,907 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:48:48,907 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:48:48,907 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:48:48,907 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:48:48,907 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:48:48,907 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:48:48,907 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:48:48,907 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:48:48,907 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:48:48,907 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:48:48,907 - INFO -   tech_companies: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:48:48,907 - INFO - 
+2025-09-27 23:48:48,907 - INFO - Result 4: Score: 0.337 | ID: Salary List_chunk_7
+2025-09-27 23:48:48,907 - INFO -   Summary: Salary and compensation data for various companies, including hourly rates and signing bonuses
+2025-09-27 23:48:48,908 - INFO -   Context: Data represents salary and compensation information for co-op students at multiple organizations
+2025-09-27 23:48:48,908 - INFO -   Complete Table Data:
+2025-09-27 23:48:48,908 - INFO -     Row 1: CGI [A71]	18/hr (3rd coop) [B71]
+2025-09-27 23:48:48,908 - INFO -     Row 2: Chisel.ai [A72]	40/hr (5th coop) [B72]
+2025-09-27 23:48:48,908 - INFO -     Row 3: Christie Digital Systems [A73]	18/hr (1st coop), +2/hr every add. coop term [B73]
+2025-09-27 23:48:48,908 - INFO -     Row 4: CIBC [A74]	coop average + $1 [B74]
+2025-09-27 23:48:48,908 - INFO -     Row 5: Cisco (Ottawa Office) [A75]	31-33/hr (1st coop) [B75]	2000 CAD signing bonus (1st coop) [C75]	2024 [D75]
+2025-09-27 23:48:48,908 - INFO -     Row 6: Cisco Meraki [A76]	(up to) 67/hr + 10k signing bonus [B76]
+2025-09-27 23:48:48,908 - INFO -     Row 7: Citadel [A77]	3365 USD/week [B77]
+2025-09-27 23:48:48,908 - INFO -     Row 8: Citibank [A78]	44/hr [B78]	2000 CAD housing stipend [C78]	2024 [D78]
+2025-09-27 23:48:48,908 - INFO -     Row 9: Cockroach Labs [A79]	8000/month + 1.5k signing bonus [B79]
+2025-09-27 23:48:48,908 - INFO -     Row 10: CodeWithChris [A80]	20/hr (1st coop) [B80]
+2025-09-27 23:48:48,908 - INFO -   tech_companies: ["Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris"]
+2025-09-27 23:48:48,908 - INFO - 
+2025-09-27 23:48:48,908 - INFO - Result 5: Score: 0.332 | ID: Salary List_chunk_2
+2025-09-27 23:48:48,908 - INFO -   Summary: List of companies with hourly wages and other benefits
+2025-09-27 23:48:48,908 - INFO -   Context: This data chunk appears to contain a list of organizations with their respective hourly wages, year, and additional benefits. The format is not consistent throughout the data, with some entries including coop numbers and others only including hourly wage.
+2025-09-27 23:48:48,908 - INFO -   Complete Table Data:
+2025-09-27 23:48:48,908 - INFO -     Row 1: Arctic Wolf [A21]	36/hr (3rd coop), 42/hr (4th coop) [B21]	2023 [D21]
+2025-09-27 23:48:48,908 - INFO -     Row 2: Arctic Wolf [A22]	38/hr (4th coop) [B22]	2024 [D22]
+2025-09-27 23:48:48,908 - INFO -     Row 3: Aterlo Networks [A23]	30/hr (4th coop) [B23]
+2025-09-27 23:48:48,908 - INFO -     Row 4: Athelas [A24]	33/hr USD [B24]	1200/mo USD housing stipend (2nd coop) + flights [C24]
+2025-09-27 23:48:48,908 - INFO -     Row 5: Athos [A25]	5000 USD/mo [B25]
+2025-09-27 23:48:48,908 - INFO -     Row 6: Atolio [A26]	34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop) [B26]
+2025-09-27 23:48:48,908 - INFO -     Row 7: ATS Corporation [A27]	28/hr (5th year (4B?)) [B27]
+2025-09-27 23:48:48,908 - INFO -     Row 8: 33/hr (4th coop) [B28]	2023 [D28]
+2025-09-27 23:48:48,908 - INFO -     Row 9: Autodesk [A29]	34/hr (5th coop) [B29]	2024 [D29]
+2025-09-27 23:48:48,908 - INFO -     Row 10: Autonomic [A30]	38-40/hr (4th coop), 41/hr (5th coop) [B30]
+2025-09-27 23:48:48,908 - INFO -   tech_companies: ["Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic"]
+2025-09-27 23:48:48,908 - INFO - 
+2025-09-27 23:48:48,908 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:49:44,067 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:49:44,067 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:49:44,067 - INFO - Generating query embedding...
+2025-09-27 23:49:44,728 - INFO - Query embedding generated successfully
+2025-09-27 23:49:44,729 - INFO - Querying Pinecone index...
+2025-09-27 23:49:44,931 - INFO - Retrieved 0 results from Pinecone
+2025-09-27 23:49:44,931 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:49:44,932 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:49:56,453 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:49:56,453 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:49:56,453 - INFO - Generating query embedding...
+2025-09-27 23:49:56,839 - INFO - Query embedding generated successfully
+2025-09-27 23:49:56,840 - INFO - Querying Pinecone index...
+2025-09-27 23:49:57,032 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:49:57,032 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:49:57,032 - INFO - Result 1: Score: 0.522 | ID: Consolidated_tech_companies
+2025-09-27 23:49:57,032 - INFO -   Summary: Comprehensive list of tech companies extracted from all data chunks
+2025-09-27 23:49:57,032 - INFO -   Context: This consolidated chunk contains all tech companies found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:49:57,032 - INFO -   consolidated_at: 1759031392.192981
+2025-09-27 23:49:57,032 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:49:57,032 - INFO -   tech_companies: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:49:57,032 - INFO -   tech_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:49:57,032 - INFO -   tech_companies_source_count: 12
+2025-09-27 23:49:57,032 - INFO -   tech_companies_total_count: 58
+2025-09-27 23:49:57,032 - INFO - 
+2025-09-27 23:49:57,032 - INFO - Result 2: Score: 0.367 | ID: Salary List_chunk_6
+2025-09-27 23:49:57,032 - INFO -   Summary: List of companies with hourly wages and additional information
+2025-09-27 23:49:57,032 - INFO -   Context: Data chunk A61:A70, contains company names and corresponding hourly wages
+2025-09-27 23:49:57,032 - INFO -   Complete Table Data:
+2025-09-27 23:49:57,032 - INFO -     Row 1: Carta [A61]	40/hr (4th coop), 47/hr (5th coop) [B61]	2024 [D61]	Android Engineering [E61]
+2025-09-27 23:49:57,032 - INFO -     Row 2: Carfax (Dev) [A62]	26/hr (2nd coop) [B62]
+2025-09-27 23:49:57,033 - INFO -     Row 3: Castleton Commodities [A63]	38/hr [B63]
+2025-09-27 23:49:57,033 - INFO -     Row 4: CEGN [A64]	Low-Mid 20s [B64]
+2025-09-27 23:49:57,033 - INFO -     Row 5: C.E. McMahon Professional Corporation [A65]	19/hr [B65]
+2025-09-27 23:49:57,033 - INFO -     Row 6: Cepton [A66]	35/hr [B66]	500/mo housing [C66]
+2025-09-27 23:49:57,033 - INFO -     Row 7: Cerebras Systems [A67]	38/hr [B67]
+2025-09-27 23:49:57,033 - INFO -     Row 8: Ceridian [A68]	32/hr (3rd coop) [B68]	2023 [D68]
+2025-09-27 23:49:57,033 - INFO -     Row 9: Ceridian [A69]	22/hr [B69]	2022, 2023 [D69]	Marketing Coordinator [E69]
+2025-09-27 23:49:57,033 - INFO -     Row 10: Certik [A70]	7000 USD/month remote (4th coop) [B70]
+2025-09-27 23:49:57,033 - INFO -   tech_companies: ["Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik"]
+2025-09-27 23:49:57,033 - INFO - 
+2025-09-27 23:49:57,033 - INFO - Result 3: Score: 0.338 | ID: Salary List_chunk_7
+2025-09-27 23:49:57,033 - INFO -   Summary: Salary and compensation data for various companies, including hourly rates and signing bonuses
+2025-09-27 23:49:57,033 - INFO -   Context: Data represents salary and compensation information for co-op students at multiple organizations
+2025-09-27 23:49:57,033 - INFO -   Complete Table Data:
+2025-09-27 23:49:57,033 - INFO -     Row 1: CGI [A71]	18/hr (3rd coop) [B71]
+2025-09-27 23:49:57,033 - INFO -     Row 2: Chisel.ai [A72]	40/hr (5th coop) [B72]
+2025-09-27 23:49:57,033 - INFO -     Row 3: Christie Digital Systems [A73]	18/hr (1st coop), +2/hr every add. coop term [B73]
+2025-09-27 23:49:57,033 - INFO -     Row 4: CIBC [A74]	coop average + $1 [B74]
+2025-09-27 23:49:57,033 - INFO -     Row 5: Cisco (Ottawa Office) [A75]	31-33/hr (1st coop) [B75]	2000 CAD signing bonus (1st coop) [C75]	2024 [D75]
+2025-09-27 23:49:57,033 - INFO -     Row 6: Cisco Meraki [A76]	(up to) 67/hr + 10k signing bonus [B76]
+2025-09-27 23:49:57,033 - INFO -     Row 7: Citadel [A77]	3365 USD/week [B77]
+2025-09-27 23:49:57,033 - INFO -     Row 8: Citibank [A78]	44/hr [B78]	2000 CAD housing stipend [C78]	2024 [D78]
+2025-09-27 23:49:57,033 - INFO -     Row 9: Cockroach Labs [A79]	8000/month + 1.5k signing bonus [B79]
+2025-09-27 23:49:57,033 - INFO -     Row 10: CodeWithChris [A80]	20/hr (1st coop) [B80]
+2025-09-27 23:49:57,033 - INFO -   tech_companies: ["Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris"]
+2025-09-27 23:49:57,033 - INFO - 
+2025-09-27 23:49:57,033 - INFO - Result 4: Score: 0.332 | ID: Salary List_chunk_2
+2025-09-27 23:49:57,033 - INFO -   Summary: List of companies with hourly wages and other benefits
+2025-09-27 23:49:57,033 - INFO -   Context: This data chunk appears to contain a list of organizations with their respective hourly wages, year, and additional benefits. The format is not consistent throughout the data, with some entries including coop numbers and others only including hourly wage.
+2025-09-27 23:49:57,033 - INFO -   Complete Table Data:
+2025-09-27 23:49:57,033 - INFO -     Row 1: Arctic Wolf [A21]	36/hr (3rd coop), 42/hr (4th coop) [B21]	2023 [D21]
+2025-09-27 23:49:57,033 - INFO -     Row 2: Arctic Wolf [A22]	38/hr (4th coop) [B22]	2024 [D22]
+2025-09-27 23:49:57,033 - INFO -     Row 3: Aterlo Networks [A23]	30/hr (4th coop) [B23]
+2025-09-27 23:49:57,033 - INFO -     Row 4: Athelas [A24]	33/hr USD [B24]	1200/mo USD housing stipend (2nd coop) + flights [C24]
+2025-09-27 23:49:57,033 - INFO -     Row 5: Athos [A25]	5000 USD/mo [B25]
+2025-09-27 23:49:57,033 - INFO -     Row 6: Atolio [A26]	34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop) [B26]
+2025-09-27 23:49:57,033 - INFO -     Row 7: ATS Corporation [A27]	28/hr (5th year (4B?)) [B27]
+2025-09-27 23:49:57,033 - INFO -     Row 8: 33/hr (4th coop) [B28]	2023 [D28]
+2025-09-27 23:49:57,033 - INFO -     Row 9: Autodesk [A29]	34/hr (5th coop) [B29]	2024 [D29]
+2025-09-27 23:49:57,033 - INFO -     Row 10: Autonomic [A30]	38-40/hr (4th coop), 41/hr (5th coop) [B30]
+2025-09-27 23:49:57,033 - INFO -   tech_companies: ["Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic"]
+2025-09-27 23:49:57,033 - INFO - 
+2025-09-27 23:49:57,034 - INFO - Result 5: Score: 0.348 | ID: Salary List_chunk_1
+2025-09-27 23:49:57,034 - INFO -   Summary: List of companies with hourly or monthly salary ranges, some including relocation stipends and other benefits
+2025-09-27 23:49:57,034 - INFO -   Context: The data appears to be from a job listing or salary database, showing various companies compensation packages for specific roles
+2025-09-27 23:49:57,034 - INFO -   Complete Table Data:
+2025-09-27 23:49:57,034 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:49:57,034 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:49:57,034 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:49:57,034 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:49:57,034 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:49:57,034 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:49:57,034 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:49:57,034 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:49:57,034 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:49:57,034 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:49:57,034 - INFO -   tech_companies: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:49:57,034 - INFO - 
+2025-09-27 23:49:57,034 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:50:03,359 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:50:03,359 - INFO - Starting RAG query: 'artificial intelligence machine learning companies'
+2025-09-27 23:50:03,359 - INFO - Generating query embedding...
+2025-09-27 23:50:03,756 - INFO - Query embedding generated successfully
+2025-09-27 23:50:03,756 - INFO - Querying Pinecone index...
+2025-09-27 23:50:03,931 - INFO - Retrieved 5 results from Pinecone
+2025-09-27 23:50:03,932 - INFO - === RAG QUERY RESULTS ===
+2025-09-27 23:50:03,932 - INFO - Result 1: Score: 0.413 | ID: Consolidated_tech_companies
+2025-09-27 23:50:03,932 - INFO -   Summary: Comprehensive list of tech companies extracted from all data chunks
+2025-09-27 23:50:03,932 - INFO -   Context: This consolidated chunk contains all tech companies found across the entire dataset. Data was extracted from 12 source chunks and deduplicated to show 58 unique entries.
+2025-09-27 23:50:03,932 - INFO -   consolidated_at: 1759031392.192981
+2025-09-27 23:50:03,932 - INFO -   table: ["Row 1: 1password", "Row 2: Abnormal Security", "Row 3: Accedo", "Row 4: Addepar", "Row 5: AdHawk Microsystems", "Row 6: AI Arena", "Row 7: Amazon", "Row 8: AMD", "Row 9: Apple", "Row 10: Arctic Wolf", "Row 11: Aterlo Networks", "Row 12: Athelas", "Row 13: Athos", "Row 14: Atolio", "Row 15: Autodesk", "Row 16: Autonomic", "Row 17: Axonify", "Row 18: Bentley Systems", "Row 19: BetterUp", "Row 20: Bitbuy", "Row 21: Blackberry", "Row 22: bld.ai", "Row 23: Bloomberg", "Row 24: Bloq", "Row 25: Bluescape", "Row 26: Bolt", "Row 27: Boosted.AI", "Row 28: Borrowell", "Row 29: BusPlanner", "Row 30: Capital1", "Row 31: Carta", "Row 32: Cepton", "Row 33: Cerebras Systems", "Row 34: Ceridian", "Row 35: Certik", "Row 36: Chisel.ai", "Row 37: Cisco (Ottawa Office)", "Row 38: Cisco Meraki", "Row 39: Cockroach Labs", "Row 40: CodeWithChris", "Row 41: Cohere", "Row 42: Cohesity", "Row 43: Coinbase", "Row 44: Coinsquare", "Row 45: Composer.trade", "Row 46: Compound", "Row 47: Connected", "Row 48: Constant Contact", "Row 49: Cover Technologies Inc", "Row 50: Crypto4a", "Row 51: D2L", "Row 52: Databrick", "Row 53: Datadog", "Row 54: data.world", "Row 55: Deep Genomics", "Row 56: DeepHaven", "Row 57: Digitaled", "Row 58: Digital Extremes (Marketing)"]
+2025-09-27 23:50:03,932 - INFO -   tech_companies: ["1password", "Abnormal Security", "Accedo", "Addepar", "AdHawk Microsystems", "AI Arena", "Amazon", "AMD", "Apple", "Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic", "Axonify", "Bentley Systems", "BetterUp", "Bitbuy", "Blackberry", "bld.ai", "Bloomberg", "Bloq", "Bluescape", "Bolt", "Boosted.AI", "Borrowell", "BusPlanner", "Capital1", "Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik", "Chisel.ai", "Cisco (Ottawa Office)", "Cisco Meraki", "Cockroach Labs", "CodeWithChris", "Cohere", "Cohesity", "Coinbase", "Coinsquare", "Composer.trade", "Compound", "Connected", "Constant Contact", "Cover Technologies Inc", "Crypto4a", "D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven", "Digitaled", "Digital Extremes (Marketing)"]
+2025-09-27 23:50:03,932 - INFO -   tech_companies_source_chunks: ["chunk_0", "chunk_1", "chunk_2", "chunk_3", "chunk_4", "chunk_5", "chunk_6", "chunk_7", "chunk_8", "chunk_9", "chunk_10", "chunk_11"]
+2025-09-27 23:50:03,932 - INFO -   tech_companies_source_count: 12
+2025-09-27 23:50:03,932 - INFO -   tech_companies_total_count: 58
+2025-09-27 23:50:03,932 - INFO - 
+2025-09-27 23:50:03,932 - INFO - Result 2: Score: 0.263 | ID: Salary List_chunk_10
+2025-09-27 23:50:03,932 - INFO -   Summary: Salaries and benefits for various companies
+2025-09-27 23:50:03,932 - INFO -   Context: The data appears to be a list of companies with their corresponding hourly rates, monthly stipends, and other benefits in different currencies.
+2025-09-27 23:50:03,932 - INFO -   Complete Table Data:
+2025-09-27 23:50:03,932 - INFO -     Row 1: Cube Group [A101]	75/hr USD [B101]	2024 [D101]
+2025-09-27 23:50:03,932 - INFO -     Row 2: Curinos [A102]	34/hr (2b) [B102]
+2025-09-27 23:50:03,932 - INFO -     Row 3: Curvegrid (Japan) [A103]	¥300,000/mo (2nd coop) [B103]
+2025-09-27 23:50:03,932 - INFO -     Row 4: D2L [A104]	28/hr [B104]
+2025-09-27 23:50:03,932 - INFO -     Row 5: Databrick [A105]	55 CAD/hr [B105]	1.3k/mo housing [C105]
+2025-09-27 23:50:03,932 - INFO -     Row 6: Datadog [A106]	40/hr [B106]	2000 USD/mo housing [C106]
+2025-09-27 23:50:03,932 - INFO -     Row 7: data.world [A107]	1400 USD/week [B107]	100 USD remote stipend [C107]
+2025-09-27 23:50:03,932 - INFO -     Row 8: Deep Breathe [A108]	co-op average + 20% [B108]
+2025-09-27 23:50:03,932 - INFO -     Row 9: Deep Genomics [A109]	60k/yr [B109]
+2025-09-27 23:50:03,932 - INFO -     Row 10: DeepHaven [A110]	32-38/hr (increases with work term) [B110]	2024 [D110]
+2025-09-27 23:50:03,932 - INFO -   tech_companies: ["D2L", "Databrick", "Datadog", "data.world", "Deep Genomics", "DeepHaven"]
+2025-09-27 23:50:03,932 - INFO - 
+2025-09-27 23:50:03,932 - INFO - Result 3: Score: 0.250 | ID: Salary List_chunk_6
+2025-09-27 23:50:03,932 - INFO -   Summary: List of companies with hourly wages and additional information
+2025-09-27 23:50:03,933 - INFO -   Context: Data chunk A61:A70, contains company names and corresponding hourly wages
+2025-09-27 23:50:03,933 - INFO -   Complete Table Data:
+2025-09-27 23:50:03,933 - INFO -     Row 1: Carta [A61]	40/hr (4th coop), 47/hr (5th coop) [B61]	2024 [D61]	Android Engineering [E61]
+2025-09-27 23:50:03,933 - INFO -     Row 2: Carfax (Dev) [A62]	26/hr (2nd coop) [B62]
+2025-09-27 23:50:03,933 - INFO -     Row 3: Castleton Commodities [A63]	38/hr [B63]
+2025-09-27 23:50:03,933 - INFO -     Row 4: CEGN [A64]	Low-Mid 20s [B64]
+2025-09-27 23:50:03,933 - INFO -     Row 5: C.E. McMahon Professional Corporation [A65]	19/hr [B65]
+2025-09-27 23:50:03,933 - INFO -     Row 6: Cepton [A66]	35/hr [B66]	500/mo housing [C66]
+2025-09-27 23:50:03,933 - INFO -     Row 7: Cerebras Systems [A67]	38/hr [B67]
+2025-09-27 23:50:03,933 - INFO -     Row 8: Ceridian [A68]	32/hr (3rd coop) [B68]	2023 [D68]
+2025-09-27 23:50:03,933 - INFO -     Row 9: Ceridian [A69]	22/hr [B69]	2022, 2023 [D69]	Marketing Coordinator [E69]
+2025-09-27 23:50:03,933 - INFO -     Row 10: Certik [A70]	7000 USD/month remote (4th coop) [B70]
+2025-09-27 23:50:03,933 - INFO -   tech_companies: ["Carta", "Cepton", "Cerebras Systems", "Ceridian", "Certik"]
+2025-09-27 23:50:03,933 - INFO - 
+2025-09-27 23:50:03,933 - INFO - Result 4: Score: 0.246 | ID: Salary List_chunk_2
+2025-09-27 23:50:03,933 - INFO -   Summary: List of companies with hourly wages and other benefits
+2025-09-27 23:50:03,933 - INFO -   Context: This data chunk appears to contain a list of organizations with their respective hourly wages, year, and additional benefits. The format is not consistent throughout the data, with some entries including coop numbers and others only including hourly wage.
+2025-09-27 23:50:03,933 - INFO -   Complete Table Data:
+2025-09-27 23:50:03,933 - INFO -     Row 1: Arctic Wolf [A21]	36/hr (3rd coop), 42/hr (4th coop) [B21]	2023 [D21]
+2025-09-27 23:50:03,933 - INFO -     Row 2: Arctic Wolf [A22]	38/hr (4th coop) [B22]	2024 [D22]
+2025-09-27 23:50:03,933 - INFO -     Row 3: Aterlo Networks [A23]	30/hr (4th coop) [B23]
+2025-09-27 23:50:03,933 - INFO -     Row 4: Athelas [A24]	33/hr USD [B24]	1200/mo USD housing stipend (2nd coop) + flights [C24]
+2025-09-27 23:50:03,933 - INFO -     Row 5: Athos [A25]	5000 USD/mo [B25]
+2025-09-27 23:50:03,933 - INFO -     Row 6: Atolio [A26]	34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop) [B26]
+2025-09-27 23:50:03,933 - INFO -     Row 7: ATS Corporation [A27]	28/hr (5th year (4B?)) [B27]
+2025-09-27 23:50:03,933 - INFO -     Row 8: 33/hr (4th coop) [B28]	2023 [D28]
+2025-09-27 23:50:03,934 - INFO -     Row 9: Autodesk [A29]	34/hr (5th coop) [B29]	2024 [D29]
+2025-09-27 23:50:03,934 - INFO -     Row 10: Autonomic [A30]	38-40/hr (4th coop), 41/hr (5th coop) [B30]
+2025-09-27 23:50:03,934 - INFO -   tech_companies: ["Arctic Wolf", "Aterlo Networks", "Athelas", "Athos", "Atolio", "Autodesk", "Autonomic"]
+2025-09-27 23:50:03,934 - INFO - 
+2025-09-27 23:50:03,934 - INFO - Result 5: Score: 0.272 | ID: Salary List_chunk_1
+2025-09-27 23:50:03,934 - INFO -   Summary: List of companies with hourly or monthly salary ranges, some including relocation stipends and other benefits
+2025-09-27 23:50:03,934 - INFO -   Context: The data appears to be from a job listing or salary database, showing various companies compensation packages for specific roles
+2025-09-27 23:50:03,934 - INFO -   Complete Table Data:
+2025-09-27 23:50:03,934 - INFO -     Row 1: AI Arena [A11]	45/hr [B11]
+2025-09-27 23:50:03,934 - INFO -     Row 2: Akuna Capital [A12]	65 USD/hour [B12]	return flight + corporate housing [C12]
+2025-09-27 23:50:03,934 - INFO -     Row 3: Altice USA [A13]	mid 30s/hr (6th coop) [B13]
+2025-09-27 23:50:03,934 - INFO -     Row 4: Amazon [A14]	9138 USD/month [B14]	2425/month tax-free relocation stipend [C14]
+2025-09-27 23:50:03,934 - INFO -     Row 5: AMD [A15]	27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) [B15]
+2025-09-27 23:50:03,934 - INFO -     Row 6: American Express [A16]	34.5/hr [B16]
+2025-09-27 23:50:03,934 - INFO -     Row 7: ANSYS [A17]	math coop average + 10% [B17]
+2025-09-27 23:50:03,934 - INFO -     Row 8: (34/hr + 1300-1500 stipend/month), (37/hr + 1350 stipend for 3A term), (44/h + housing or 1k stipend. 4A Product Design) [B18]	Stipends listed [C18]
+2025-09-27 23:50:03,934 - INFO -     Row 9: Apple [A19]	42/hr USD (3A) [B19]	3335/mo pretax relocation (3A) [C19]	2024 [D19]	Hardware [E19]
+2025-09-27 23:50:03,934 - INFO -     Row 10: Apple [A20]	42/hr USD [B20]	1k/mo stipend [C20]	2024 [D20]	System Level Test Engineer [E20]
+2025-09-27 23:50:03,934 - INFO -   tech_companies: ["AI Arena", "Amazon", "AMD", "Apple"]
+2025-09-27 23:50:03,934 - INFO - 
+2025-09-27 23:50:03,934 - INFO - === END RAG QUERY RESULTS ===
+2025-09-27 23:55:07,912 - INFO - Connected to Pinecone index: skopeo-context-index
+2025-09-27 23:55:07,913 - INFO - Starting RAG query: 'tech companies'
+2025-09-27 23:55:07,913 - INFO - Generating query embedding...
+2025-09-27 23:55:08,323 - INFO - Query embedding generated successfully
+2025-09-27 23:55:08,324 - INFO - Querying Pinecone index...
+2025-09-27 23:55:08,502 - ERROR - Error during RAG query: (400)
+Reason: Bad Request
+HTTP response headers: HTTPHeaderDict({'Date': 'Sun, 28 Sep 2025 03:55:08 GMT', 'Content-Type': 'application/json', 'Content-Length': '104', 'Connection': 'keep-alive', 'x-pinecone-request-latency-ms': '26', 'x-pinecone-request-id': '3268497166646373410', 'x-envoy-upstream-service-time': '0', 'server': 'envoy'})
+HTTP response body: {"code":3,"message":"Vector dimension 1536 does not match the dimension of the index 1024","details":[]}
+
