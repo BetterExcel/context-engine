@@ -56,13 +56,13 @@ class PineconeUploader:
         """Create Pinecone index if it doesn't exist."""
         try:
             # Check if index exists
-            if self.index in self.pc.list_indexes().names():
-                print(f"✅ Index '{self.index}' already exists")
-                return self.pc.Index(self.index)
+            if self.index_name in self.pc.list_indexes().names():
+                print(f"✅ Index '{self.index_name}' already exists")
+                return self.pc.Index(self.index_name)
             # Create new index
-            print(f"🔄 Creating new index '{self.index}'...")
+            print(f"🔄 Creating new index '{self.index_name}'...")
             self.pc.create_index(
-                name=self.index,
+                name=self.index_name,
                 dimension=self.dim,  # OpenAI text-embedding-3-small embedding dimension
                 metric="cosine",
                 spec=ServerlessSpec(
@@ -73,8 +73,8 @@ class PineconeUploader:
             # Wait for index to be ready
             print("⏳ Waiting for index to be ready...")
             time.sleep(5)
-            print(f"✅ Index '{self.index}' created successfully")
-            return self.pc.Index(self.index)
+            print(f"✅ Index '{self.index_name}' created successfully")
+            return self.pc.Index(self.index_name)
         except Exception as e:
             print(f"❌ Failed to create index: {e}")
             raise e
@@ -292,15 +292,15 @@ if __name__ == "__main__":
     index_data = load_anchored_index()
     
     skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-dense')
-    skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
+    # skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
 
     # skopeo_context_index_dense.delete_index_if_exists()
     # skopeo_context_index_sparse.delete_index_if_exists()
 
-    # skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
+    skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
     # skopeo_context_index_dense.query_index("List all companies with high paying jobs")
 
     # skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
-    results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
-    print(get_chunk_ranges(results))
+    # results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
+    # print(get_chunk_ranges(results))
     # skopeo_context_index_dense.delete_index_if_exists()

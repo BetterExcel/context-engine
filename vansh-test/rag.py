@@ -13,7 +13,7 @@ load_dotenv()
 
 # Configuration from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
+PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
@@ -50,8 +50,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize Pinecone
 pc = Pinecone(api_key=PINECONE_API_KEY)
-sparse_index = pc.Index(PINECONE_INDEX_NAME_SPARSE)
-dense_index = pc.Index(PINECONE_INDEX_NAME_DENSE)
+dense_index = pc.Index(PINECONE_INDEX_NAME)
 
 logger.info(f"Connected to Pinecone index: {PINECONE_INDEX_NAME}")
 
@@ -102,12 +101,12 @@ def dense_query(query="hello world test "):
         # Embed query using OpenAI
         logger.info("Generating query embedding...")
         embedding_models=EmbeddingGenerator()
-        dense_query = embedding_models.generate(query)
+        dense_query = embedding_models.generate(query, method="openai")
         logger.info("Query embedding generated successfully")
 
         # Query Pinecone for top 5 chunks
         logger.info("Querying Pinecone index...")
-        res = dense_query.query(vector=dense_query, top_k=5, include_metadata=True)
+        res = dense_index.query(vector=dense_query, top_k=5, include_metadata=True)
         logger.info(f"Retrieved {len(res['matches'])} results from Pinecone")
 
         # Log results
@@ -161,7 +160,7 @@ def sparse_query(query='hello world test'):
 
         # Query Pinecone for top 5 chunks
         logger.info("Querying Pinecone index...")
-        res = sparse_index.query(vector=sparse_query, top_k=5, include_metadata=True)
+        res = dense_index.query(vector=sparse_query, top_k=5, include_metadata=True)
         logger.info(f"Retrieved {len(res['matches'])} results from Pinecone")
 
         # Log results
@@ -217,7 +216,7 @@ def hybrid_search(query: str, alpha: float = 0.5, top_k: int = 5):
 
         # === Sparse query ===
         sparse_vec = splade_encode(query)
-        sparse_res = sparse_index.query(vector=sparse_vec, top_k=top_k, include_metadata=True)
+        sparse_res = dense_index.query(vector=sparse_vec, top_k=top_k, include_metadata=True)
 
         # === Normalize scores ===
         def normalize(results):
@@ -292,6 +291,8 @@ def give_chatbot_answer(context, question):
         temperature=0.0
     )
 if __name__ == "__main__":
+    # Only run dense query by default (working method)
     dense_query()
-    sparse_query()
-    hybrid_search("hello world", alpha=0.5, top_k=5)
+    # Uncomment below to test other methods:
+    # sparse_query()
+    # hybrid_search("hello world", alpha=0.5, top_k=5)
