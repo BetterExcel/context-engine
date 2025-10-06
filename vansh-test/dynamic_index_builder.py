@@ -453,20 +453,33 @@ def copy_dynamic_to_anchored():
 def update_pinecone_index(updated_index: Dict):
     """Update Pinecone index with the new field data."""
     try:
-        from pinecone_uploader import PineconeUploader
+        from pinecone_uploader import initialize_pinecone, create_index_if_not_exists, prepare_chunk_for_upload, upload_chunks_to_pinecone
         import os
         from dotenv import load_dotenv
         
         load_dotenv()
-        PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")
+        PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index")
         
         print("🔄 Updating Pinecone index with new field data...")
         
-        # Initialize Pinecone uploader
-        uploader = PineconeUploader(index_name=PINECONE_INDEX_NAME)
+        # Initialize Pinecone
+        pc = initialize_pinecone()
+        index = create_index_if_not_exists(pc, PINECONE_INDEX_NAME)
         
-        # Upload the updated index data
-        uploader.upload_data(updated_index, embedding_method="openai")
+        # Prepare updated chunks for upload
+        chunks_to_upload = []
+        
+        for sheet_name, sheet_data in updated_index.get("sheets", {}).items():
+            print(f"  Processing updated sheet: {sheet_name}")
+            
+            for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
+                prepared_chunk = prepare_chunk_for_upload(chunk_data, sheet_name, chunk_id)
+                chunks_to_upload.append(prepared_chunk)
+        
+        print(f"  Prepared {len(chunks_to_upload)} updated chunks for Pinecone")
+        
+        # Upload updated chunks (this will overwrite existing vectors with same IDs)
+        upload_chunks_to_pinecone(index, chunks_to_upload)
         
         print("✅ Pinecone index updated successfully with new field data")
         
