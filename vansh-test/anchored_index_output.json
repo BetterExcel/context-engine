@@ -22,30 +22,12 @@
             "C12:Table 1, D12:Blacklist"
           ],
           "formulas": [],
-          "chunk_number": 0,
-          "startup_companies": [
-            "Canada Startup Company"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "Row 8: A8:Canada Startup Company"
-          ],
-          "canadian_companies": [
-            "Canada Startup Company",
-            "Counting Opinions Ltd",
-            "Remitbee"
-          ],
-          "canadian_companies_confidence": 0.8,
-          "canadian_companies_sources": [
-            "Row 8: Canada Startup Company",
-            "Row 9: Counting Opinions Ltd",
-            "Row 16: Remitbee"
-          ]
+          "chunk_number": 0
         }
       },
       "metadata": {
         "total_chunks": 1,
-        "processing_time": 0.9501590728759766,
+        "processing_time": 3.528468132019043,
         "openai_calls": 1
       }
     },
@@ -121,32 +103,14 @@
             "A50:Boosted.AI, B50:35/hr"
           ],
           "formulas": [],
-          "chunk_number": 0,
-          "startup_companies": [
-            "Canada Startup Company"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "Row 8: A8:Canada Startup Company"
-          ],
-          "canadian_companies": [
-            "Canada Startup Company",
-            "Counting Opinions Ltd",
-            "Remitbee"
-          ],
-          "canadian_companies_confidence": 0.8,
-          "canadian_companies_sources": [
-            "Row 8: Canada Startup Company",
-            "Row 9: Counting Opinions Ltd",
-            "Row 16: Remitbee"
-          ]
+          "chunk_number": 0
         },
         "chunk_1": {
           "range": "A51:A100",
           "start_row": 51,
           "end_row": 100,
           "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions, including hourly rates, bonuses, and additional benefits.",
-          "context": "The data includes details on job roles, co-op terms, and specific conditions related to compensation for students or interns in the tech industry.",
+          "context": "The data includes details on job roles, co-op terms, and specific conditions related to compensation for students or interns in technology and related fields.",
           "table": [
             "A51:Borrowell, B51:(mobile dev) 35/hr (5h coop)",
             "A52:Brookfield Annuity, B52:35/hr",
@@ -200,50 +164,14 @@
             "A100:Crypto4a, B100:40/hr (remote, 6th coop), C100:4 days PTO, D100:2024, E100:SWE"
           ],
           "formulas": [],
-          "chunk_number": 1,
-          "startup_companies": [
-            "Borrowell",
-            "BusPlanner",
-            "Capital1",
-            "Carta",
-            "Chisel.ai",
-            "Cockroach Labs",
-            "Composer.trade",
-            "Compound",
-            "Cresta",
-            "Crypto4a"
-          ],
-          "startup_companies_confidence": 0.8,
-          "startup_companies_sources": [
-            "Companies like Borrowell, BusPlanner, Capital1, Carta, Chisel.ai, Cockroach Labs, Composer.trade, Compound, Cresta, and Crypto4a are often associated with startup culture based on their descriptions and the context of their roles."
-          ],
-          "canadian_companies": [
-            "Borrowell",
-            "Brookfield Annuity",
-            "Brookfield Renewables",
-            "BusPlanner",
-            "CAAT Pension Plan",
-            "Canadian Food Inspection Agency",
-            "CIBC",
-            "Cisco (Ottawa Office)",
-            "The Co-operators",
-            "CPP Investments",
-            "Crawford and Co",
-            "Creospark"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Company names that include 'Canadian', 'CIBC', 'Cisco (Ottawa Office)', and 'The Co-operators' indicate a Canadian base.",
-            "Other companies like 'Brookfield Annuity' and 'Brookfield Renewables' are known to be Canadian.",
-            "The presence of 'CAAT Pension Plan' and 'Canadian Food Inspection Agency' also confirms their Canadian base."
-          ]
+          "chunk_number": 1
         },
         "chunk_2": {
           "range": "A101:A150",
           "start_row": 101,
           "end_row": 150,
-          "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions.",
-          "context": "The data includes hourly rates, monthly salaries, and additional notes regarding the terms of employment for co-op students in 2024.",
+          "summary": "This data chunk contains information about various companies and their compensation rates for different roles and co-op terms.",
+          "context": "The data includes hourly rates, monthly salaries, and additional notes on compensation structures for internships and co-op positions.",
           "table": [
             "A101:Cube Group, B101:75/hr USD, D101:2024",
             "A102:Curinos, B102:34/hr (2b)",
@@ -299,60 +227,7 @@
           "formulas": [
             "Row104: R1:D2"
           ],
-          "chunk_number": 2,
-          "startup_companies": [
-            "Curinos",
-            "Curvegrid (Japan)",
-            "Deep Breathe",
-            "Deep Genomics",
-            "Digitaled",
-            "Dropbase (Castodia)",
-            "Durovac",
-            "Embark Trucks",
-            "Enzuzo",
-            "Eon Media",
-            "ETHGlobal",
-            "Faire",
-            "Fleet Labs",
-            "Forethought AI",
-            "Friendlier",
-            "Fuego Studios Inc."
-          ],
-          "startup_companies_confidence": 0.8,
-          "startup_companies_sources": [
-            "The companies listed have characteristics or descriptions that suggest they are startups, such as innovative names, specific mentions of co-op terms, or unique business models."
-          ],
-          "canadian_companies": [
-            "D2L",
-            "Databrick",
-            "Dejero",
-            "Deloitte",
-            "Delphia Asset Management",
-            "Digitaled",
-            "Digital Extremes (Marketing)",
-            "Ecobee",
-            "Ecompliance",
-            "Embark Trucks",
-            "The Empire Life Insurance Company",
-            "Enlighted Inc",
-            "Equitable Life Insurance Company",
-            "eSentire",
-            "EY",
-            "Faire",
-            "Fleet Complete",
-            "Flipp",
-            "Freshbooks",
-            "Friendlier",
-            "Fuego Studios Inc.",
-            "Geotab",
-            "Get ResQ"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Company names without geographical indicators were assumed to be Canadian based on common knowledge of the companies.",
-            "Specific mentions of Canadian currency (CAD) in the context of payment suggest a Canadian base.",
-            "Companies like D2L, Ecobee, and Freshbooks are known to be Canadian."
-          ]
+          "chunk_number": 2
         },
         "chunk_3": {
           "range": "A151:A200",
@@ -416,74 +291,7 @@
             "Row158: R1:H2",
             "Row187: R1:S5"
           ],
-          "chunk_number": 3,
-          "startup_companies": [
-            "GIP (Green Infrastructure Program)",
-            "Glu",
-            "GPTZero",
-            "groq (Groq Inc)",
-            "H2Analytics",
-            "Halp",
-            "Hatch Credit",
-            "Havas CX",
-            "HeadSpin",
-            "High Q Technologies",
-            "Hockeystick",
-            "HomeX",
-            "Horizon Studio",
-            "Hubdoc",
-            "HubSpot",
-            "Index Exchange",
-            "Indus AI",
-            "Intact Labs",
-            "Integrate.ai",
-            "Jobox.ai",
-            "Kambeo",
-            "KeepTruckin",
-            "Kiavi",
-            "Kodiak Robotics",
-            "Konrad Group"
-          ],
-          "startup_companies_confidence": 0.8,
-          "startup_companies_sources": [
-            "The presence of names without established large corporate identities or those indicating early-stage operations.",
-            "The context of hourly rates and coop references suggests these are likely startups or smaller companies."
-          ],
-          "canadian_companies": [
-            "Google",
-            "GPTZero",
-            "Gsoft",
-            "H2Analytics",
-            "Halp",
-            "Hockeystick",
-            "HOOPP (Health Care of Ontario Pension Plan)",
-            "Intact",
-            "Intact Labs",
-            "Instinet Canada",
-            "Integrate.ai",
-            "Jobox.ai",
-            "Kambeo",
-            "Kinaxis",
-            "Konrad Group"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Google: 'Canada: $1538/week'",
-            "GPTZero: '40-55/hr CAD (Toronto)'",
-            "Gsoft: '40/hr (4th coop)'",
-            "H2Analytics: '23/hr'",
-            "Halp: '38/hr (3rd coop)'",
-            "Hockeystick: 'around coop average'",
-            "HOOPP: '22.25/hr (2nd coop)'",
-            "Intact: '43/hr (5th coop)'",
-            "Intact Labs: '30.5/hr (3rd coop)'",
-            "Instinet Canada: '36/hr (2nd coop)'",
-            "Integrate.ai: '1550/week'",
-            "Jobox.ai: '5700 USD/mo (3rd coop)'",
-            "Kambeo: '20-30/hr'",
-            "Kinaxis: '24/hr, 34/hr (1st+2nd coop)'",
-            "Konrad Group: '6000/mo'"
-          ]
+          "chunk_number": 3
         },
         "chunk_4": {
           "range": "A201:A250",
@@ -544,56 +352,14 @@
             "B250:22/hr"
           ],
           "formulas": [],
-          "chunk_number": 4,
-          "startup_companies": [
-            "Mach7 Technologies",
-            "Metrist",
-            "MotoInsight",
-            "Moveworks",
-            "NuraLogix",
-            "Nuro",
-            "Nuvalence",
-            "Nuvation",
-            "Penfield.AI"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "Mach7 Technologies is a known startup in the tech industry.",
-            "Metrist is recognized as a startup focused on data analytics.",
-            "MotoInsight is a startup in the automotive technology sector.",
-            "Moveworks is a startup specializing in AI-driven customer service.",
-            "NuraLogix is a startup known for its health technology innovations.",
-            "Nuro is a startup focused on autonomous delivery.",
-            "Nuvalence is a startup in the technology consulting space.",
-            "Nuvation is a startup that develops technology solutions.",
-            "Penfield.AI is a startup in the AI and machine learning field."
-          ],
-          "canadian_companies": [
-            "LCBO",
-            "LifeWorks",
-            "Loblaw",
-            "Loblaw Digital",
-            "Manulife",
-            "Mastercard Foundation",
-            "Microsoft Canada",
-            "OLG",
-            "OMERS",
-            "Ontario Institute for Cancer Research",
-            "Ontario Ministry of Health",
-            "OpenText"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Company names that are commonly known to be based in Canada",
-            "The presence of 'Canada' in 'Microsoft Canada'"
-          ]
+          "chunk_number": 4
         },
         "chunk_5": {
           "range": "A251:A300",
           "start_row": 251,
           "end_row": 300,
-          "summary": "This data chunk contains information about various co-op positions, including company names, hourly rates, and additional details such as housing stipends and job roles.",
-          "context": "The data includes a mix of hourly wages, co-op terms, and specific job roles across different companies, highlighting the diversity in compensation and job types for co-op students.",
+          "summary": "This data chunk contains information about various companies and their coop positions, including hourly rates and additional details.",
+          "context": "The data includes company names, pay rates, coop year, and job roles for students in cooperative education programs.",
           "table": [
             "A251:Pienso, B251:67/hr (5th coop), D251:2025",
             "A252:PlayStation, B252:31/hr (2nd coop), D252:2023",
@@ -647,66 +413,14 @@
             "A300:Spotwork, B300:20/hr (1st coop), D300:2023, E300:QA"
           ],
           "formulas": [],
-          "chunk_number": 5,
-          "startup_companies": [
-            "Pienso",
-            "primer.ai",
-            "Radix Labs",
-            "Railvision Analytics",
-            "Reebee",
-            "Relay Financial",
-            "Replicant Inc",
-            "Ritual",
-            "Roo",
-            "Scrawlr",
-            "Shoplogic",
-            "Skydio",
-            "Solana Labs",
-            "Spotwork"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "The companies listed have names that suggest they are startups, such as 'Pienso', 'primer.ai', 'Radix Labs', 'Railvision Analytics', 'Reebee', 'Relay Financial', 'Replicant Inc', 'Ritual', 'Roo', 'Scrawlr', 'Shoplogic', 'Skydio', 'Solana Labs', and 'Spotwork'.",
-            "The presence of 'Inc' in 'Replicant Inc' and the use of '.ai' in 'primer.ai' are common indicators of startup companies."
-          ],
-          "canadian_companies": [
-            "PointClickCare",
-            "Pratt and Whitney",
-            "Prodigy Education",
-            "Qualcomm (Markham)",
-            "Questrade",
-            "RBC",
-            "RBC",
-            "RBC",
-            "RBC",
-            "Reebee",
-            "Relay Financial",
-            "Relic Entertainment",
-            "Remitbee",
-            "Replicant Inc",
-            "ResQ",
-            "Ritual",
-            "Ritual",
-            "Robinhood (Canada)",
-            "Sagen",
-            "Scotiabank (Data Science/Soft Dev)",
-            "Simplii Financial (CIBC)",
-            "SickKids",
-            "SideFX",
-            "Smile CDR"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Company names that include 'Canada' or are known to be based in Canada",
-            "Presence of specific Canadian companies like RBC, Scotiabank, and others in the list"
-          ]
+          "chunk_number": 5
         },
         "chunk_6": {
           "range": "A301:A350",
           "start_row": 301,
           "end_row": 350,
           "summary": "This data chunk contains information about various companies and their compensation rates for co-op positions, including hourly rates, stipends, and additional benefits.",
-          "context": "The data includes details from multiple years and various roles, highlighting differences in pay based on experience and position type.",
+          "context": "The data includes details for multiple co-op roles across different years and companies, highlighting variations in pay and benefits.",
           "table": [
             "A301:Spotwork, B301:22/hr (2nd coop), D301:2023, E301:Mobile SWE",
             "A302:SPS Commerce, B302:30/hr (3rd coop), D302:2023",
@@ -760,59 +474,14 @@
             "A350:Uber, B350:44/hr, C350:1500/mo housing stipend"
           ],
           "formulas": [],
-          "chunk_number": 6,
-          "startup_companies": [
-            "Spotwork",
-            "Squaredance",
-            "Stealth Startup",
-            "Stratum ai",
-            "Super.com",
-            "Sync.com",
-            "TextNow",
-            "Thumbtack",
-            "TikTok",
-            "TOOLBX",
-            "Trexo Robotics",
-            "Tulip Retail",
-            "TutorOcean",
-            "Tweepsmap"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "The presence of names like 'Stealth Startup', 'Super.com', and 'Trexo Robotics' suggests they are startups.",
-            "The term 'Startup' is explicitly mentioned in 'Stealth Startup'.",
-            "Companies like 'Thumbtack', 'TextNow', and 'TikTok' are widely recognized as startups."
-          ],
-          "canadian_companies": [
-            "Stablecorp",
-            "Stackadapt",
-            "Super.com",
-            "Sync.com",
-            "Tealbook",
-            "TD",
-            "Teledyne Dalsa",
-            "Texada Software",
-            "The Cooperators",
-            "theScore",
-            "Thomson Reuters",
-            "TMMC (Toyota Motor Manufacturing Canada)",
-            "Toronto Stock Exchange (TSX)",
-            "TTC (Toronto Transit Commission)",
-            "Trexo Robotics",
-            "Tulip Retail"
-          ],
-          "canadian_companies_confidence": 0.9,
-          "canadian_companies_sources": [
-            "Company names that are commonly associated with Canadian operations or have 'Canada' in their description.",
-            "Specific mentions of Canadian entities such as 'TMMC (Toyota Motor Manufacturing Canada)' and 'Toronto Stock Exchange (TSX)' indicate a strong Canadian presence."
-          ]
+          "chunk_number": 6
         },
         "chunk_7": {
           "range": "A351:A379",
           "start_row": 351,
           "end_row": 379,
-          "summary": "This data chunk contains hourly wage information for various companies and positions, including stipends and coop details.",
-          "context": "The data includes rates for internships and co-op positions across different companies, with some entries specifying additional compensation details.",
+          "summary": "This data chunk contains hourly and monthly compensation rates for various companies and positions, including stipends and coop details.",
+          "context": "The data includes a mix of hourly rates, monthly salaries, and additional compensation information for internships and co-op positions across different companies.",
           "table": [
             "B351:29.33/hr (for 2B)",
             "A352:UHN (DATA Team), B352:20.00/hr, D352:2023, E352:SWE",
@@ -844,39 +513,12 @@
             "B378:high 20s to mid 30s/hr"
           ],
           "formulas": [],
-          "chunk_number": 7,
-          "startup_companies": [
-            "Untether AI",
-            "Uplift",
-            "Vendia",
-            "Veriday",
-            "Voiceflow",
-            "Voiceform",
-            "Waabi Innovation",
-            "Wish",
-            "Xanadu",
-            "Zighra"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "Company names listed in the range A351:A379 that are commonly recognized as startups."
-          ],
-          "canadian_companies": [
-            "Untether AI",
-            "VerticalScope",
-            "Voiceflow",
-            "Wealthsimple",
-            "Xanadu"
-          ],
-          "canadian_companies_confidence": 0.8,
-          "canadian_companies_sources": [
-            "Company names listed in the data that are known to be based in Canada."
-          ]
+          "chunk_number": 7
         }
       },
       "metadata": {
         "total_chunks": 8,
-        "processing_time": 10.62671709060669,
+        "processing_time": 40.23288583755493,
         "openai_calls": 8
       }
     },
@@ -893,8 +535,8 @@
           "range": "A1:A21",
           "start_row": 1,
           "end_row": 21,
-          "summary": "This data chunk contains a list of companies that have been reported for problematic behavior, along with notes and links for further information.",
-          "context": "The list serves as a warning for students to avoid these companies based on previous reports and experiences shared by others.",
+          "summary": "This data chunk contains a list of companies that have been reported for problematic behavior, along with notes and links to related discussions.",
+          "context": "The information is intended to help students avoid negative experiences with these companies based on previous reports and anecdotes.",
           "table": [
             "A1:Given the number of companies that have been name-and-shamed on the sub before, this list might help students avoid falling into traps. Here are some that have been mentioned on the sub. DM u/epic_waterman if you'd like something added to this list or would like to contribute another report",
             "A3:Companies are added to the blacklist after 2+ accounts of problematic behavior are reported (see candidates list on megathread)",
@@ -917,64 +559,14 @@
             "A20:BH Frontier Solutions Inc., B20:Fake Company, steals work from applicants"
           ],
           "formulas": [],
-          "chunk_number": 0,
-          "startup_companies": [
-            "Canada Startup Company"
-          ],
-          "startup_companies_confidence": 0.9,
-          "startup_companies_sources": [
-            "Row 8: A8:Canada Startup Company"
-          ],
-          "canadian_companies": [
-            "Canada Startup Company",
-            "Counting Opinions Ltd",
-            "Remitbee"
-          ],
-          "canadian_companies_confidence": 0.8,
-          "canadian_companies_sources": [
-            "Row 8: Canada Startup Company",
-            "Row 9: Counting Opinions Ltd",
-            "Row 16: Remitbee"
-          ]
+          "chunk_number": 0
         }
       },
       "metadata": {
         "total_chunks": 1,
-        "processing_time": 0.9837930202484131,
+        "processing_time": 5.783988952636719,
         "openai_calls": 1
       }
-    }
-  },
-  "user_queries": {
-    "startup companies": {
-      "query": "startup companies",
-      "fields": [
-        "startup_companies"
-      ],
-      "created_at": 1759709642.36035
-    },
-    "what companies are in canada based majorly": {
-      "query": "what companies are in canada based majorly",
-      "fields": [
-        "canadian_companies"
-      ],
-      "created_at": 1759710020.701778
-    }
-  },
-  "field_metadata": {
-    "startup_companies": {
-      "field_type": "list",
-      "extraction_instruction": "extract names of companies classified as startups",
-      "added_at": 1759709642.360348,
-      "confidence": 0.9,
-      "user_query": "startup companies"
-    },
-    "canadian_companies": {
-      "field_type": "list",
-      "extraction_instruction": "extract names of companies that are primarily based in Canada",
-      "added_at": 1759710020.7017758,
-      "confidence": 0.9,
-      "user_query": "what companies are in canada based majorly"
     }
   }
 }
