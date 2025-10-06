@@ -5,7 +5,7 @@ Given a text document that is potentially relevant to this activity and a list o
 -Steps-
 1. Identify all entities. For each identified entity, extract the following information:
 - entity_name: Name of the entity, capitalized
-- entity_type: One of the following types: [compensation, work term, company, location, role, benefit, experience level, currency, work arrangement, year, position, relocation assistance, stipend, housing assistance, work term increment, academic term, work field]
+- entity_type: One of the following types: [ID, value, flag, metric, binary indicator]
 - entity_description: Comprehensive description of the entity's attributes and activities
 Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
 
@@ -28,520 +28,198 @@ Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tupl
 
 Example 1:
 
-entity_types: [compensation, work term, company, location, role, benefit, experience level, currency, work arrangement, year, position, relocation assistance, stipend, housing assistance, work term increment, academic term, work field]
+entity_types: [ID, value, flag, metric, binary indicator]
 text:
-30.75/hr (4th coop), 1230-1400/week                                                                                      |
-| 40/hr (4th coop), 47/hr (5th coop)                                                                                       |
-| 26/hr (2nd coop)                                                                                                         |
-| 38/hr                                                                                                                    |
-| Low-Mid 20s                                                                                                              |
-| 19/hr                                                                                                                    |
-| 35/hr                                                                                                                    |
-| 38/hr                                                                                                                    |
-| 32/hr (3rd coop)                                                                                                         |
-| 22/hr                                                                                                                    |
-| 7000 USD/month remote (4th coop)                                                                                         |
-| 18/hr (3rd coop)                                                                                                         |
-| 40/hr (5th coop)                                                                                                         |
-| 18/hr (1st coop), +2/hr every add. coop term                                                                             |
-| coop average + $1                                                                                                        |
-| 31-33/hr (1st coop)                                                                                                      |
-| (up to) 67/hr + 10k signing bonus                                                                                        |
-| 3365 USD/week                                                                                                            |
-| 44/hr                                                                                                                    |
-| 8000/month + 1.5k signing bonus                                                                                          |
-| 20/hr (1st coop)                                                                                                         |
-| 20-50/hr based on experience                                                                                             |
-| $1-3 above coop average                                                                                                  |
-| 49/hr                                                                                                                    |
-| 50/hr                                                                                                                    |
-| 28/hr (1st coop), 44/hr (5th coop, any dev role)                                                                         |
-| 9000/month                                                                                                               |
-| $10,200/month                                                                                                            |
-| 37/hr (6th coop)                                                                                                         |
-| 35/hr (4th coop)                                                                                                         |
-| ~21/hr (1st coop)                                                                                                        |
-| 20/hr (1st coop), 30/hr                                                                                                  |
-| 7000/month                                                                                                               |
-| 30 USD/hr                                                                                                                |
-| 37/hr (2nd coop)                                                                                                         |
-| 34/hr (3rd coop)                                                                                                         |
-| 48/hr (4th coop)                                                                                                         |
-| 20/hr                                                                                                                    |
-| 40/hr (5th coop)                                                                                                         |
-| 18/hr                                                                                                                    |
-| 40/hr (remote, 6th coop)                                                                                                 |
-| 75/hr USD                                                                                                                |
-| 34/hr (2b)                                                                                                               |
-| ¥300,000/mo (2nd coop)                                                                                                   |
-| 28/hr                                                                                                                    |
-| 55 CAD/hr                                                                                                                |
-| 40/hr                                                                                                                    |
-| 1400 USD/week                                                                                                            |
-| co-op average + 20%                                                                                                      |
-| 60k/yr                                                                                                                   |
-| 32-38/hr (increases with work term)                                                                                      |
-| 1.15*coop average                                                                                                        |
-| 25-28/hr                                                                                                                 |
-| 5-10% above the coop average                                                                                             |
-| Coop average                                                                                                             |
-| 20/hr (2nd coop)                                                                                                         |
-| 52/hr                                                                                                                    |
-| 1400/wk                                                                                                                  |
-| 19-24/hr                                                                                                                 |
-| (25-50/hr, +5 per work term), 29/hr for 3rd coop, 30-32/hr for 4/5th coop                                                |
-| 35-37/hr                                                                                                                 |
-| 23/hr (4th coop)                                                                                                         |
-| 36-41/hr (4th coop), 43/hr (5th coop)                                                                                    |
-| 26/hr (4th coop), couple dollars above coop average                                                                      |
-| 27/hr (2A)                                                                                                               |
-| 10k/month (USD in person / CAD for remote)                                                                               |
-| 28/hr (3rd coop)                                                                                                         |
-| 22-28/hr based on work term                                                                                              |
-| 36/hr (5th coop)                                                                                                         |
-| 3800/mo (3rd year)                                                                                                       |
-| 22/hr (1st coop)                                                                                                         |
-| 20/hr, 23/hr (2nd coop)                                                                                                  |
-| 26/hr (3rd coop), 30/hr (4th coop)                                                                                       |
-| 24.50/hr                                                                                                                 |
-| 9000/month                                                                                                               |
-| 28/hr (3rd coop)                                                                                                         |
-| 44/hr (5th coop)                                                                                                         |
-| 26/hr (3rd coop), 32/hr (5th coop)                                                                                       |
-| 25-27/hr                                                                                                                 |
-| $5000/mo                                                                                                                 |
-| 23/hr                                                                                                                    |
-| $1082/wk                                                                                                                 |
-| 50/hr                                                                                                                    |
-| 27-35/hr (+~4% every add. coop term)                                                                                     |
-| 6000-8000/month                                                                                                          |
-| 33/hr (5th coop), 70k/year                                                                                               |
-| 17/hr (4th coop)                                                                                                         |
-| 35/hr (1st coop)                                                                                                         |
-| 10% above the coop average                                                                                               |
-| 30/hr (3rd coop)                                                                                                         |
-| 43/hr (5th coop)                                                                                                         |
-| 31/hr (6th coop)                                                                                                         |
-| 30/hr (4th coop), 25/hr (2nd coop)                                                                                       |
-| 43/hr USD                                                                                                                |
-| Canada: $1538/week, US: $1700 - $2100 USD/week based on location                                                         |
-| 40-55/hr CAD (Toronto), 7000-8000/month USD (NYC)                                                                        |
-| 37/hr (1st coop), 35-42/hr - 42 is 6th coop                                                                              |
-| 40/hr (4th coop
+8.57 [D6088]\t4 [E6088]\tYes [F6088]\t10 [G6088]\t10 [H6088]\t2 [I6088]\tYes [J6088]",
+            "CLG0039 [A6089]\t76 [B6089]\t6.09 [C6089]\t6.22 [D6089]\t2 [E6089]\tYes [F6089]\t6 [G6089]\t7 [H6089]\t1 [I6089]\tNo [J6089]",
+            "CLG0049 [A6090]\t103 [B6090]\t6.12 [C6090]\t5.86 [D6090]\t8 [E6090]\tNo [F6090]\t6 [G6090]\t8 [H6090]\t0 [I6090]\tNo [J6090]",
+            "CLG0082 [A6091]\t99 [B6091]\t6.38 [C6091]\t6.37 [D6091]\t4 [E6091]\tYes [F6091]\t7 [G6091]\t5 [H6091]\t0 [I6091]\tNo [J6091]",
+            "CLG0100 [A6092]\t111 [B6092]\t7.93 [C6092]\t7.91 [D6092]\t5 [E6092]\tYes [F6092]\t0 [G6092]\t4 [H6092]\t3 [I6092]\tNo [J6092]",
+            "CLG0037 [A6093]\t101 [B6093]\t8.3 [C6093]\t8.25 [D6093]\t7 [E6093]\tNo [F6093]\t9 [G6093]\t2 [H6093]\t4 [I6093]\tNo [J6093]",
+            "CLG0090 [A6094]\t97 [B6094]\t5.09 [C6094]\t5.39 [D6094]\t5 [E6094]\tNo [F6094]\t3 [G6094]\t5 [H6094]\t3 [I6094]\tNo [J6094]",
+            "CLG0097 [A6095]\t86 [B6095]\t6.21 [C6095]\t5.93 [D6095]\t10 [E6095]\tNo [F6095]\t9 [G6095]\t8 [H6095]\t5 [I6095]\tNo [J6095]",
+            "CLG0001 [A6096]\t101 [B6096]\t7.15 [C6096]\t7.55 [D6096]\t4 [E6096]\tYes [F6096]\t4 [G6096]\t1 [H6096]\t0 [I6096]\tNo [J6096]",
+            "CLG0091 [A6097]\t111 [B6097]\t6.66 [C6097]\t6.95 [D6097]\t7 [E6097]\tYes [F6097]\t1 [G6097]\t6 [H6097]\t2 [I6097]\tNo [J6097]",
+            "CLG0037 [A6098]\t82 [B6098]\t9.42 [C6098]\t9.25 [D6098]\t4 [E6098]\tNo [F6098]\t1 [G6098]\t2 [H6098]\t4 [I6098]\tNo [J6098]",
+            "CLG0086 [A6099]\t101 [B6099]\t8.94 [C6099]\t8.62 [D6099]\t10 [E6099]\tNo [F6099]\t10 [G6099]\t2 [H6099]\t4 [I6099]\tNo [J6099]",
+            "CLG0019 [A6100]\t103 [B6100]\t8.13 [C6100]\t7.91 [D6100]\t4 [E6100]\tNo [F6100]\t3 [G6100]\t8 [H6100]\t0 [I6100]\tNo [J6100]"
+          ],
+          "formulas": [
+            "Row6051: R1:CLG0074",
+            "Row6052: R1:CLG0015",
+            "Row6053: R1:CLG0057",
+            "Row6054: R1:CLG0007",
+            "Row6055: R1:CLG0078",
+            "Row6056: R1:CLG0090",
+            "Row6057: R1:CLG0018",
+            "Row6058: R1:CLG0082",
+            "Row6059: R1:CLG0006",
+            "Row6060: R1:CLG0043",
+            "Row6061: R1:CLG0089",
+            "Row6062: R1:CLG0057",
+            "Row6063: R1:CLG0041",
+            "Row6064: R1:CLG0076",
+            "Row6065: R1:CL
 ------------------------
 output:
-("entity"{tuple_delimiter}30.75/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th coop work term)
+("entity"{tuple_delimiter}CLG0039{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
 {record_delimiter}
-("entity"{tuple_delimiter}1230-1400/week{tuple_delimiter}compensation{tuple_delimiter}Weekly wage range)
+("entity"{tuple_delimiter}76{tuple_delimiter}value{tuple_delimiter}A numerical value associated with CLG0039)
 {record_delimiter}
-("entity"{tuple_delimiter}40/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th or 5th coop work term)
+("entity"{tuple_delimiter}6.09{tuple_delimiter}metric{tuple_delimiter}A metric value associated with CLG0039)
 {record_delimiter}
-("entity"{tuple_delimiter}47/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 5th coop work term)
+("entity"{tuple_delimiter}Yes{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0039 as true)
 {record_delimiter}
-("entity"{tuple_delimiter}26/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 2nd coop work term)
+("entity"{tuple_delimiter}10{tuple_delimiter}binary indicator{tuple_delimiter}A binary indicator value associated with CLG0039)
 {record_delimiter}
-("entity"{tuple_delimiter}38/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
+("entity"{tuple_delimiter}CLG0049{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
 {record_delimiter}
-("entity"{tuple_delimiter}Low-Mid 20s{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range in the low to mid twenties)
+("entity"{tuple_delimiter}103{tuple_delimiter}value{tuple_delimiter}A numerical value associated with CLG0049)
 {record_delimiter}
-("entity"{tuple_delimiter}19/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
+("entity"{tuple_delimiter}No{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0049 as false)
 {record_delimiter}
-("entity"{tuple_delimiter}35/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
+("entity"{tuple_delimiter}CLG0082{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
 {record_delimiter}
-("entity"{tuple_delimiter}32/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 3rd coop work term)
+("entity"{tuple_delimiter}Yes{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0082 as true)
 {record_delimiter}
-("entity"{tuple_delimiter}22/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
+("entity"{tuple_delimiter}CLG0100{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
 {record_delimiter}
-("entity"{tuple_delimiter}7000 USD/month{tuple_delimiter}compensation{tuple_delimiter}Monthly wage for a remote 4th coop work term)
+("entity"{tuple_delimiter}No{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0100 as false)
 {record_delimiter}
-("entity"{tuple_delimiter}18/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 3rd or 1st coop work term)
+("entity"{tuple_delimiter}CLG0037{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record, mentioned twice with different associated values)
 {record_delimiter}
-("entity"{tuple_delimiter}+2/hr every add. coop term{tuple_delimiter}work term increment{tuple_delimiter}Incremental hourly wage increase for each additional coop work term)
+("entity"{tuple_delimiter}CLG0090{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record, mentioned in both data and formulas sections)
 {record_delimiter}
-("entity"{tuple_delimiter}coop average + $1{tuple_delimiter}compensation{tuple_delimiter}Hourly wage one dollar above the coop average)
+("relationship"{tuple_delimiter}CLG0039{tuple_delimiter}76{tuple_delimiter}The value 76 is directly associated with CLG0039{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}31-33/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range for a 1st coop work term)
+("relationship"{tuple_delimiter}CLG0039{tuple_delimiter}Yes{tuple_delimiter}The flag Yes is directly associated with CLG0039 indicating a true condition{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}up to 67/hr + 10k signing bonus{tuple_delimiter}compensation{tuple_delimiter}Maximum hourly wage with an additional signing bonus)
+("relationship"{tuple_delimiter}CLG0049{tuple_delimiter}103{tuple_delimiter}The value 103 is directly associated with CLG0049{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}3365 USD/week{tuple_delimiter}compensation{tuple_delimiter}Weekly wage)
+("relationship"{tuple_delimiter}CLG0049{tuple_delimiter}No{tuple_delimiter}The flag No is directly associated with CLG0049 indicating a false condition{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}44/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
+("relationship"{tuple_delimiter}CLG0082{tuple_delimiter}Yes{tuple_delimiter}The flag Yes is directly associated with CLG0082 indicating a true condition{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}8000/month + 1.5k signing bonus{tuple_delimiter}compensation{tuple_delimiter}Monthly wage with an additional signing bonus)
+("relationship"{tuple_delimiter}CLG0100{tuple_delimiter}No{tuple_delimiter}The flag No is directly associated with CLG0100 indicating a false condition{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}20/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 1st coop work term or general rate)
+("relationship"{tuple_delimiter}CLG0037{tuple_delimiter}No{tuple_delimiter}The flag No is associated with CLG0037 indicating a false condition in both instances it is mentioned{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}20-50/hr based on experience{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range depending on experience level)
-{record_delimiter}
-("entity"{tuple_delimiter}$1-3 above coop average{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}49/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}50/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}28/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 1st coop work term or general rate)
-{record_delimiter}
-("entity"{tuple_delimiter}44/hr (5th coop, any dev role){tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 5th coop work term in any development role)
-{record_delimiter}
-("entity"{tuple_delimiter}9000/month{tuple_delimiter}compensation{tuple_delimiter}Monthly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}$10,200/month{tuple_delimiter}compensation{tuple_delimiter}Monthly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}37/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 6th coop work term or general rate)
-{record_delimiter}
-("entity"{tuple_delimiter}~21/hr{tuple_delimiter}compensation{tuple_delimiter}Approximate hourly wage for a 1st coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}30/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 3rd coop work term or general rate)
-{record_delimiter}
-("entity"{tuple_delimiter}7000/month{tuple_delimiter}compensation{tuple_delimiter}Monthly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}30 USD/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage in USD)
-{record_delimiter}
-("entity"{tuple_delimiter}34/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 3rd coop work term or general rate)
-{record_delimiter}
-("entity"{tuple_delimiter}48/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}40/hr (remote, 6th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a remote 6th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}75/hr USD{tuple_delimiter}compensation{tuple_delimiter}Hourly wage in USD)
-{record_delimiter}
-("entity"{tuple_delimiter}¥300,000/mo{tuple_delimiter}compensation{tuple_delimiter}Monthly wage in Japanese Yen for a 2nd coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}55 CAD/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage in Canadian Dollars)
-{record_delimiter}
-("entity"{tuple_delimiter}1400 USD/week{tuple_delimiter}compensation{tuple_delimiter}Weekly wage in USD)
-{record_delimiter}
-("entity"{tuple_delimiter}co-op average + 20%{tuple_delimiter}compensation{tuple_delimiter}Hourly wage 20% above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}60k/yr{tuple_delimiter}compensation{tuple_delimiter}Annual salary)
-{record_delimiter}
-("entity"{tuple_delimiter}32-38/hr (increases with work term){tuple_delimiter}compensation{tuple_delimiter}Hourly wage range that increases with each work term)
-{record_delimiter}
-("entity"{tuple_delimiter}1.15*coop average{tuple_delimiter}compensation{tuple_delimiter}Hourly wage 15% above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}25-28/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range)
-{record_delimiter}
-("entity"{tuple_delimiter}5-10% above the coop average{tuple_delimiter}compensation{tuple_delimiter}Hourly wage percentage above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}Coop average{tuple_delimiter}compensation{tuple_delimiter}Average hourly wage for coop work terms)
-{record_delimiter}
-("entity"{tuple_delimiter}52/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}1400/wk{tuple_delimiter}compensation{tuple_delimiter}Weekly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}19-24/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range)
-{record_delimiter}
-("entity"{tuple_delimiter}25-50/hr, +5 per work term{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range with an additional $5 increase per work term)
-{record_delimiter}
-("entity"{tuple_delimiter}35-37/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range)
-{record_delimiter}
-("entity"{tuple_delimiter}23/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}36-41/hr (4th coop), 43/hr (5th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage range for a 4th coop work term and a specific rate for a 5th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}26/hr (4th coop), couple dollars above coop average{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th coop work term and a rate slightly above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}27/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 2A work term)
-{record_delimiter}
-("entity"{tuple_delimiter}10k/month (USD in person / CAD for remote){tuple_delimiter}compensation{tuple_delimiter}Monthly wage in USD for in-person work or CAD for remote work)
-{record_delimiter}
-("entity"{tuple_delimiter}22-28/hr based on work term{tuple_delimiter}compensation{tuple_delimiter}Hourly wage range depending on the work term)
-{record_delimiter}
-("entity"{tuple_delimiter}36/hr (5th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 5th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}3800/mo (3rd year){tuple_delimiter}compensation{tuple_delimiter}Monthly wage for the 3rd year of work)
-{record_delimiter}
-("entity"{tuple_delimiter}24.50/hr{tuple_delimiter}compensation{tuple_delimiter}Hourly wage)
-{record_delimiter}
-("entity"{tuple_delimiter}27-35/hr (+~4% every add. coop term){tuple_delimiter}compensation{tuple_delimiter}Hourly wage range with an approximate 4% increase every additional coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}6000-8000/month{tuple_delimiter}compensation{tuple_delimiter}Monthly wage range)
-{record_delimiter}
-("entity"{tuple_delimiter}33/hr (5th coop), 70k/year{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 5th coop work term and an annual salary rate)
-{record_delimiter}
-("entity"{tuple_delimiter}17/hr (4th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 4th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}10% above the coop average{tuple_delimiter}compensation{tuple_delimiter}Hourly wage 10% above the coop average)
-{record_delimiter}
-("entity"{tuple_delimiter}43/hr USD{tuple_delimiter}compensation{tuple_delimiter}Hourly wage in USD)
-{record_delimiter}
-("entity"{tuple_delimiter}Canada: $1538/week, US: $1700 - $2100 USD/week{tuple_delimiter}compensation{tuple_delimiter}Weekly wage based on location in Canada or the US)
-{record_delimiter}
-("entity"{tuple_delimiter}40-55/hr CAD (Toronto), 7000-8000/month USD (NYC){tuple_delimiter}compensation{tuple_delimiter}Hourly wage range in CAD for Toronto or monthly wage range in USD for NYC)
-{record_delimiter}
-("entity"{tuple_delimiter}37/hr (1st coop), 35-42/hr - 42 is 6th coop{tuple_delimiter}compensation{tuple_delimiter}Hourly wage for a 1st coop work term and a range that culminates in a 6th coop work term)
-{record_delimiter}
-("entity"{tuple_delimiter}43/hr USD{tuple_delimiter}compensation{tuple_delimiter}Hourly wage in USD for a 4th coop work term)
+("relationship"{tuple_delimiter}CLG0090{tuple_delimiter}No{tuple_delimiter}The flag No is associated with CLG0090 indicating a false condition, and it is mentioned in both data and formulas sections{tuple_delimiter}10)
 {completion_delimiter}
 #############################
 
 
 Example 2:
 
-entity_types: [compensation, work term, company, location, role, benefit, experience level, currency, work arrangement, year, position, relocation assistance, stipend, housing assistance, work term increment, academic term, work field]
+entity_types: [ID, value, flag, metric, binary indicator]
 text:
-                                                    |
-| ~35/hr                                                                                                                   |
-| 35/hr                                                                                                                    |
-| 20/hr (1st coop)                                                                                                         |
-| 31/hr (3rd coop)                                                                                                         |
-| 27.5/hr (2nd coop)                                                                                                       |
-| 28/hr (3rd coop)                                                                                                         |
-| Coop Average                                                                                                             |
-| 32/hr (remote), 28-32 USD/hr (onsite, Fremont/Palo Alto)                                                                 |
-| 48/hr USD (4th yr)                                                                                                       |
-| 42/hr USD (3A)                                                                                                           |
-| 21/hr (1st coop), 32/hr (4th coop)                                                                                       |
-| 25/hr (3rd coop)                                                                                                         |
-| 35/hr (4th coop)                                                                                                         |
-| 20/hr (1st coop)                                                                                                         |
-| 40/hr (4th coop), 43/hr (5th coop)                                                                                       |
-| Ranges from 30-39/hr (32/hr for 2B term), 1250/week (3rd coop)                                                           |
-| 35/hr, 42/hr (6th coop)                                                                                                  |
-| 47/hr                                                                                                                    |
-| 25/hr (1st coop), 27/hr (2nd coop), up to 35/hr for upper years                                                          |
-| Co-op average                                                                                                            |
-| 25/hr, 30/hr (3rd year), 45/hr (6th coop)                                                                                |
-| 25/hr (2nd coop)                                                                                                         |
-| 30-34/hr                                                                                                                 |
-| 27.65/hr (6th coop)                                                                                                      |
-| 32-34/hr (3rd coop)                                                                                                      |
-| co-op average + 20%                                                                                                      |
-| 25/hr                                                                                                                    |
-| 25/hr (3rd coop)                                                                                                         |
-| 800/wk for 1st and 2nd, 1000/wk for 3rd and 4th, 1200/wk for 5th and 6th (coop term)                                     |
-| 20/hr                                                                                                                    |
-| coop average                                                                                                             |
-| 40/hr + 1000/mo WFH stipend, 41.25/hr + 3000/mo stipend                                                                  |
-| 44/hr                                                                                                                    |
-| 29.33/hr (for 2B)                                                                                                        |
-| 20.00/hr                                                                                                                 |
-| 30-32/hr, 33/hr (3rd coop)                                                                                               |
-| 24/hr (2nd coop)                                                                                                         |
-| 21-24/hr                                                                                                                 |
-| 38/hr                                                                                                                    |
-| 35/hr                                                                                                                    |
-| 55/hr USD                                                                                                                |
-| 20/hr (1st coop)                                                                                                         |
-| 55/hr (4th, 5th coop)                                                                                                    |
-| 32-25/hr (2nd coop)                                                                                                      |
-| 30/hr (4th coop)                                                                                                         |
-| 33/hr (4th coop)                                                                                                         |
-| 40-55/hr based on term/team                                                                                              |
-| 20-50/hr depending on experience, 30/hr (3rd coop)                                                                       |
-| 52/hr (3rd year)                                                                                                         |
-| 4500/month (2nd coop), 35/hr (4th coop), (20% higher than average, 37/hr, 6th coop)                                      |
-| 48/hr USD (3rd coop)                                                                                                     |
-| 7450/mo (4th coop)                                                                                                       |
-| 24-29/hr (24/hr 2nd coop), 28/hr                                                                                         |
-| 40-60/hr, 44/hr (2nd coop), 9100/mo (5th coop)                                                                           |
-| 29.5/hr (1st coop), 30.25 (2nd coop)                                                                                     |
-| 30/hr (1st coop)                                                                                                         |
-| 50 USD/hr                                                                                                                |
-| 10,000/mo for remote, 8k USD/mo for on-site                                                                              |
-| 29/hr (3rd coop)                                                                                                         |
-| 40+/hr                                                                                                                   |
-| high 20s to mid 30s/hr                                                                                                   |
-
-| Addepar             | 40/hr, 48/hr (5th coop)   |
-|---------------------|---------------------------|
-| AdHawk Microsystems | 40/hr (5th coop)          |
-
-| 2024   | Algorithms Developer   |
-|--------|------------------------|
-
-| AGF Investments   | 25/hr (2nd coop)                                  |
-|-------------------|---------------------------------------------------|
-| AI Arena          | 45/hr                                             |
-| Akuna Capital     | 65 USD/hour                                       |
-| Altice USA        | mid 30s/hr (6th coop)                             |
-| Amazon            | 9138 USD/month                                    |
-| AMD               | 27/hr, ~21.88/hr (4th coop), ~29.33/hr (6th coop) |
-| American Express  | 34.5/hr                                           |
-| ANSYS             | math coop average + 10%                           |
-
-| 2023   | Web Developer (Junior)   |
-|--------|--------------------------|
-
-| return flight + corporate housing   |
-|-------------------------------------|
-
-| 2425/month tax-free relocation stipend   |
-|------------------------------------------|
-
-| Stipends listed                |
-|--------------------------------|
-| 3335/mo pretax relocation (3A) |
-| 1k/mo stipend                  |
-
-| Apple           | 42/hr USD (3A)                                                         | 3335/mo pretax relocation (3A)                   | 2024   | Hardware                   |
-|-----------------|----------------------------------------------------------------
+.39 [C6347]\t5.34 [D6347]\t1 [E6347]\tYes [F6347]\t0 [G6347]\t8 [H6347]\t3 [I6347]\tNo [J6347]",
+            "CLG0079 [A6348]\t93 [B6348]\t5.06 [C6348]\t5.2 [D6348]\t2 [E6348]\tYes [F6348]\t0 [G6348]\t3 [H6348]\t1 [I6348]\tNo [J6348]",
+            "CLG0006 [A6349]\t119 [B6349]\t6.44 [C6349]\t6.13 [D6349]\t10 [E6349]\tYes [F6349]\t3 [G6349]\t5 [H6349]\t4 [I6349]\tNo [J6349]",
+            "CLG0016 [A6350]\t82 [B6350]\t5.05 [C6350]\t5.13 [D6350]\t6 [E6350]\tNo [F6350]\t2 [G6350]\t3 [H6350]\t1 [I6350]\tNo [J6350]"
+          ],
+          "formulas": [
+            "Row6301: R1:CLG0045",
+            "Row6302: R1:CLG0037",
+            "Row6303: R1:CLG0043",
+            "Row6304: R1:CLG0073",
+            "Row6305: R1:CLG0073",
+            "Row6306: R1:CLG0076",
+            "Row6307: R1:CLG0028",
+            "Row6308: R1:CLG0071",
+            "Row6309: R1:CLG0060",
+            "Row6310: R1:CLG0064",
+            "Row6311: R1:CLG0060",
+            "Row6312: R1:CLG0099",
+            "Row6313: R1:CLG0036",
+            "Row6314: R1:CLG0047",
+            "Row6315: R1:CLG0038",
+            "Row6316: R1:CLG0065",
+            "Row6317: R1:CLG0034",
+            "Row6318: R1:CLG0022",
+            "Row6319: R1:CLG0094",
+            "Row6320: R1:CLG0084",
+            "Row6321: R1:CLG0051",
+            "Row6322: R1:CLG0072",
+            "Row6323: R1:CLG0045",
+            "Row6324: R1:CLG0071",
+            "Row6325: R1:CLG0002",
+            "Row6326: R1:CLG0058",
+            "Row6327: R1:CLG0094",
+            "Row6328: R1:CLG0012",
+            "Row6329: R1:CLG0100",
+            "Row6330: R1:CLG0027",
+            "Row6331: R1:CLG0098",
+            "Row6332: R1:CLG0038",
+            "Row6333: R1:CLG0075",
+            "Row6334: R1:CLG0020",
+            "Row6335: R1:CLG0094",
+            "Row6336: R1:CLG0043",
+            "Row6337: R1:CLG0032",
+            "Row6338: R1:CLG0090",
+            "Row6339: R1:CLG0023",
+            "Row6340: R1:CLG0041",
+            "Row6341: R1:CLG0088",
+            "Row6342: R1:CLG0002",
+            "Row6343: R1:CLG0062",
+            "Row6344: R1:CLG0096",
+            "Row6345: R1:CLG0053",
+            "Row6346: R1:CLG0057",
+            "Row6347: R1:CLG0048",
+            "Row6348: R1:CLG0079",
+            "Row6349: R1:CLG0006",
+            "Row6350: R1:CLG0016"
+          ],
+          "chunk_number": 126
+        }},
+        "chunk_127": {{
+          "range": "A6351:A6400",
+          "start_row": 6351,
+          "end_row": 6400,
+          "summary": "Data contains information on various items with attributes including ID, values, and flags.",
+          "context": "Each row represents an item with metrics such as scores, counts, and binary indicators.",
+          "table": [
+            "CLG0011 [A6351]\t89 [B6351]\t6.15 [C6351]\t6.18 [D6351]\t2 [E6351]\tYes [F6351]\t10 [G6351]\t4 [H6351]\t0 [I6351]\tNo [J6351]",
+            "CLG0046 [A6352]\t141 [B6352]\t7.1 [C635
 ------------------------
 output:
-("entity"{tuple_delimiter}~35/hr{tuple_delimiter}compensation{tuple_delimiter}An unspecified hourly wage rate})
+("entity"{tuple_delimiter}CLG0079{tuple_delimiter}ID{tuple_delimiter}Identifier for a data record)
 {record_delimiter}
-("entity"{tuple_delimiter}35/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
+("entity"{tuple_delimiter}93{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0079 in some metric)
 {record_delimiter}
-("entity"{tuple_delimiter}20/hr (1st coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the first cooperative education term})
+("entity"{tuple_delimiter}5.06{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0079)
 {record_delimiter}
-("entity"{tuple_delimiter}31/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third cooperative education term})
+("entity"{tuple_delimiter}Yes{tuple_delimiter}binary indicator{tuple_delimiter}Binary indicator associated with CLG0079, indicating a positive condition)
 {record_delimiter}
-("entity"{tuple_delimiter}27.5/hr (2nd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the second cooperative education term})
+("entity"{tuple_delimiter}CLG0006{tuple_delimiter}ID{tuple_delimiter}Identifier for another data record)
 {record_delimiter}
-("entity"{tuple_delimiter}28/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third cooperative education term})
+("entity"{tuple_delimiter}119{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0006 in some metric)
 {record_delimiter}
-("entity"{tuple_delimiter}Coop Average{tuple_delimiter}compensation{tuple_delimiter}The average hourly wage rate for cooperative education terms})
+("entity"{tuple_delimiter}6.44{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0006)
 {record_delimiter}
-("entity"{tuple_delimiter}32/hr (remote), 28-32 USD/hr (onsite, Fremont/Palo Alto){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for remote work and a range for onsite work in Fremont/Palo Alto})
+("entity"{tuple_delimiter}No{tuple_delimiter}binary indicator{tuple_delimiter}Binary indicator associated with CLG0006, indicating a negative condition)
 {record_delimiter}
-("entity"{tuple_delimiter}48/hr USD (4th yr){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the fourth year})
+("entity"{tuple_delimiter}CLG0016{tuple_delimiter}ID{tuple_delimiter}Identifier for another data record)
 {record_delimiter}
-("entity"{tuple_delimiter}42/hr USD (3A){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the 3A term})
+("entity"{tuple_delimiter}82{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0016 in some metric)
 {record_delimiter}
-("entity"{tuple_delimiter}21/hr (1st coop), 32/hr (4th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for the first and fourth cooperative education terms})
+("entity"{tuple_delimiter}5.05{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0016)
 {record_delimiter}
-("entity"{tuple_delimiter}25/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third cooperative education term})
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}93{tuple_delimiter}93 is a value associated with the ID CLG0079{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}35/hr (4th coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the fourth cooperative education term})
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}5.06{tuple_delimiter}5.06 is a metric value associated with the ID CLG0079{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}20/hr (1st coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the first cooperative education term})
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}Yes{tuple_delimiter}Yes is a binary indicator associated with the ID CLG0079{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}40/hr (4th coop), 43/hr (5th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for the fourth and fifth cooperative education terms})
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}119{tuple_delimiter}119 is a value associated with the ID CLG0006{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}Ranges from 30-39/hr (32/hr for 2B term), 1250/week (3rd coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates for the 2B term and a weekly rate for the third cooperative education term})
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}6.44{tuple_delimiter}6.44 is a metric value associated with the ID CLG0006{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}35/hr, 42/hr (6th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for an unspecified term and the sixth cooperative education term})
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}No{tuple_delimiter}No is a binary indicator associated with the ID CLG0006{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}47/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
+("relationship"{tuple_delimiter}CLG0016{tuple_delimiter}82{tuple_delimiter}82 is a value associated with the ID CLG0016{tuple_delimiter}10)
 {record_delimiter}
-("entity"{tuple_delimiter}25/hr (1st coop), 27/hr (2nd coop), up to 35/hr for upper years{tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for the first and second cooperative education terms, with a maximum rate for upper years})
-{record_delimiter}
-("entity"{tuple_delimiter}Co-op average{tuple_delimiter}compensation{tuple_delimiter}The average hourly wage rate for cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}25/hr, 30/hr (3rd year), 45/hr (6th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for an unspecified term, the third year, and the sixth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}25/hr (2nd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the second cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}30-34/hr{tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates})
-{record_delimiter}
-("entity"{tuple_delimiter}27.65/hr (6th coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the sixth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}32-34/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}co-op average + 20%{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate that is 20% higher than the average for cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}25/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}25/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}800/wk for 1st and 2nd, 1000/wk for 3rd and 4th, 1200/wk for 5th and 6th (coop term){tuple_delimiter}compensation{tuple_delimiter}Weekly wage rates for the first through sixth cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}20/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}coop average{tuple_delimiter}compensation{tuple_delimiter}The average hourly wage rate for cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}40/hr + 1000/mo WFH stipend, 41.25/hr + 3000/mo stipend{tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates with additional monthly work-from-home and general stipends})
-{record_delimiter}
-("entity"{tuple_delimiter}44/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}29.33/hr (for 2B){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the 2B term})
-{record_delimiter}
-("entity"{tuple_delimiter}20.00/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}30-32/hr, 33/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates and a specific rate for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}24/hr (2nd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the second cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}21-24/hr{tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates})
-{record_delimiter}
-("entity"{tuple_delimiter}38/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}35/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate})
-{record_delimiter}
-("entity"{tuple_delimiter}55/hr USD{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate in USD})
-{record_delimiter}
-("entity"{tuple_delimiter}20/hr (1st coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the first cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}55/hr (4th, 5th coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for the fourth and fifth cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}32-25/hr (2nd coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates for the second cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}30/hr (4th coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the fourth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}33/hr (4th coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the fourth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}40-55/hr based on term/team{tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates depending on the term or team})
-{record_delimiter}
-("entity"{tuple_delimiter}20-50/hr depending on experience, 30/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates depending on experience and a specific rate for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}52/hr (3rd year){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third year})
-{record_delimiter}
-("entity"{tuple_delimiter}4500/month (2nd coop), 35/hr (4th coop), (20% higher than average, 37/hr, 6th coop){tuple_delimiter}compensation{tuple_delimiter}Monthly and hourly wage rates for the second, fourth, and sixth cooperative education terms, with the sixth term rate being 20% higher than average})
-{record_delimiter}
-("entity"{tuple_delimiter}48/hr USD (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate in USD for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}7450/mo (4th coop){tuple_delimiter}compensation{tuple_delimiter}A monthly wage rate for the fourth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}24-29/hr (24/hr 2nd coop), 28/hr{tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates including a specific rate for the second cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}40-60/hr, 44/hr (2nd coop), 9100/mo (5th coop){tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates, a specific rate for the second cooperative education term, and a monthly rate for the fifth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}29.5/hr (1st coop), 30.25 (2nd coop){tuple_delimiter}compensation{tuple_delimiter}Hourly wage rates for the first and second cooperative education terms})
-{record_delimiter}
-("entity"{tuple_delimiter}30/hr (1st coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the first cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}50 USD/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate in USD})
-{record_delimiter}
-("entity"{tuple_delimiter}10,000/mo for remote, 8k USD/mo for on-site{tuple_delimiter}compensation{tuple_delimiter}Monthly wage rates for remote and on-site work})
-{record_delimiter}
-("entity"{tuple_delimiter}29/hr (3rd coop){tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate for the third cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}40+/hr{tuple_delimiter}compensation{tuple_delimiter}An hourly wage rate of 40 or more})
-{record_delimiter}
-("entity"{tuple_delimiter}high 20s to mid 30s/hr{tuple_delimiter}compensation{tuple_delimiter}A range of hourly wage rates from the high twenties to mid-thirties})
-{record_delimiter}
-("entity"{tuple_delimiter}Addepar{tuple_delimiter}company{tuple_delimiter}A company offering 40/hr and 48/hr for the fifth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}AdHawk Microsystems{tuple_delimiter}company{tuple_delimiter}A company offering 40/hr for the fifth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}2024{tuple_delimiter}year{tuple_delimiter}The year associated with certain compensation rates and roles})
-{record_delimiter}
-("entity"{tuple_delimiter}Algorithms Developer{tuple_delimiter}role{tuple_delimiter}A role mentioned for the year 2024})
-{record_delimiter}
-("entity"{tuple_delimiter}AGF Investments{tuple_delimiter}company{tuple_delimiter}A company offering 25/hr for the second cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}AI Arena{tuple_delimiter}company{tuple_delimiter}A company offering 45/hr})
-{record_delimiter}
-("entity"{tuple_delimiter}Akuna Capital{tuple_delimiter}company{tuple_delimiter}A company offering 65 USD/hour})
-{record_delimiter}
-("entity"{tuple_delimiter}Altice USA{tuple_delimiter}company{tuple_delimiter}A company offering mid 30s/hr for the sixth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}Amazon{tuple_delimiter}company{tuple_delimiter}A company offering 9138 USD/month})
-{record_delimiter}
-("entity"{tuple_delimiter}AMD{tuple_delimiter}company{tuple_delimiter}A company offering 27/hr, ~21.88/hr for the fourth cooperative education term, and ~29.33/hr for the sixth cooperative education term})
-{record_delimiter}
-("entity"{tuple_delimiter}American Express{tuple_delimiter}company{tuple_delimiter}A company offering 34.5/hr})
-{record_delimiter}
-("entity"{tuple_delimiter}ANSYS{tuple_delimiter}company{tuple_delimiter}A company offering math coop average + 10%})
-{record_delimiter}
-("entity"{tuple_delimiter}2023{tuple_delimiter}year{tuple_delimiter}The year associated with certain compensation rates and roles})
-{record_delimiter}
-("entity"{tuple_delimiter}Web Developer (Junior){tuple_delimiter}role{tuple_delimiter}A role mentioned for the year 2023})
-{record_delimiter}
-("entity"{tuple_delimiter}return flight + corporate housing{tuple_delimiter}benefit{tuple_delimiter}A benefit package that includes a return flight and corporate housing})
-{record_delimiter}
-("entity"{tuple_delimiter}2425/month tax-free relocation stipend{tuple_delimiter}relocation assistance{tuple_delimiter}A monthly tax-free stipend for relocation})
-{record_delimiter}
-("entity"{tuple_delimiter}Stipends listed{tuple_delimiter}stipend{tuple_delimiter}A reference to various stipends})
-{record_delimiter}
-("entity"{tuple_delimiter}3335/mo pretax relocation (3A){tuple_delimiter}relocation assistance{tuple_delimiter}A monthly pretax stipend for relocation during the 3A term})
-{record_delimiter}
-("entity"{tuple_delimiter}1k/mo stipend{tuple_delimiter}stipend{tuple_delimiter}A monthly stipend of 1000})
-{record_delimiter}
-("entity"{tuple_delimiter}Apple{tuple_delimiter}company{tuple_delimiter}A company offering 42/hr USD for the 3A term and associated with a 3335/mo pretax relocation stipend for the same term})
-{record_delimiter}
-("entity"{tuple_delimiter}Hardware{tuple_delimiter}work field{tuple_delimiter}A work field mentioned for the year 2024})
+("relationship"{tuple_delimiter}CLG0016{tuple_delimiter}5.05{tuple_delimiter}5.05 is a metric value associated with the ID CLG0016{tuple_delimiter}10)
 {completion_delimiter}
 #############################
 
@@ -549,7 +227,7 @@ output:
 
 -Real Data-
 ######################
-entity_types: [compensation, work term, company, location, role, benefit, experience level, currency, work arrangement, year, position, relocation assistance, stipend, housing assistance, work term increment, academic term, work field]
+entity_types: [ID, value, flag, metric, binary indicator]
 text: {input_text}
 ######################
 output:

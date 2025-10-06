@@ -402,13 +402,13 @@ def query_anchored_index(index: Dict, query_terms: List[str]) -> Dict:
 
 if __name__ == "__main__":
     # Example usage
-    file_path = "test2.xlsx"
+    file_path = "test.xlsx"
     
     try:
         print("Building anchored inverted index...")
         print("This will use Ollama to analyze each 10-row chunk...")
         
-        index = build_anchored_index(file_path,chunk_size=50)
+        index = build_anchored_index(file_path,sheet_name='Salary List',chunk_size=20)
         
         print(f"Anchored index built successfully!")
         print(f"Found {len(index['sheets'])} sheet(s)")
