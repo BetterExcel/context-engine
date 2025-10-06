@@ -279,8 +279,16 @@ class LexicalSearch:
         # Filter out very short tokens and common stop words
         stop_words = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'row', 'col', 'cell'}
         
-        # Keep important tokens (longer than 2 chars, not stop words)
-        filtered_tokens = [token for token in tokens if len(token) > 2 and token not in stop_words]
+        # Keep important tokens: longer than 2 chars OR cell references (like A1, B2, D7)
+        filtered_tokens = []
+        for token in tokens:
+            # Keep cell references (letter + number pattern, case insensitive)
+            if re.match(r'^[A-Za-z]+\d+$', token):
+                filtered_tokens.append(token)
+            # Keep longer tokens that aren't stop words
+            elif len(token) > 2 and token not in stop_words:
+                filtered_tokens.append(token)
+        
         return filtered_tokens
     
     def _exact_match_search(self, query_tokens: List[str], top_k: int) -> List[Dict[str, Any]]:
@@ -490,7 +498,7 @@ def main():
     
     # Test queries
     test_queries = [
-        "canadian companies"
+        "google"
     ]
     
     for query in test_queries:
