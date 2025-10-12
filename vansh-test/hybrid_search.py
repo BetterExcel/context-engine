@@ -498,7 +498,7 @@ def main():
     
     # Test queries
     test_queries = [
-        "google"
+        "companies paying more than 40"
     ]
     
     for query in test_queries:
