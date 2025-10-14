@@ -4,101 +4,111 @@ from typing import Any, Dict, List, Union
 
 
 class MerkleTree:
-    """Represents a Merkle Tree built from a JSON-like structure."""
+    """Represents a Merkle Tree built from chunks of strings."""
 
-    def __init__(self, data: Any):
-        self.data = data
-        self.tree = self._build_tree(data)
-        self.root_hash = self.tree["_hash"] if isinstance(self.tree, dict) else None
+    def __init__(self, chunks: List[str]):
+        """
+        Build a Merkle tree from a list of string chunks.
+        Each leaf node represents one chunk, hashed with SHA256.
+        """
+        if not isinstance(chunks, list) or not all(isinstance(c, str) for c in chunks):
+            raise TypeError("MerkleTree expects a list of strings as chunks")
 
+        self.chunks = chunks
+        self.tree = self._build_tree(chunks)
+        self.root_hash = self.tree[-1][0] if self.tree else None
+
+    # ------------------ Representation ------------------
+    def __repr__(self):
+        return f"<MerkleTree num_chunks={len(self.chunks)} root={self.root_hash[:10]}...>"
+
+    # ------------------ Core Hashing ------------------
     @staticmethod
     def _sha256(data: str) -> str:
+        """Compute SHA256 hash for a string."""
         return hashlib.sha256(data.encode("utf-8")).hexdigest()
 
+    # ------------------ Tree Construction ------------------
     @classmethod
-    def _merkle_hash(cls, node: Any) -> str:
-        """Recursively compute a hash for a JSON node."""
-        if isinstance(node, dict):
-            items = [f"{k}:{cls._merkle_hash(v)}" for k, v in sorted(node.items())]
-            combined = "|".join(items)
-            return cls._sha256(f"dict:{combined}")
-        elif isinstance(node, list):
-            items = [cls._merkle_hash(v) for v in node]
-            combined = "|".join(items)
-            return cls._sha256(f"list:{combined}")
-        else:
-            return cls._sha256(f"val:{json.dumps(node, sort_keys=True)}")
+    def _build_tree(cls, chunks: List[str]) -> List[List[str]]:
+        """
+        Build the Merkle tree levels.
+        Returns a list of levels, bottom-up.
+        """
+        if not chunks:
+            return []
 
-    @classmethod
-    def _build_tree(cls, node: Any) -> Union[Dict, List]:
-        """Recursively attach hashes to a JSON structure."""
-        if isinstance(node, dict):
-            tree = {k: cls._build_tree(v) for k, v in sorted(node.items())}
-            tree["_hash"] = cls._merkle_hash(node)
-            return tree
-        elif isinstance(node, list):
-            tree = [cls._build_tree(v) for v in node]
-            tree.append({"_hash": cls._merkle_hash(node)})
-            return tree
-        else:
-            return {"_value": node, "_hash": cls._merkle_hash(node)}
+        # Bottom level (leaves)
+        level = [cls._sha256(c) for c in chunks]
+        tree = [level]
 
+        # Build up levels until root
+        while len(level) > 1:
+            new_level = []
+            for i in range(0, len(level), 2):
+                left = level[i]
+                right = level[i + 1] if i + 1 < len(level) else left  # duplicate last if odd
+                parent = cls._sha256(left + right)
+                new_level.append(parent)
+            tree.append(new_level)
+            level = new_level
+        return tree
+
+    # ------------------ Accessors ------------------
     def get_root_hash(self) -> str:
         """Return the Merkle root hash."""
         return self.root_hash
 
-    def get_tree(self) -> Any:
-        """Return the full Merkle tree structure."""
+    def get_tree(self) -> List[List[str]]:
+        """Return the full Merkle tree (list of levels)."""
         return self.tree
 
     def to_json(self, indent: int = 2) -> str:
-        """Return a pretty-printed JSON representation of the Merkle tree."""
+        """Return a JSON-formatted representation of the Merkle tree."""
         return json.dumps(self.tree, indent=indent)
 
 
 class MerkleDiff:
-    """Compare two Merkle trees and list differing JSON paths."""
+    """Compare two Merkle trees and report changed chunk indices."""
 
     @staticmethod
-    def diff(tree1: Any, tree2: Any, path: str = "") -> List[str]:
+    def diff(tree1: "MerkleTree", tree2: "MerkleTree") -> List[int]:
+        """
+        Compare two Merkle trees built from string chunks.
+        Returns indices of chunks that differ.
+        """
+        if len(tree1.chunks) != len(tree2.chunks):
+            # Different number of chunks → all changed
+            return list(range(max(len(tree1.chunks), len(tree2.chunks))))
+
         diffs = []
-
-        # Type mismatch
-        if type(tree1) != type(tree2):
-            diffs.append(path or "$")
-            return diffs
-
-        # Primitive leaf node
-        if isinstance(tree1, dict) and "_hash" in tree1 and "_hash" in tree2 and len(tree1) == len(tree2) == 2:
-            if tree1["_hash"] != tree2["_hash"]:
-                diffs.append(path or "$")
-            return diffs
-
-        # Dict node
-        if isinstance(tree1, dict):
-            keys = set(tree1.keys()).union(tree2.keys())
-            for key in sorted(k for k in keys if k != "_hash"):
-                subpath = f"{path}.{key}" if path else key
-                if key not in tree1 or key not in tree2:
-                    diffs.append(subpath)
-                else:
-                    diffs.extend(MerkleDiff.diff(tree1[key], tree2[key], subpath))
-            if tree1.get("_hash") != tree2.get("_hash"):
-                if path not in diffs:
-                    diffs.append(path or "$")
-            return diffs
-
-        # List node
-        if isinstance(tree1, list):
-            min_len = min(len(tree1), len(tree2))
-            for i in range(min_len - 1):  # skip last element (_hash)
-                subpath = f"{path}[{i}]"
-                diffs.extend(MerkleDiff.diff(tree1[i], tree2[i], subpath))
-            if tree1[-1].get("_hash") != tree2[-1].get("_hash"):
-                diffs.append(path or "$")
-            return diffs
-
+        for i, (c1, c2) in enumerate(zip(tree1.chunks, tree2.chunks)):
+            if c1 != c2:
+                diffs.append(i)
         return diffs
-if __name__=='__main__':
-    print("This module provides MerkleTree and MerkleDiff classes for JSON-like structures.")
-    
+
+
+if __name__ == "__main__":
+    # Example: Merkle tree built from text chunks
+    old_chunks = [
+        "Climate change affects weather patterns.",
+        "CO2 emissions are rising globally.",
+        "Sea levels are increasing."
+    ]
+    new_chunks = [
+        "Climate change affects weather patterns and seasons.",  # modified
+        "CO2 emissions are rising globally.",
+        "Sea levels are increasing rapidly."                      # modified
+    ]
+
+    old_tree = MerkleTree(old_chunks)
+    new_tree = MerkleTree(new_chunks)
+
+    print(old_tree)
+    print(new_tree)
+
+    print("\nRoot Hashes:")
+    print("Old:", old_tree.get_root_hash())
+    print("New:", new_tree.get_root_hash())
+
+    print("\nChanged Chunk Indices:", MerkleDiff.diff(old_tree, new_tree))

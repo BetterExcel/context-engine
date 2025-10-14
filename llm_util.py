@@ -18,6 +18,7 @@ def call_llm(
     model: str = "gpt-4o-mini",
     max_tokens: int = 2000,
     temperature: float = 0.0,
+    web_search: bool = False,
 ) -> str:
     provider = provider.lower()
 
@@ -30,6 +31,8 @@ def call_llm(
 
     # ---- OpenAI ----
     if provider == "openai":
+        if web_search:
+            model="gpt-4o-search-preview"  # web-browsing model
         llm = ChatOpenAI(
             model=model,
             temperature=temperature,
