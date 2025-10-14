@@ -21,10 +21,10 @@ def call_llm(
     web_search: bool = False,
 ) -> str:
     provider = provider.lower()
-
+    system_prompt= "Follow instructions carefully. You are a helpful assistant." if not web_search else "You are a helpful assistant that can search the web for up-to-date information. Use the web results to answer user queries."
     # ---- Build LangChain prompt template ----
     template = ChatPromptTemplate.from_messages([
-        ("system", "Follow instructions carefully. You are a helpful assistant."),
+        ("system", system_prompt),
         ("user", "{user_input}")
     ])
     chain = None
@@ -35,7 +35,7 @@ def call_llm(
             model="gpt-4o-search-preview"  # web-browsing model
         llm = ChatOpenAI(
             model=model,
-            temperature=temperature,
+            temperature=temperature if not web_search else None,  # keep it deterministic for web search
             max_tokens=max_tokens,
             api_key=os.getenv("OPENAI_API_KEY"),
         )
@@ -84,7 +84,9 @@ if __name__ == "__main__":
     start = datetime.datetime.now()
     openai_resp = call_llm(test_prompt, provider="openai", model="gpt-4o-mini")
     print("OpenAI:", openai_resp, f"(took {(datetime.datetime.now() - start).total_seconds():.2f}s)")
-
+    start = datetime.datetime.now()
+    openai_resp = call_llm(test_prompt + "and give today's date", provider="openai", model="gpt-4o-mini",web_search=True)
+    print("OpenAI web search: ", openai_resp, f"(took {(datetime.datetime.now() - start).total_seconds():.2f}s)")
     # --- Ollama test ---
     start = datetime.datetime.now()
     ollama_resp = call_llm(test_prompt, provider="ollama", model="gemma3:270m")
