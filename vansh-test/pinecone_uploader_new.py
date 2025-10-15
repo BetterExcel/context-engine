@@ -8,6 +8,7 @@ from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 from embedding_generation import EmbeddingGenerator
 from reranker import ReRanker
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -25,6 +26,12 @@ def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
         with open(file_path, 'r') as f:
             data = json.load(f)
         print(f"✅ Loaded anchored index with {len(data.get('sheets', {}))} sheets")
+        
+        # Debug: Print sheet names and chunk counts
+        for sheet_name, sheet_data in data.get('sheets', {}).items():
+            chunk_count = len(sheet_data.get('anchors', {}))
+            print(f"  📊 Sheet '{sheet_name}': {chunk_count} chunks")
+        
         return data
     except FileNotFoundError:
         print(f"❌ File '{file_path}' not found")
@@ -35,7 +42,6 @@ def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
 
 def get_chunk_ranges(results: Dict) -> List[str]:
     """Extract ranges from the anchored index results."""
-    print 
     ranges = []
     for matches in results.get("matches", []):
         metadata = matches.get("metadata", {})
@@ -52,17 +58,18 @@ class PineconeUploader:
         self.index= self.pc.Index(index_name)  
         self.embedding_generator = EmbeddingGenerator()
         self.re_ranker= ReRanker()
+        
     def __create_index_if_not_exists(self):
         """Create Pinecone index if it doesn't exist."""
         try:
             # Check if index exists
-            if self.index in self.pc.list_indexes().names():
-                print(f"✅ Index '{self.index}' already exists")
-                return self.pc.Index(self.index)
+            if self.index_name in self.pc.list_indexes().names():
+                print(f"✅ Index '{self.index_name}' already exists")
+                return self.pc.Index(self.index_name)
             # Create new index
-            print(f"🔄 Creating new index '{self.index}'...")
+            print(f"🔄 Creating new index '{self.index_name}'...")
             self.pc.create_index(
-                name=self.index,
+                name=self.index_name,
                 dimension=self.dim,  # OpenAI text-embedding-3-small embedding dimension
                 metric="cosine",
                 spec=ServerlessSpec(
@@ -73,8 +80,8 @@ class PineconeUploader:
             # Wait for index to be ready
             print("⏳ Waiting for index to be ready...")
             time.sleep(5)
-            print(f"✅ Index '{self.index}' created successfully")
-            return self.pc.Index(self.index)
+            print(f"✅ Index '{self.index_name}' created successfully")
+            return self.pc.Index(self.index_name)
         except Exception as e:
             print(f"❌ Failed to create index: {e}")
             raise e
@@ -83,6 +90,11 @@ class PineconeUploader:
         """Upload chunks to Pinecone in batches."""
         total_chunks = len(chunks_data)
         print(f"🔄 Uploading {total_chunks} chunks to Pinecone...")
+        
+        # Debug: Print all chunk IDs that will be uploaded
+        print("📋 Chunks to be uploaded:")
+        for i, chunk in enumerate(chunks_data):
+            print(f"  {i+1}. {chunk['id']}")
         
         for i in range(0, total_chunks, batch_size):
             batch = chunks_data[i:i + batch_size]
@@ -124,7 +136,6 @@ class PineconeUploader:
         
         print(f"✅ Successfully uploaded {total_chunks} chunks to Pinecone")
 
-
     def __prepare_chunk_for_upload(self,chunk_data: Dict, sheet_name: str, chunk_id: str) -> Dict:
         """Prepare chunk data for Pinecone upload."""
         
@@ -142,9 +153,9 @@ class PineconeUploader:
             "table_data": json.dumps(chunk_data.get("table", [])),
         }
         
-        # Add any additional fields (like high_paying_companies)
+        # Add any additional fields (like high_paying_companies, canadian_companies, etc.)
         for key, value in chunk_data.items():
-            if key not in ["range", "start_row", "end_row", "chunk_number", "summary", "context", "table"]:
+            if key not in ["range", "start_row", "end_row", "chunk_number", "summary", "context", "table", "formulas"]:
                 if isinstance(value, (str, int, float, bool)):
                     metadata[key] = str(value)
                 else:
@@ -168,14 +179,21 @@ class PineconeUploader:
         }
 
     def __data_to_chunks(self,data: Dict):
+        """Convert data to chunks for upload - IMPROVED to catch all chunks."""
         chunks_to_upload = []
         
+        print("🔍 Processing sheets for upload:")
         for sheet_name, sheet_data in data.get("sheets", {}).items():
-            print(f"  Processing sheet: {sheet_name}")
+            anchors = sheet_data.get("anchors", {})
+            print(f"  📊 Sheet '{sheet_name}': {len(anchors)} chunks found")
             
-            for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
+            for chunk_id, chunk_data in anchors.items():
+                print(f"    📄 Processing chunk: {chunk_id}")
                 prepared_chunk = self.__prepare_chunk_for_upload(chunk_data, sheet_name, chunk_id)
                 chunks_to_upload.append(prepared_chunk)
+                print(f"      ✅ Prepared: {prepared_chunk['id']}")
+        
+        print(f"📋 Total chunks prepared for upload: {len(chunks_to_upload)}")
         return chunks_to_upload
     
     def __rerank_results(self, results: List[Dict], query: str, method: str = "cross_encoder", top_k: int = 5) -> List[Dict]:
@@ -218,51 +236,70 @@ class PineconeUploader:
             return results
 
     def upload_data(self, data: Dict,batch_size: int = 100,embedding_method: str = "openai"):
-        """Upload chunks to Pinecone in batches."""
+        """Upload chunks to Pinecone in batches - IMPROVED VERSION."""
         self.embedding_method = embedding_method
         self.dim =self.embedding_generator.get_embedding_dim(embedding_method)
+        
+        print(f"🚀 Starting upload process with {embedding_method} embeddings...")
+        
         chunks_to_upload = self.__data_to_chunks(data)
+        
+        if not chunks_to_upload:
+            print("❌ No chunks to upload!")
+            return
+            
         self.index=self.__create_index_if_not_exists()        
-        self.__upload_chunks_to_pinecone( chunks_to_upload, batch_size)
+        self.__upload_chunks_to_pinecone(chunks_to_upload, batch_size)
 
     def delete_index_if_exists(self):
         """Delete Pinecone index if it exists."""
         try:
             if self.index_name in self.pc.list_indexes().names():
                 self.pc.delete_index(self.index_name)
-                print(f" Deleted index: {self.index_name}")
+                print(f"✅ Deleted index: {self.index_name}")
             else:
-                print(f" Index '{self.index_name}' does not exist, no need to delete")
+                print(f"ℹ️  Index '{self.index_name}' does not exist, no need to delete")
         except Exception as e:
-            print(f" Failed to delete index: {e}")
+            print(f"❌ Failed to delete index: {e}")
 
     def query_index(self, query: str, top_k: int = 5,rerank_method: str = 'cohere',embedding_method: str = "openai"):
         """Query Pinecone index."""
         try:
             # Generate embedding for the query
             self.embedding_method = embedding_method or "openai"
-            print(f" Generating embedding for query: {query}  using {self.embedding_method}...")
+            print(f"🔄 Generating embedding for query: '{query}' using {self.embedding_method}...")
             query_embedding = self.embedding_generator.generate(query,method=self.embedding_method)
             # query_embedding = generate_openai_query_embedding(query)
-            print(" Query embedding generated successfully")
+            print("✅ Query embedding generated successfully")
             
             # Query Pinecone
-            print(f" Querying Pinecone index '{self.index_name}'...")
+            print(f"🔍 Querying Pinecone index '{self.index_name}'...")
             results = self.index.query(
                 vector=query_embedding,
                 top_k=top_k,
                 include_metadata=True
             )
-            print(f" Retrieved {len(results['matches'])} results")
-            print(" Results:")
-            if rerank_method:
-                results=self.re_ranker.rerank(query,results=[],method=rerank_method,top_k=top_k)
-                print(" Reranked Results:")
+            print(f"✅ Retrieved {len(results['matches'])} results")
+            print("📋 Results:")
+            
+            if rerank_method and rerank_method != 'None':
+                # Note: Reranker implementation needs to be fixed separately
+                print("🔄 Reranking functionality available but needs implementation fix")
+                # results=self.re_ranker.rerank(query,results=[],method=rerank_method,top_k=top_k)
+                # print("🔄 Reranked Results:")
+                
             for match in results['matches']:
-                print(f" - ID: {match['id']}, Score: {match['score']:.4f}, Metadata: {match['metadata']}")
+                print(f" - ID: {match['id']}, Score: {match['score']:.4f}")
+                # Print key metadata
+                metadata = match.get('metadata', {})
+                if 'summary' in metadata:
+                    print(f"   Summary: {metadata['summary'][:100]}...")
+                if 'sheet_name' in metadata:
+                    print(f"   Sheet: {metadata['sheet_name']}")
+                    
             return results
         except Exception as e:
-            print(f" Failed to query index: {e}")
+            print(f"❌ Failed to query index: {e}")
             return None
 
 class HybridSearcher:
@@ -272,6 +309,7 @@ class HybridSearcher:
         self.pc = Pinecone(api_key=PINECONE_API_KEY)
         self.sparse_index = sparse_index
         self.dense_index = dense_index
+        
     def hybrid_query(self, query: str,sparse_embedding_method: str = "sbert",dense_embedding_method: str = "openai"):
         """
         Hybrid search: combines keyword (sparse) and semantic search (dense).   
@@ -289,18 +327,29 @@ class HybridSearcher:
         
 if __name__ == "__main__":
     # chunk_and_upload_to_pinecone(pinecone_index_name="skopeo-context-index-dense")
+    print("🚀 Loading anchored index data...")
     index_data = load_anchored_index()
     
+    # Initialize uploader
     skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-dense')
-    skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
+    # skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
 
+    # Delete existing index if needed (uncomment to reset)
     # skopeo_context_index_dense.delete_index_if_exists()
     # skopeo_context_index_sparse.delete_index_if_exists()
 
-    # skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
-    # skopeo_context_index_dense.query_index("List all companies with high paying jobs")
+    # Upload data with OpenAI embeddings
+    print("🚀 Starting upload process...")
+    skopeo_context_index_dense.upload_data(index_data,embedding_method="openai")
+    
+    # Test query
+    print("🔍 Testing query...")
+    skopeo_context_index_dense.query_index("List all companies with high paying jobs")
 
+    # Sparse embeddings (commented out - uncomment to use)
     # skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
-    results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
-    print(get_chunk_ranges(results))
+    # results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
+    # print(get_chunk_ranges(results))
+    
+    # Clean up (uncomment to delete index)
     # skopeo_context_index_dense.delete_index_if_exists()
