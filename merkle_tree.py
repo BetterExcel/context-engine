@@ -20,7 +20,23 @@ class MerkleTree:
 
     # ------------------ Representation ------------------
     def __repr__(self):
-        return f"<MerkleTree num_chunks={len(self.chunks)} root={self.root_hash[:10]}...>"
+        """Return a flat array-style (heap-like) representation of the Merkle tree."""
+        if not self.tree:
+            return "[]"
+
+        # Flatten the tree (bottom to top) into a single list
+        # Pad each level to make it a full binary tree structure
+        arr = []
+        max_width = len(self.tree[0])
+        for level in self.tree:
+            # Pad with None to fill missing nodes if odd count
+            padded = level + [None] * (max_width - len(level))
+            arr.extend(padded)
+            max_width //= 2  # upper levels have fewer nodes
+
+        return json.dumps(arr)
+
+
 
     # ------------------ Core Hashing ------------------
     @staticmethod
@@ -69,23 +85,42 @@ class MerkleTree:
 
 
 class MerkleDiff:
-    """Compare two Merkle trees and report changed chunk indices."""
+    """Compare two Merkle trees and report added, updated, and deleted chunks."""
 
     @staticmethod
-    def diff(tree1: "MerkleTree", tree2: "MerkleTree") -> List[int]:
+    def diff(tree1: "MerkleTree", tree2: "MerkleTree") -> Dict[str, List[int]]:
         """
         Compare two Merkle trees built from string chunks.
-        Returns indices of chunks that differ.
-        """
-        if len(tree1.chunks) != len(tree2.chunks):
-            # Different number of chunks → all changed
-            return list(range(max(len(tree1.chunks), len(tree2.chunks))))
+        Returns a dict with indices of added, updated, and deleted chunks.
 
-        diffs = []
-        for i, (c1, c2) in enumerate(zip(tree1.chunks, tree2.chunks)):
-            if c1 != c2:
-                diffs.append(i)
-        return diffs
+        Example output:
+        {
+            "added": [3, 4],
+            "updated": [0, 2],
+            "deleted": [5]
+        }
+        """
+        old_chunks = tree1.chunks
+        new_chunks = tree2.chunks
+
+        added, updated, deleted = [], [], []
+
+        len_old = len(old_chunks)
+        len_new = len(new_chunks)
+        max_len = max(len_old, len_new)
+
+        for i in range(max_len):
+            old_val = old_chunks[i] if i < len_old else None
+            new_val = new_chunks[i] if i < len_new else None
+
+            if old_val is None and new_val is not None:
+                added.append(i)
+            elif new_val is None and old_val is not None:
+                deleted.append(i)
+            elif old_val != new_val:
+                updated.append(i)
+
+        return {"added": added, "updated": updated, "deleted": deleted}
 
 
 if __name__ == "__main__":
@@ -98,7 +133,7 @@ if __name__ == "__main__":
     new_chunks = [
         "Climate change affects weather patterns and seasons.",  # modified
         "CO2 emissions are rising globally.",
-        "Sea levels are increasing rapidly."                      # modified
+        "Sea levels are increasing rapidly.",                   # modified
     ]
 
     old_tree = MerkleTree(old_chunks)

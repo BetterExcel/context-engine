@@ -1,0 +1,394 @@
+
+-Goal-
+Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: One of the following types: [Company / Role, Compensation, Benefits, Year, Position, Experience Level, Location, Stipend, Relocation Assistance, Work Term, Housing Assistance, Signing Bonus, Vacation Pay, Remote Work Allowance, Transport Stipend, WFH Allowance, Corporate Housing, Tax-Free Relocation Stipend, Pretax Relocation, Hardware, System Level Test Engineer, Engineering, SWE, Non-SWE, Product Design, Firmware, Machine Learning Engineering, Actuarial Analyst, Android Engineering, Marketing Coordinator, Intern Engineer, Intern Analyst, Business Analyst, Fullstack]
+- entity_description: Comprehensive description of the entity's attributes and activities
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
+
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: an integer score between 1 to 10, indicating strength of the relationship between the source entity and target entity
+Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tuple_delimiter}<target_entity>{tuple_delimiter}<relationship_description>{tuple_delimiter}<relationship_strength>)
+
+3. Return output in English as a single list of all the entities and relationships identified in steps 1 and 2. Use **{record_delimiter}** as the list delimiter.
+
+4. If you have to translate into English, just translate the descriptions, nothing else!
+
+5. When finished, output {completion_delimiter}.
+
+-Examples-
+######################
+
+Example 1:
+
+entity_types: [Company / Role, Compensation, Benefits, Year, Position, Experience Level, Location, Stipend, Relocation Assistance, Work Term, Housing Assistance, Signing Bonus, Vacation Pay, Remote Work Allowance, Transport Stipend, WFH Allowance, Corporate Housing, Tax-Free Relocation Stipend, Pretax Relocation, Hardware, System Level Test Engineer, Engineering, SWE, Non-SWE, Product Design, Firmware, Machine Learning Engineering, Actuarial Analyst, Android Engineering, Marketing Coordinator, Intern Engineer, Intern Analyst, Business Analyst, Fullstack]
+text:
+       |
+| Ceridian                              | 32/hr (3rd coop)                                                          | None                                      | 2023       |
+| Ceridian                              | 22/hr                                                                     | None                                      | 2022, 2023 |
+| Certik                                | 7000 USD/month remote (4th coop)                                          | None                                      | None       |
+| CGI                                   | 18/hr (3rd coop)                                                          | None                                      | None       |
+| Chisel.ai                             | 40/hr (5th coop)                                                          | None                                      | None       |
+| Christie Digital Systems              | 18/hr (1st coop), +2/hr every add. coop term                              | None                                      | None       |
+| CIBC                                  | coop average + $1                                                         | None                                      | None       |
+| Cisco (Ottawa Office)                 | 31-33/hr (1st coop)                                                       | 2000 CAD signing bonus (1st coop)         | 2024       |
+| Cisco Meraki                          | (up to) 67/hr + 10k signing bonus                                         | None                                      | None       |
+| Citadel                               | 3365 USD/week                                                             | None                                      | None       |
+| Citibank                              | 44/hr                                                                     | 2000 CAD housing stipend                  | 2024       |
+| Cockroach Labs                        | 8000/month + 1.5k signing bonus                                           | None                                      | None       |
+| CodeWithChris                         | 20/hr (1st coop)                                                          | None                                      | None       |
+| Cohere                                | 20-50/hr based on experience                                              | None                                      | None       |
+| Coherent Logix                        | $1-3 above coop average                                                   | None                                      | None       |
+| Cohesity                              | 49/hr                                                                     | None                                      | None       |
+| Coinbase                              | 50/hr                                                                     | None                                      | None       |
+| Coinsquare                            | 28/hr (1st coop), 44/hr (5th coop, any dev role)                          | None                                      | None       |
+| Composer.trade                        | 9000/month                                                                | 500/month stipend                         | 2024       |
+| Compound                              | $10,200/month                                                             | None                                      | None       |
+| Connected                             | 37/hr (6th coop)                                                          | None                                      | None       |
+| Constant Contact                      | 35/hr (4th coop)                                                          | None                                      | 2023       |
+| The Co-operators                      | ~21/hr (1st coop)                                                         | None                                      | None       |
+| Core Avionics                         | 20/hr (1st coop), 30/hr                                                   | None                                      | None       |
+| Coursera                              | 7000/month                                                                | None                                      | None       |
+| Cover Technologies Inc                | 30 USD/hr                                                                 | None                                      | None       |
+| CPP Investments                       | 37/hr (2nd coop)                                                          | 4% of yearly salary (70k) as vacation pay | 2024       |
+| CPP Investments                       | 34/hr (3rd coop)                                                          | None                                      | 2024       |
+| CPP Investments                       | 48/hr (4th coop)                                                          | None                                      | 2024       |
+| Crawford and Co                       | 20/hr                                                                     | None                                      | 2022       |
+| Cresta                                | 40/hr (5th coop)                                                          | $25/day lunch                             | 2025       |
+| Creospark                             | 18/hr                                                                     | None                                      | None       |
+| Crypto4a                              | 40/hr (remote, 6th coop)                                                  | 4 days PTO                                | 2024       |
+| Cube Group                            | 75/hr USD                                                                 | None                                      | 2024       |
+| Curinos                               | 34/hr (2b)                                                                | None                                      | None       |
+| Curvegrid (Japan)                     | ¥300,000/mo (2nd coop)                                                    | None                                      | None       |
+| D2L                                   | 28/hr                                                                     | None                                      | None       |
+| Databrick                             | 55 CAD/hr                                                                 | 1.3k/mo housing                           | None       |
+| Datadog                               | 40/hr                                                                     | 2000 USD/mo housing                       | None       |
+| data.world                            | 1400 USD/week                                                             | 100 USD remote stipend                    | None       |
+| Deep Breathe                          | co-op average + 20%                                                       | None                                      | None       |
+| Deep Genomics                         | 60k/yr                                                                    | None                                      | None       |
+| DeepHaven                             | 32-38/hr (increases with work term)                                       | None                                      | 2024       |
+| Dejero                                | 1.15*coop average                                                         | None                                      | None       |
+| Deloitte                              | 25-28/hr                                                                  | None                                      | None       |
+| Delphia Asset Management              | 5-10% above the coop average                                              | None                                      | None       |
+| Digitaled                             | Coop average                                                              | None                                      | None       |
+| Digital Extremes (Marketing)          | 20/hr (2nd coop)                                                          | None                                      | None       |
+| DocuSign                              | 52/hr                                                                     | None                                      | None       |
+| Draper                                | 1400/wk                                                                   | None                                      | None       |
+| Dreamschools                          | 19-24/hr                                                                  | None                                      | None       |
+| Dropbase (Castodia)                   | (25-50/hr, +5 per work term), 29/hr for 3rd coop, 30-32/hr for 4/5th coop | None                                      | None       |
+| DR
+------------------------
+output:
+("entity"{tuple_delimiter}Ceridian{tuple_delimiter}Company / Role{tuple_delimiter}Offers $32/hr for 3rd coop and $22/hr for 2022, 2023 coops)
+{record_delimiter}
+("entity"{tuple_delimiter}Certik{tuple_delimiter}Company / Role{tuple_delimiter}Offers $7000 USD/month remote for 4th coop)
+{record_delimiter}
+("entity"{tuple_delimiter}CGI{tuple_delimiter}Company / Role{tuple_delimiter}Offers $18/hr for 3rd coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Chisel.ai{tuple_delimiter}Company / Role{tuple_delimiter}Offers $40/hr for 5th coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Christie Digital Systems{tuple_delimiter}Company / Role{tuple_delimiter}Offers $18/hr for 1st coop, with a $2/hr increase for every additional coop term)
+{record_delimiter}
+("entity"{tuple_delimiter}CIBC{tuple_delimiter}Company / Role{tuple_delimiter}Offers coop average + $1)
+{record_delimiter}
+("entity"{tuple_delimiter}Cisco (Ottawa Office){tuple_delimiter}Company / Role{tuple_delimiter}Offers $31-33/hr for 1st coop with a $2000 CAD signing bonus for 1st coop in 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Cisco Meraki{tuple_delimiter}Company / Role{tuple_delimiter}Offers up to $67/hr + $10k signing bonus)
+{record_delimiter}
+("entity"{tuple_delimiter}Citadel{tuple_delimiter}Company / Role{tuple_delimiter}Offers $3365 USD/week)
+{record_delimiter}
+("entity"{tuple_delimiter}Citibank{tuple_delimiter}Company / Role{tuple_delimiter}Offers $44/hr with a $2000 CAD housing stipend for 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Cockroach Labs{tuple_delimiter}Company / Role{tuple_delimiter}Offers $8000/month + $1.5k signing bonus)
+{record_delimiter}
+("entity"{tuple_delimiter}CodeWithChris{tuple_delimiter}Company / Role{tuple_delimiter}Offers $20/hr for 1st coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Cohere{tuple_delimiter}Company / Role{tuple_delimiter}Offers $20-50/hr based on experience)
+{record_delimiter}
+("entity"{tuple_delimiter}Coherent Logix{tuple_delimiter}Company / Role{tuple_delimiter}Offers $1-3 above coop average)
+{record_delimiter}
+("entity"{tuple_delimiter}Cohesity{tuple_delimiter}Company / Role{tuple_delimiter}Offers $49/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Coinbase{tuple_delimiter}Company / Role{tuple_delimiter}Offers $50/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Coinsquare{tuple_delimiter}Company / Role{tuple_delimiter}Offers $28/hr for 1st coop, $44/hr for 5th coop in any dev role)
+{record_delimiter}
+("entity"{tuple_delimiter}Composer.trade{tuple_delimiter}Company / Role{tuple_delimiter}Offers $9000/month with a $500/month stipend for 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Compound{tuple_delimiter}Company / Role{tuple_delimiter}Offers $10,200/month)
+{record_delimiter}
+("entity"{tuple_delimiter}Connected{tuple_delimiter}Company / Role{tuple_delimiter}Offers $37/hr for 6th coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Constant Contact{tuple_delimiter}Company / Role{tuple_delimiter}Offers $35/hr for 4th coop in 2023)
+{record_delimiter}
+("entity"{tuple_delimiter}The Co-operators{tuple_delimiter}Company / Role{tuple_delimiter}Offers approximately $21/hr for 1st coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Core Avionics{tuple_delimiter}Company / Role{tuple_delimiter}Offers $20/hr for 1st coop, $30/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Coursera{tuple_delimiter}Company / Role{tuple_delimiter}Offers $7000/month)
+{record_delimiter}
+("entity"{tuple_delimiter}Cover Technologies Inc{tuple_delimiter}Company / Role{tuple_delimiter}Offers $30 USD/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}CPP Investments{tuple_delimiter}Company / Role{tuple_delimiter}Offers $37/hr for 2nd coop with 4% of yearly salary (70k) as vacation pay, $34/hr for 3rd coop, and $48/hr for 4th coop in 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Crawford and Co{tuple_delimiter}Company / Role{tuple_delimiter}Offers $20/hr in 2022)
+{record_delimiter}
+("entity"{tuple_delimiter}Cresta{tuple_delimiter}Company / Role{tuple_delimiter}Offers $40/hr for 5th coop with $25/day lunch in 2025)
+{record_delimiter}
+("entity"{tuple_delimiter}Creospark{tuple_delimiter}Company / Role{tuple_delimiter}Offers $18/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Crypto4a{tuple_delimiter}Company / Role{tuple_delimiter}Offers $40/hr for remote, 6th coop with 4 days PTO in 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Cube Group{tuple_delimiter}Company / Role{tuple_delimiter}Offers $75/hr USD in 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Curinos{tuple_delimiter}Company / Role{tuple_delimiter}Offers $34/hr for 2b coop)
+{record_delimiter}
+("entity"{tuple_delimiter}Curvegrid (Japan){tuple_delimiter}Company / Role{tuple_delimiter}Offers ¥300,000/mo for 2nd coop)
+{record_delimiter}
+("entity"{tuple_delimiter}D2L{tuple_delimiter}Company / Role{tuple_delimiter}Offers $28/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Databrick{tuple_delimiter}Company / Role{tuple_delimiter}Offers $55 CAD/hr with 1.3k/mo housing)
+{record_delimiter}
+("entity"{tuple_delimiter}Datadog{tuple_delimiter}Company / Role{tuple_delimiter}Offers $40/hr with $2000 USD/mo housing)
+{record_delimiter}
+("entity"{tuple_delimiter}data.world{tuple_delimiter}Company / Role{tuple_delimiter}Offers $1400 USD/week with $100 USD remote stipend)
+{record_delimiter}
+("entity"{tuple_delimiter}Deep Breathe{tuple_delimiter}Company / Role{tuple_delimiter}Offers co-op average + 20%)
+{record_delimiter}
+("entity"{tuple_delimiter}Deep Genomics{tuple_delimiter}Company / Role{tuple_delimiter}Offers $60k/yr)
+{record_delimiter}
+("entity"{tuple_delimiter}DeepHaven{tuple_delimiter}Company / Role{tuple_delimiter}Offers $32-38/hr, increases with work term, for 2024)
+{record_delimiter}
+("entity"{tuple_delimiter}Dejero{tuple_delimiter}Company / Role{tuple_delimiter}Offers 1.15*coop average)
+{record_delimiter}
+("entity"{tuple_delimiter}Deloitte{tuple_delimiter}Company / Role{tuple_delimiter}Offers $25-28/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Delphia Asset Management{tuple_delimiter}Company / Role{tuple_delimiter}Offers 5-10% above the coop average)
+{record_delimiter}
+("entity"{tuple_delimiter}Digitaled{tuple_delimiter}Company / Role{tuple_delimiter}Offers Coop average)
+{record_delimiter}
+("entity"{tuple_delimiter}Digital Extremes (Marketing){tuple_delimiter}Company / Role{tuple_delimiter}Offers $20/hr for 2nd coop)
+{record_delimiter}
+("entity"{tuple_delimiter}DocuSign{tuple_delimiter}Company / Role{tuple_delimiter}Offers $52/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Draper{tuple_delimiter}Company / Role{tuple_delimiter}Offers $1400/wk)
+{record_delimiter}
+("entity"{tuple_delimiter}Dreamschools{tuple_delimiter}Company / Role{tuple_delimiter}Offers $19-24/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}Dropbase (Castodia){tuple_delimiter}Company / Role{tuple_delimiter}Offers $25-50/hr, +$5 per work term, $29/hr for 3rd coop, $30-32/hr for 4/5th coop)
+{completion_delimiter}
+#############################
+
+
+Example 2:
+
+entity_types: [Company / Role, Compensation, Benefits, Year, Position, Experience Level, Location, Stipend, Relocation Assistance, Work Term, Housing Assistance, Signing Bonus, Vacation Pay, Remote Work Allowance, Transport Stipend, WFH Allowance, Corporate Housing, Tax-Free Relocation Stipend, Pretax Relocation, Hardware, System Level Test Engineer, Engineering, SWE, Non-SWE, Product Design, Firmware, Machine Learning Engineering, Actuarial Analyst, Android Engineering, Marketing Coordinator, Intern Engineer, Intern Analyst, Business Analyst, Fullstack]
+text:
+ + corporate housing   |
+|-------------------------------------|
+
+| 2425/month tax-free relocation stipend   |
+|------------------------------------------|
+
+| Stipends listed                |
+|--------------------------------|
+| 3335/mo pretax relocation (3A) |
+| 1k/mo stipend                  |
+
+| Apple           | 42/hr USD (3A)                                                         | 3335/mo pretax relocation (3A)                   | 2024   | Hardware                   |
+|-----------------|------------------------------------------------------------------------|--------------------------------------------------|--------|----------------------------|
+| Apple           | 42/hr USD                                                              | 1k/mo stipend                                    | 2024   | System Level Test Engineer |
+| Arctic Wolf     | 36/hr (3rd coop), 42/hr (4th coop)                                     | None                                             | 2023   | None                       |
+| Arctic Wolf     | 38/hr (4th coop)                                                       | None                                             | 2024   | None                       |
+| Aterlo Networks | 30/hr (4th coop)                                                       | None                                             | None   | None                       |
+| Athelas         | 33/hr USD                                                              | 1200/mo USD housing stipend (2nd coop) + flights | None   | None                       |
+| Athos           | 5000 USD/mo                                                            | None                                             | None   | None                       |
+| Atolio          | 34/hr (3rd coop), 38/hr (4th coop), 38/hr (5th coop), 42/hr (6th coop) | None                                             | None   | None                       |
+| ATS Corporation | 28/hr (5th year (4B?))                                                 | None                                             | None   | None                       |
+
+|   2023 |
+|--------|
+|   2024 |
+
+| Autodesk                        | 34/hr (5th coop)                           |
+|---------------------------------|--------------------------------------------|
+| Autonomic                       | 38-40/hr (4th coop), 41/hr (5th coop)      |
+| Axonify                         | 1100/week (4th coop)                       |
+| Bank of America                 | 22/hr (2nd coop)                           |
+| Bank of America (Merrill Lynch) | 20/hr (1st coop)                           |
+| BDO                             | 34.36/hr, 25/h (2nd coop), 32/h (3rd coop) |
+| Bentley Systems                 | 30/hr (1st coop), 33/hr (2nd coop)         |
+| BETS Program                    | 3000 stipend                               |
+| BetterUp                        | 8500/mo                                    |
+| Bitbuy                          | 20/hr (1st coop)                           |
+
+| 2024   |
+|--------|
+
+| Blackberry                                       | (about average), ~21/hr                |
+|--------------------------------------------------|----------------------------------------|
+| bld.ai                                           | 7000/mo                                |
+| Bloomberg                                        | 48/hr + 5100 stipend (5th coop)        |
+| Bloq                                             | 5.4k/mo (2nd coop), 6.2k/mo (3rd coop) |
+| Bluescape                                        | 34/hr (6th coop)                       |
+| BMO Business Analyst (2A)                        | 24/hr                                  |
+| BMO Product Analyst                              | 28/hr (2nd coop)                       |
+| BMO Software Developer                           | 29.50/hr (1st coop)                    |
+| Bolt                                             | 56 USD/hr                              |
+| Bonfire Interactive                              | 24/hr (2nd coop)                       |
+| Boosted.AI                                       | 35/hr                                  |
+| Borrowell                                        | (mobile dev) 35/hr (5h coop)           |
+| Brookfield Annuity                               | 35/hr                                  |
+| Brookfield Renewables                            | 26/hr                                  |
+| BusPlanner                                       | coop average                           |
+| CAAT Pension Plan                                | 18/hr (2nd coop)                       |
+| Canadian Food Inspection Agency (Full Stack Dev) | 24.77/hr (5th coop)                    |
+
+| 950/mo benefits (2nd coop, 3rd coop)   |
+|----------------------------------------|
+
+| 2024   |
+|--------|
+
+| Capital1                              | 40/hr (5th coop)                                                          | $1000 signing bonus                       | 2025       |
+|---------------------------------------|---------------------------------------------------------------------------|-------------------------------------------|------------|
+| Carta                                 | 30.75/hr (4th coop), 1230-1400/week                                       | None                                      | None       |
+| Carta                                 | 40/hr (4th coop), 47/hr (5th coop)                                        | None                                      | 2024       |
+| Carfax (Dev)                          | 26/hr (2nd coop)                                                          | None                                      | None       |
+| Castleton Commodities                 | 38/hr                                                                     | None                                      | None       |
+| CEGN                                  | Low-Mid 20s                                                               | None                                      | None       |
+| C.E. McMahon Professional Corporation | 19/hr                                                                     | None                                      | None       |
+| Cepton                                | 35/hr                                                                     | 500/mo housing                            | None       |
+| Cerebras Systems                      | 38/hr                                                                     | None                                      | None       |
+| Ceridian                              | 32/hr (3rd coop)                                                          | None                                      | 2023       |
+| Ceridian                              | 22/hr                                                                     | None                                      | 2022, 2023 |
+| Certik                                | 7000 USD/month remote (4th coop)                                          | None                                      | None       |
+| CGI                                   | 18/hr (3rd coop)                                                          | None                                      | None       |
+| Chisel.ai                             | 40/hr (
+------------------------
+output:
+("entity"{tuple_delimiter}APPLE{tuple_delimiter}Company / Role{tuple_delimiter}Apple offers various compensation packages for roles such as Hardware and System Level Test Engineer, including a 42/hr USD rate and relocation stipends)
+{record_delimiter}
+("entity"{tuple_delimiter}ARCTIC WOLF{tuple_delimiter}Company / Role{tuple_delimiter}Arctic Wolf offers compensation ranging from 36/hr to 42/hr for coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}ATERLO NETWORKS{tuple_delimiter}Company / Role{tuple_delimiter}Aterlo Networks offers a 30/hr rate for 4th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}ATHELAS{tuple_delimiter}Company / Role{tuple_delimiter}Athelas offers a 33/hr USD rate and a 1200/mo USD housing stipend plus flights for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}ATHOS{tuple_delimiter}Company / Role{tuple_delimiter}Athos offers a compensation of 5000 USD/mo)
+{record_delimiter}
+("entity"{tuple_delimiter}ATOLIO{tuple_delimiter}Company / Role{tuple_delimiter}Atolio offers compensation rates ranging from 34/hr to 42/hr for various coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}ATS CORPORATION{tuple_delimiter}Company / Role{tuple_delimiter}ATS Corporation offers a 28/hr rate for 5th year (4B?) positions)
+{record_delimiter}
+("entity"{tuple_delimiter}AUTODESK{tuple_delimiter}Company / Role{tuple_delimiter}Autodesk offers a 34/hr rate for 5th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}AUTONOMIC{tuple_delimiter}Company / Role{tuple_delimiter}Autonomic offers compensation ranging from 38-41/hr for 4th and 5th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}AXONIFY{tuple_delimiter}Company / Role{tuple_delimiter}Axonify offers a 1100/week rate for 4th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BANK OF AMERICA{tuple_delimiter}Company / Role{tuple_delimiter}Bank of America offers a 22/hr rate for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BANK OF AMERICA (MERRILL LYNCH){tuple_delimiter}Company / Role{tuple_delimiter}Bank of America (Merrill Lynch) offers a 20/hr rate for 1st coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BDO{tuple_delimiter}Company / Role{tuple_delimiter}BDO offers compensation ranging from 25/hr to 34.36/hr for 2nd and 3rd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BENTLEY SYSTEMS{tuple_delimiter}Company / Role{tuple_delimiter}Bentley Systems offers compensation ranging from 30/hr to 33/hr for 1st and 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BETS PROGRAM{tuple_delimiter}Company / Role{tuple_delimiter}BETS Program offers a 3000 stipend)
+{record_delimiter}
+("entity"{tuple_delimiter}BETTERUP{tuple_delimiter}Company / Role{tuple_delimiter}BetterUp offers a compensation of 8500/mo)
+{record_delimiter}
+("entity"{tuple_delimiter}BITBUY{tuple_delimiter}Company / Role{tuple_delimiter}Bitbuy offers a 20/hr rate for 1st coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BLACKBERRY{tuple_delimiter}Company / Role{tuple_delimiter}Blackberry offers a compensation rate of about ~21/hr)
+{record_delimiter}
+("entity"{tuple_delimiter}BLD.AI{tuple_delimiter}Company / Role{tuple_delimiter}bld.ai offers a compensation of 7000/mo)
+{record_delimiter}
+("entity"{tuple_delimiter}BLOOMBERG{tuple_delimiter}Company / Role{tuple_delimiter}Bloomberg offers a 48/hr rate plus a 5100 stipend for 5th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BLOQ{tuple_delimiter}Company / Role{tuple_delimiter}Bloq offers compensation ranging from 5.4k/mo to 6.2k/mo for 2nd and 3rd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BLUESCAPE{tuple_delimiter}Company / Role{tuple_delimiter}Bluescape offers a 34/hr rate for 6th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BMO BUSINESS ANALYST (2A){tuple_delimiter}Company / Role{tuple_delimiter}BMO Business Analyst (2A) offers a 24/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}BMO PRODUCT ANALYST{tuple_delimiter}Company / Role{tuple_delimiter}BMO Product Analyst offers a 28/hr rate for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BMO SOFTWARE DEVELOPER{tuple_delimiter}Company / Role{tuple_delimiter}BMO Software Developer offers a 29.50/hr rate for 1st coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BOLT{tuple_delimiter}Company / Role{tuple_delimiter}Bolt offers a 56 USD/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}BONFIRE INTERACTIVE{tuple_delimiter}Company / Role{tuple_delimiter}Bonfire Interactive offers a 24/hr rate for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}BOOSTED.AI{tuple_delimiter}Company / Role{tuple_delimiter}Boosted.AI offers a 35/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}BORROWELL{tuple_delimiter}Company / Role{tuple_delimiter}Borrowell offers a 35/hr rate for mobile dev positions in 5th coop)
+{record_delimiter}
+("entity"{tuple_delimiter}BROOKFIELD ANNUITY{tuple_delimiter}Company / Role{tuple_delimiter}Brookfield Annuity offers a 35/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}BROOKFIELD RENEWABLES{tuple_delimiter}Company / Role{tuple_delimiter}Brookfield Renewables offers a 26/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}BUSPLANNER{tuple_delimiter}Company / Role{tuple_delimiter}BusPlanner offers an average coop compensation)
+{record_delimiter}
+("entity"{tuple_delimiter}CAAT PENSION PLAN{tuple_delimiter}Company / Role{tuple_delimiter}CAAT Pension Plan offers an 18/hr rate for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CANADIAN FOOD INSPECTION AGENCY (FULL STACK DEV){tuple_delimiter}Company / Role{tuple_delimiter}Canadian Food Inspection Agency offers a 24.77/hr rate for 5th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CAPITAL1{tuple_delimiter}Company / Role{tuple_delimiter}Capital1 offers a 40/hr rate for 5th coop positions and a $1000 signing bonus for 2025)
+{record_delimiter}
+("entity"{tuple_delimiter}CARTA{tuple_delimiter}Company / Role{tuple_delimiter}Carta offers compensation ranging from 30.75/hr to 47/hr for 4th and 5th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CARFAX (DEV){tuple_delimiter}Company / Role{tuple_delimiter}Carfax offers a 26/hr rate for 2nd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CASTLETON COMMODITIES{tuple_delimiter}Company / Role{tuple_delimiter}Castleton Commodities offers a 38/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}CEGN{tuple_delimiter}Company / Role{tuple_delimiter}CEGN offers compensation in the low-mid 20s)
+{record_delimiter}
+("entity"{tuple_delimiter}C.E. MCMAHON PROFESSIONAL CORPORATION{tuple_delimiter}Company / Role{tuple_delimiter}C.E. McMahon Professional Corporation offers a 19/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}CEPTON{tuple_delimiter}Company / Role{tuple_delimiter}Cepton offers a 35/hr rate and a 500/mo housing benefit)
+{record_delimiter}
+("entity"{tuple_delimiter}CEREBRAS SYSTEMS{tuple_delimiter}Company / Role{tuple_delimiter}Cerebras Systems offers a 38/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}CERIDIAN{tuple_delimiter}Company / Role{tuple_delimiter}Ceridian offers compensation ranging from 22/hr to 32/hr for 3rd coop positions and others in 2022 and 2023)
+{record_delimiter}
+("entity"{tuple_delimiter}CERTIK{tuple_delimiter}Company / Role{tuple_delimiter}Certik offers a 7000 USD/month remote rate for 4th coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CGI{tuple_delimiter}Company / Role{tuple_delimiter}CGI offers an 18/hr rate for 3rd coop positions)
+{record_delimiter}
+("entity"{tuple_delimiter}CHISEL.AI{tuple_delimiter}Company / Role{tuple_delimiter}Chisel.ai offers a 40/hr rate)
+{record_delimiter}
+("entity"{tuple_delimiter}2023{tuple_delimiter}Year{tuple_delimiter}Year 2023 is mentioned in relation to various coop positions and compensation packages)
+{record_delimiter}
+("entity"{tuple_delimiter}2024{tuple_delimiter}Year{tuple_delimiter}Year 2024 is mentioned in relation to various coop positions and compensation packages)
+{record_delimiter}
+("entity"{tuple_delimiter}2025{tuple_delimiter}Year{tuple_delimiter}Year 2025 is mentioned in relation to Capital1's offer)
+{record_delimiter}
+("relationship"{tuple_delimiter}APPLE{tuple_delimiter}2024{tuple_delimiter}Apple's compensation packages for roles such as Hardware and System Level Test Engineer are for the year 2024{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}ARCTIC WOLF{tuple_delimiter}2023{tuple_delimiter}Arctic Wolf's compensation for coop positions spans years 2023 and 2024{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}ARCTIC WOLF{tuple_delimiter}2024{tuple_delimiter}Arctic Wolf's compensation for coop positions spans years 2023 and 2024{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CERIDIAN{tuple_delimiter}2023{tuple_delimiter}Ceridian's compensation information mentions the years 2022 and 2023{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CAPITAL1{tuple_delimiter}2025{tuple_delimiter}Capital1's offer including a $1000 signing bonus is for the year 2025{tuple_delimiter}10)
+{completion_delimiter}
+#############################
+
+
+
+-Real Data-
+######################
+entity_types: [Company / Role, Compensation, Benefits, Year, Position, Experience Level, Location, Stipend, Relocation Assistance, Work Term, Housing Assistance, Signing Bonus, Vacation Pay, Remote Work Allowance, Transport Stipend, WFH Allowance, Corporate Housing, Tax-Free Relocation Stipend, Pretax Relocation, Hardware, System Level Test Engineer, Engineering, SWE, Non-SWE, Product Design, Firmware, Machine Learning Engineering, Actuarial Analyst, Android Engineering, Marketing Coordinator, Intern Engineer, Intern Analyst, Business Analyst, Fullstack]
+text: {input_text}
+######################
+output:

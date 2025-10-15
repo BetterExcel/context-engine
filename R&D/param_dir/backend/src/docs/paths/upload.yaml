@@ -1,0 +1,78 @@
+/api/v1/upload-spreadsheet:
+  post:
+    tags:
+      - Spreadsheet
+    summary: Upload and parse spreadsheet file
+    description: Upload an Excel or CSV file and parse it into structured data
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                format: binary
+                description: Excel (.xlsx, .xls) or CSV file
+            required:
+              - file
+    responses:
+      '200':
+        description: File uploaded and parsed successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spreadsheetId:
+                  type: string
+                  description: Unique identifier for the uploaded spreadsheet
+                data:
+                  $ref: '#/components/schemas/SpreadsheetData'
+                message:
+                  type: string
+                  example: "File uploaded and parsed successfully"
+            examples:
+              success:
+                summary: Successful upload
+                value:
+                  spreadsheetId: "550e8400-e29b-41d4-a716-446655440000"
+                  message: "File uploaded and parsed successfully"
+                  data:
+                    sheets:
+                      - name: "Sheet1"
+                        dimensions:
+                          rows: 10
+                          cols: 5
+      '400':
+        description: Invalid file format or corrupted file
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+            examples:
+              invalid_format:
+                summary: Invalid file format
+                value:
+                  error:
+                    code: "INVALID_FILE_FORMAT"
+                    message: "The uploaded file format is not supported"
+                    details:
+                      supported_formats: [".xlsx", ".xls", ".csv"]
+                      received_format: ".txt"
+                    suggestions:
+                      - "Convert your file to Excel format (.xlsx)"
+                      - "Save as CSV if working with simple data"
+      '413':
+        description: File too large
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      '500':
+        description: Internal server error during file processing
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'

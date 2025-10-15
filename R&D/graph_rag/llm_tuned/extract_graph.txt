@@ -1,0 +1,233 @@
+
+-Goal-
+Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: One of the following types: [ID, value, flag, metric, binary indicator]
+- entity_description: Comprehensive description of the entity's attributes and activities
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
+
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: an integer score between 1 to 10, indicating strength of the relationship between the source entity and target entity
+Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tuple_delimiter}<target_entity>{tuple_delimiter}<relationship_description>{tuple_delimiter}<relationship_strength>)
+
+3. Return output in English as a single list of all the entities and relationships identified in steps 1 and 2. Use **{record_delimiter}** as the list delimiter.
+
+4. If you have to translate into English, just translate the descriptions, nothing else!
+
+5. When finished, output {completion_delimiter}.
+
+-Examples-
+######################
+
+Example 1:
+
+entity_types: [ID, value, flag, metric, binary indicator]
+text:
+8.57 [D6088]\t4 [E6088]\tYes [F6088]\t10 [G6088]\t10 [H6088]\t2 [I6088]\tYes [J6088]",
+            "CLG0039 [A6089]\t76 [B6089]\t6.09 [C6089]\t6.22 [D6089]\t2 [E6089]\tYes [F6089]\t6 [G6089]\t7 [H6089]\t1 [I6089]\tNo [J6089]",
+            "CLG0049 [A6090]\t103 [B6090]\t6.12 [C6090]\t5.86 [D6090]\t8 [E6090]\tNo [F6090]\t6 [G6090]\t8 [H6090]\t0 [I6090]\tNo [J6090]",
+            "CLG0082 [A6091]\t99 [B6091]\t6.38 [C6091]\t6.37 [D6091]\t4 [E6091]\tYes [F6091]\t7 [G6091]\t5 [H6091]\t0 [I6091]\tNo [J6091]",
+            "CLG0100 [A6092]\t111 [B6092]\t7.93 [C6092]\t7.91 [D6092]\t5 [E6092]\tYes [F6092]\t0 [G6092]\t4 [H6092]\t3 [I6092]\tNo [J6092]",
+            "CLG0037 [A6093]\t101 [B6093]\t8.3 [C6093]\t8.25 [D6093]\t7 [E6093]\tNo [F6093]\t9 [G6093]\t2 [H6093]\t4 [I6093]\tNo [J6093]",
+            "CLG0090 [A6094]\t97 [B6094]\t5.09 [C6094]\t5.39 [D6094]\t5 [E6094]\tNo [F6094]\t3 [G6094]\t5 [H6094]\t3 [I6094]\tNo [J6094]",
+            "CLG0097 [A6095]\t86 [B6095]\t6.21 [C6095]\t5.93 [D6095]\t10 [E6095]\tNo [F6095]\t9 [G6095]\t8 [H6095]\t5 [I6095]\tNo [J6095]",
+            "CLG0001 [A6096]\t101 [B6096]\t7.15 [C6096]\t7.55 [D6096]\t4 [E6096]\tYes [F6096]\t4 [G6096]\t1 [H6096]\t0 [I6096]\tNo [J6096]",
+            "CLG0091 [A6097]\t111 [B6097]\t6.66 [C6097]\t6.95 [D6097]\t7 [E6097]\tYes [F6097]\t1 [G6097]\t6 [H6097]\t2 [I6097]\tNo [J6097]",
+            "CLG0037 [A6098]\t82 [B6098]\t9.42 [C6098]\t9.25 [D6098]\t4 [E6098]\tNo [F6098]\t1 [G6098]\t2 [H6098]\t4 [I6098]\tNo [J6098]",
+            "CLG0086 [A6099]\t101 [B6099]\t8.94 [C6099]\t8.62 [D6099]\t10 [E6099]\tNo [F6099]\t10 [G6099]\t2 [H6099]\t4 [I6099]\tNo [J6099]",
+            "CLG0019 [A6100]\t103 [B6100]\t8.13 [C6100]\t7.91 [D6100]\t4 [E6100]\tNo [F6100]\t3 [G6100]\t8 [H6100]\t0 [I6100]\tNo [J6100]"
+          ],
+          "formulas": [
+            "Row6051: R1:CLG0074",
+            "Row6052: R1:CLG0015",
+            "Row6053: R1:CLG0057",
+            "Row6054: R1:CLG0007",
+            "Row6055: R1:CLG0078",
+            "Row6056: R1:CLG0090",
+            "Row6057: R1:CLG0018",
+            "Row6058: R1:CLG0082",
+            "Row6059: R1:CLG0006",
+            "Row6060: R1:CLG0043",
+            "Row6061: R1:CLG0089",
+            "Row6062: R1:CLG0057",
+            "Row6063: R1:CLG0041",
+            "Row6064: R1:CLG0076",
+            "Row6065: R1:CL
+------------------------
+output:
+("entity"{tuple_delimiter}CLG0039{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
+{record_delimiter}
+("entity"{tuple_delimiter}76{tuple_delimiter}value{tuple_delimiter}A numerical value associated with CLG0039)
+{record_delimiter}
+("entity"{tuple_delimiter}6.09{tuple_delimiter}metric{tuple_delimiter}A metric value associated with CLG0039)
+{record_delimiter}
+("entity"{tuple_delimiter}Yes{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0039 as true)
+{record_delimiter}
+("entity"{tuple_delimiter}10{tuple_delimiter}binary indicator{tuple_delimiter}A binary indicator value associated with CLG0039)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0049{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
+{record_delimiter}
+("entity"{tuple_delimiter}103{tuple_delimiter}value{tuple_delimiter}A numerical value associated with CLG0049)
+{record_delimiter}
+("entity"{tuple_delimiter}No{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0049 as false)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0082{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
+{record_delimiter}
+("entity"{tuple_delimiter}Yes{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0082 as true)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0100{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record)
+{record_delimiter}
+("entity"{tuple_delimiter}No{tuple_delimiter}flag{tuple_delimiter}A binary indicator flagging a specific condition for CLG0100 as false)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0037{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record, mentioned twice with different associated values)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0090{tuple_delimiter}ID{tuple_delimiter}A unique identifier for a data record, mentioned in both data and formulas sections)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0039{tuple_delimiter}76{tuple_delimiter}The value 76 is directly associated with CLG0039{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0039{tuple_delimiter}Yes{tuple_delimiter}The flag Yes is directly associated with CLG0039 indicating a true condition{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0049{tuple_delimiter}103{tuple_delimiter}The value 103 is directly associated with CLG0049{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0049{tuple_delimiter}No{tuple_delimiter}The flag No is directly associated with CLG0049 indicating a false condition{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0082{tuple_delimiter}Yes{tuple_delimiter}The flag Yes is directly associated with CLG0082 indicating a true condition{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0100{tuple_delimiter}No{tuple_delimiter}The flag No is directly associated with CLG0100 indicating a false condition{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0037{tuple_delimiter}No{tuple_delimiter}The flag No is associated with CLG0037 indicating a false condition in both instances it is mentioned{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0090{tuple_delimiter}No{tuple_delimiter}The flag No is associated with CLG0090 indicating a false condition, and it is mentioned in both data and formulas sections{tuple_delimiter}10)
+{completion_delimiter}
+#############################
+
+
+Example 2:
+
+entity_types: [ID, value, flag, metric, binary indicator]
+text:
+.39 [C6347]\t5.34 [D6347]\t1 [E6347]\tYes [F6347]\t0 [G6347]\t8 [H6347]\t3 [I6347]\tNo [J6347]",
+            "CLG0079 [A6348]\t93 [B6348]\t5.06 [C6348]\t5.2 [D6348]\t2 [E6348]\tYes [F6348]\t0 [G6348]\t3 [H6348]\t1 [I6348]\tNo [J6348]",
+            "CLG0006 [A6349]\t119 [B6349]\t6.44 [C6349]\t6.13 [D6349]\t10 [E6349]\tYes [F6349]\t3 [G6349]\t5 [H6349]\t4 [I6349]\tNo [J6349]",
+            "CLG0016 [A6350]\t82 [B6350]\t5.05 [C6350]\t5.13 [D6350]\t6 [E6350]\tNo [F6350]\t2 [G6350]\t3 [H6350]\t1 [I6350]\tNo [J6350]"
+          ],
+          "formulas": [
+            "Row6301: R1:CLG0045",
+            "Row6302: R1:CLG0037",
+            "Row6303: R1:CLG0043",
+            "Row6304: R1:CLG0073",
+            "Row6305: R1:CLG0073",
+            "Row6306: R1:CLG0076",
+            "Row6307: R1:CLG0028",
+            "Row6308: R1:CLG0071",
+            "Row6309: R1:CLG0060",
+            "Row6310: R1:CLG0064",
+            "Row6311: R1:CLG0060",
+            "Row6312: R1:CLG0099",
+            "Row6313: R1:CLG0036",
+            "Row6314: R1:CLG0047",
+            "Row6315: R1:CLG0038",
+            "Row6316: R1:CLG0065",
+            "Row6317: R1:CLG0034",
+            "Row6318: R1:CLG0022",
+            "Row6319: R1:CLG0094",
+            "Row6320: R1:CLG0084",
+            "Row6321: R1:CLG0051",
+            "Row6322: R1:CLG0072",
+            "Row6323: R1:CLG0045",
+            "Row6324: R1:CLG0071",
+            "Row6325: R1:CLG0002",
+            "Row6326: R1:CLG0058",
+            "Row6327: R1:CLG0094",
+            "Row6328: R1:CLG0012",
+            "Row6329: R1:CLG0100",
+            "Row6330: R1:CLG0027",
+            "Row6331: R1:CLG0098",
+            "Row6332: R1:CLG0038",
+            "Row6333: R1:CLG0075",
+            "Row6334: R1:CLG0020",
+            "Row6335: R1:CLG0094",
+            "Row6336: R1:CLG0043",
+            "Row6337: R1:CLG0032",
+            "Row6338: R1:CLG0090",
+            "Row6339: R1:CLG0023",
+            "Row6340: R1:CLG0041",
+            "Row6341: R1:CLG0088",
+            "Row6342: R1:CLG0002",
+            "Row6343: R1:CLG0062",
+            "Row6344: R1:CLG0096",
+            "Row6345: R1:CLG0053",
+            "Row6346: R1:CLG0057",
+            "Row6347: R1:CLG0048",
+            "Row6348: R1:CLG0079",
+            "Row6349: R1:CLG0006",
+            "Row6350: R1:CLG0016"
+          ],
+          "chunk_number": 126
+        }},
+        "chunk_127": {{
+          "range": "A6351:A6400",
+          "start_row": 6351,
+          "end_row": 6400,
+          "summary": "Data contains information on various items with attributes including ID, values, and flags.",
+          "context": "Each row represents an item with metrics such as scores, counts, and binary indicators.",
+          "table": [
+            "CLG0011 [A6351]\t89 [B6351]\t6.15 [C6351]\t6.18 [D6351]\t2 [E6351]\tYes [F6351]\t10 [G6351]\t4 [H6351]\t0 [I6351]\tNo [J6351]",
+            "CLG0046 [A6352]\t141 [B6352]\t7.1 [C635
+------------------------
+output:
+("entity"{tuple_delimiter}CLG0079{tuple_delimiter}ID{tuple_delimiter}Identifier for a data record)
+{record_delimiter}
+("entity"{tuple_delimiter}93{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0079 in some metric)
+{record_delimiter}
+("entity"{tuple_delimiter}5.06{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0079)
+{record_delimiter}
+("entity"{tuple_delimiter}Yes{tuple_delimiter}binary indicator{tuple_delimiter}Binary indicator associated with CLG0079, indicating a positive condition)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0006{tuple_delimiter}ID{tuple_delimiter}Identifier for another data record)
+{record_delimiter}
+("entity"{tuple_delimiter}119{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0006 in some metric)
+{record_delimiter}
+("entity"{tuple_delimiter}6.44{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0006)
+{record_delimiter}
+("entity"{tuple_delimiter}No{tuple_delimiter}binary indicator{tuple_delimiter}Binary indicator associated with CLG0006, indicating a negative condition)
+{record_delimiter}
+("entity"{tuple_delimiter}CLG0016{tuple_delimiter}ID{tuple_delimiter}Identifier for another data record)
+{record_delimiter}
+("entity"{tuple_delimiter}82{tuple_delimiter}value{tuple_delimiter}Value associated with CLG0016 in some metric)
+{record_delimiter}
+("entity"{tuple_delimiter}5.05{tuple_delimiter}metric{tuple_delimiter}Metric value for CLG0016)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}93{tuple_delimiter}93 is a value associated with the ID CLG0079{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}5.06{tuple_delimiter}5.06 is a metric value associated with the ID CLG0079{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0079{tuple_delimiter}Yes{tuple_delimiter}Yes is a binary indicator associated with the ID CLG0079{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}119{tuple_delimiter}119 is a value associated with the ID CLG0006{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}6.44{tuple_delimiter}6.44 is a metric value associated with the ID CLG0006{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0006{tuple_delimiter}No{tuple_delimiter}No is a binary indicator associated with the ID CLG0006{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0016{tuple_delimiter}82{tuple_delimiter}82 is a value associated with the ID CLG0016{tuple_delimiter}10)
+{record_delimiter}
+("relationship"{tuple_delimiter}CLG0016{tuple_delimiter}5.05{tuple_delimiter}5.05 is a metric value associated with the ID CLG0016{tuple_delimiter}10)
+{completion_delimiter}
+#############################
+
+
+
+-Real Data-
+######################
+entity_types: [ID, value, flag, metric, binary indicator]
+text: {input_text}
+######################
+output:

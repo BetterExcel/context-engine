@@ -8,6 +8,7 @@ from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 from embedding_generation import EmbeddingGenerator
 from reranker import ReRanker
+from merkle_tree import MerkleTree, MerkleDiff
 
 # Load environment variables from .env file
 load_dotenv()
@@ -301,6 +302,66 @@ class PineconeUploader:
         except Exception as e:
             print(f"❌ Failed to query index: {e}")
             return None
+
+
+    def sync_with_merkle(self, old_data: Dict, new_data: Dict, embedding_method: str = "openai"):
+        """
+        Compare old vs new anchored index using Merkle trees and 
+        sync Pinecone with only added/updated/deleted chunks.
+        """
+        print("🔍 Building Merkle trees for diffing...")
+
+        # Convert both datasets to flat chunk text lists
+        old_chunks_data = self.__data_to_chunks(old_data)
+        new_chunks_data = self.__data_to_chunks(new_data)
+
+        old_texts = [chunk["values"] for chunk in old_chunks_data]
+        new_texts = [chunk["values"] for chunk in new_chunks_data]
+
+        old_tree = MerkleTree(old_texts)
+        new_tree = MerkleTree(new_texts)
+
+        diff_result = MerkleDiff.diff(old_tree, new_tree)
+        print(json.dumps(diff_result, indent=2))
+
+        # Setup embeddings
+        self.embedding_method = embedding_method
+        self.dim = self.embedding_generator.get_embedding_dim(embedding_method)
+        self.index = self.__create_index_if_not_exists()
+
+        # Prepare and apply Pinecone updates
+        def embed_text(text):
+            return self.embedding_generator.generate(text, method=embedding_method)
+
+        # --- DELETED ---
+        for i in diff_result["deleted"]:
+            vector_id = new_chunks_data[i]["id"] if i < len(new_chunks_data) else f"chunk_{i}"
+            print(f"🗑️ Deleting {vector_id} ...")
+            self.index.delete(ids=[vector_id])
+
+        # --- UPDATED ---
+        for i in diff_result["updated"]:
+            chunk = new_chunks_data[i]
+            vector = embed_text(chunk["values"])
+            print(f"♻️ Updating {chunk['id']} ...")
+            self.index.upsert(vectors=[{
+                "id": chunk["id"],
+                "values": vector,
+                "metadata": chunk["metadata"]
+            }])
+
+        # --- ADDED ---
+        for i in diff_result["added"]:
+            chunk = new_chunks_data[i]
+            vector = embed_text(chunk["values"])
+            print(f"➕ Adding {chunk['id']} ...")
+            self.index.upsert(vectors=[{
+                "id": chunk["id"],
+                "values": vector,
+                "metadata": chunk["metadata"]
+            }])
+
+        print("✅ Pinecone index synchronized using Merkle diff.")
 
 class HybridSearcher:
     def __init__(self,sparse_index:PineconeUploader,dense_index:PineconeUploader, alpha: float = 0.5, top_k: int = 5):
