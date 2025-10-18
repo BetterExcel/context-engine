@@ -359,6 +359,24 @@ def main():
         builder.save_index(index)
         
         print("\n" + "="*50)
+        
+        # Automatically upload to Pinecone after building the index
+        print("\n🚀 Auto-uploading to Pinecone...")
+        try:
+            from pinecone_uploader_new import PineconeUploader, load_anchored_index
+            
+            # Load the just-created anchored index
+            index_data = load_anchored_index()
+            
+            # Upload to Pinecone
+            uploader = PineconeUploader()
+            uploader.upload_data(index_data, embedding_method="openai")
+            
+            print("✅ Automatic Pinecone upload completed!")
+            
+        except Exception as upload_error:
+            print(f"⚠️ Auto-upload to Pinecone failed: {upload_error}")
+            print("You can manually run: python3 pinecone_uploader_new.py")
        
         
     except Exception as e:
