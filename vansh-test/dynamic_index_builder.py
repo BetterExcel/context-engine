@@ -418,8 +418,10 @@ def update_index_with_new_field(existing_index: Dict, field_info: Dict, extracte
     
     return updated_index
 
-def load_existing_index(file_path: str = "anchored_index_output.json") -> Dict:
+def load_existing_index(file_path: str = None) -> Dict:
     """Load existing index from JSON file."""
+    if file_path is None:
+        file_path = os.getenv("ANCHORED_INDEX_OUTPUT_PATH", "anchored_index_output.json")
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
@@ -493,7 +495,7 @@ def display_user_queries(index: Dict):
         print(f"  Created: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(created_at))}")
         print()
 
-def process_query_for_field_addition(query: str, existing_index: Dict = None, excel_file_path: str = "../test.xlsx") -> Dict:
+def process_query_for_field_addition(query: str, existing_index: Dict = None, excel_file_path: str = None) -> Dict:
     """
     Main function to process a user query and add the corresponding field to the index.
     
@@ -505,6 +507,10 @@ def process_query_for_field_addition(query: str, existing_index: Dict = None, ex
     Returns:
         Updated index with new field
     """
+    
+    # Set default excel file path if not provided
+    if excel_file_path is None:
+        excel_file_path = os.getenv("EXCEL_FILE_PATH", "test.xlsx")
     
     print(f"Processing query: '{query}'")
     print("=" * 50)
@@ -618,7 +624,7 @@ def interactive_field_addition_mode():
                 continue
             
             # Process query and add field
-            updated_index = process_query_for_field_addition(query, existing_index, "../test.xlsx")
+            updated_index = process_query_for_field_addition(query, existing_index)
             existing_index = updated_index  # Update for next iteration
             
         except KeyboardInterrupt:
@@ -658,7 +664,7 @@ if __name__ == "__main__":
             
             for query in test_queries:
                 print(f"\n{'='*60}")
-                existing_index = process_query_for_field_addition(query, existing_index, "../test.xlsx")
+                existing_index = process_query_for_field_addition(query, existing_index)
         
         elif choice == "2":
             # Interactive mode
@@ -678,7 +684,7 @@ if __name__ == "__main__":
         
         for query in test_queries:
             print(f"\n{'='*60}")
-            existing_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
+            existing_index = process_query_for_field_addition(query, existing_index)
     
     except KeyboardInterrupt:
         print("\nExiting...")

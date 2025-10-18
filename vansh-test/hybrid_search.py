@@ -445,33 +445,36 @@ def load_documents_from_files() -> Dict[str, Dict[str, Any]]:
     
     # Load from consolidated fields
     try:
-        with open("consolidated_fields.json", "r") as f:
+        consolidated_path = os.getenv("CONSOLIDATED_FIELDS_PATH", "consolidated_fields.json")
+        with open(consolidated_path, "r") as f:
             consolidated_data = json.load(f)
             for field_name, field_data in consolidated_data.get("consolidated_chunks", {}).items():
                 documents[f"Consolidated_{field_name}"] = field_data
         logger.info(f"Loaded {len(consolidated_data.get('consolidated_chunks', {}))} consolidated documents")
     except FileNotFoundError:
-        logger.warning("consolidated_fields.json not found, skipping consolidated chunks")
+        logger.warning(f"{consolidated_path} not found, skipping consolidated chunks")
     
     # Load from dynamic index
     try:
-        with open("dynamic_index_output.json", "r") as f:
+        dynamic_path = os.getenv("DYNAMIC_INDEX_OUTPUT_PATH", "dynamic_index_output.json")
+        with open(dynamic_path, "r") as f:
             dynamic_data = json.load(f)
             for sheet_name, sheet_data in dynamic_data.get("sheets", {}).items():
                 for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
                     documents[f"{sheet_name}_{chunk_id}"] = chunk_data
-        logger.info(f"Loaded documents from dynamic_index_output.json")
+        logger.info(f"Loaded documents from {dynamic_path}")
     except FileNotFoundError:
-        logger.warning("dynamic_index_output.json not found, trying anchored index")
+        logger.warning(f"{dynamic_path} not found, trying anchored index")
         
         # Fallback to anchored index
         try:
-            with open("anchored_index_output.json", "r") as f:
+            anchored_path = os.getenv("ANCHORED_INDEX_OUTPUT_PATH", "anchored_index_output.json")
+            with open(anchored_path, "r") as f:
                 anchored_data = json.load(f)
                 for sheet_name, sheet_data in anchored_data.get("sheets", {}).items():
                     for chunk_id, chunk_data in sheet_data.get("anchors", {}).items():
                         documents[f"{sheet_name}_{chunk_id}"] = chunk_data
-            logger.info(f"Loaded documents from anchored_index_output.json")
+            logger.info(f"Loaded documents from {anchored_path}")
         except FileNotFoundError:
             logger.error("No index files found!")
     

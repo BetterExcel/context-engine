@@ -172,7 +172,8 @@ def save_consolidated_index(consolidated_chunks: Dict[str, Dict]):
         "consolidated_chunks": consolidated_chunks
     }
     
-    with open("consolidated_fields.json", "w") as f:
+    consolidated_path = os.getenv("CONSOLIDATED_FIELDS_PATH", "consolidated_fields.json")
+    with open(consolidated_path, "w") as f:
         json.dump(consolidated_index, f, indent=2)
     
     print(f"✅ Saved consolidated index with {len(consolidated_chunks)} fields")
@@ -194,7 +195,8 @@ def consolidate_fields_for_new_field(field_name: str, field_data: Dict[str, List
         # Load existing consolidated index
         consolidated_index = {}
         try:
-            with open("consolidated_fields.json", "r") as f:
+            consolidated_path = os.getenv("CONSOLIDATED_FIELDS_PATH", "consolidated_fields.json")
+            with open(consolidated_path, "r") as f:
                 consolidated_index = json.load(f).get("consolidated_chunks", {})
         except FileNotFoundError:
             consolidated_index = {}

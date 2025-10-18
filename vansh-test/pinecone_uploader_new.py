@@ -21,7 +21,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
 
-def load_anchored_index(file_path: str = "anchored_index_output.json") -> Dict:
+def load_anchored_index(file_path: str = None) -> Dict:
+    if file_path is None:
+        file_path = os.getenv("ANCHORED_INDEX_OUTPUT_PATH", "anchored_index_output.json")
     """Load the anchored index from JSON file."""
     try:
         with open(file_path, 'r') as f:

@@ -192,7 +192,7 @@ def run_dynamic_field_extraction(query: str) -> bool:
         existing_index = load_existing_index()
         
         # Process the query and add fields
-        updated_index = process_query_for_field_addition(query, existing_index, "test.xlsx")
+        updated_index = process_query_for_field_addition(query, existing_index)
         
         print(f"\n✅ Dynamic field extraction completed")
         print(f"   Total fields in index: {len(updated_index.get('field_metadata', {}))}")
