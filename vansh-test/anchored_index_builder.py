@@ -152,8 +152,8 @@ class ChunkAnalyzer:
         prompt = f"""
 Analyze this Excel data chunk (rows {chunk_range}) and provide:
 
-1. SUMMARY: A concise 1-2 sentence summary of what this data represents
-2. CONTEXT: Key details, patterns, or important information in this data
+1. SUMMARY: A concise 4-6 sentence summary of what this data represents
+2. CONTEXT: Key details, patterns, or important information in this data. Be specific and detailed. not more that 5 lines.
 
 Data:
 {data_text}

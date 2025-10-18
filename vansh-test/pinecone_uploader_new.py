@@ -7,7 +7,7 @@ import requests
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 from embedding_generation import EmbeddingGenerator
-from reranker import ReRanker
+# from reranker import ReRanker
 from merkle_tree import MerkleTree, MerkleDiff
 
 # Load environment variables from .env file
@@ -16,7 +16,7 @@ load_dotenv()
 # Configuration from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
-PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")
+PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "test")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
@@ -53,14 +53,14 @@ def get_chunk_ranges(results: Dict) -> List[str]:
     return ranges
 
 class PineconeUploader:
-    def __init__(self, api_key: str=os.getenv("PINECONE_API_KEY"),environment:str=os.getenv('PINECONE_ENVIRONMENT'),index_name: str = os.getenv("PINECONE_INDEX_NAME", "skopeo-context-index-dense")):
+    def __init__(self, api_key: str=os.getenv("PINECONE_API_KEY"),environment:str=os.getenv('PINECONE_ENVIRONMENT'),index_name: str = os.getenv("PINECONE_INDEX_NAME", "test")):
         self.api_key = api_key
         self.environment = environment
         self.index_name = index_name
         self.pc = Pinecone(api_key=PINECONE_API_KEY)
         self.index= self.pc.Index(index_name)  
         self.embedding_generator = EmbeddingGenerator()
-        self.re_ranker= ReRanker()
+        # self.re_ranker= ReRanker()
         
     def __create_index_if_not_exists(self):
         """Create Pinecone index if it doesn't exist."""
@@ -199,44 +199,44 @@ class PineconeUploader:
         print(f"📋 Total chunks prepared for upload: {len(chunks_to_upload)}")
         return chunks_to_upload
     
-    def __rerank_results(self, results: List[Dict], query: str, method: str = "cross_encoder", top_k: int = 5) -> List[Dict]:
-        """Rerank Pinecone results using the ReRanker class."""
-        try:
-            print(f"🔄 Reranking {len(results)} results using {method}...")
+    # def __rerank_results(self, results: List[Dict], query: str, method: str = "cross_encoder", top_k: int = 5) -> List[Dict]:
+    #     """Rerank Pinecone results using the ReRanker class."""
+    #     try:
+    #         print(f"🔄 Reranking {len(results)} results using {method}...")
 
-            # Extract docs (use metadata summary/context if available)
-            docs = []
-            for r in results:
-                meta = r.get("metadata", {})
-                text = meta.get("text") or meta.get("summary") or meta.get("context") or str(meta)
-                docs.append(text)
+    #         # Extract docs (use metadata summary/context if available)
+    #         docs = []
+    #         for r in results:
+    #             meta = r.get("metadata", {})
+    #             text = meta.get("text") or meta.get("summary") or meta.get("context") or str(meta)
+    #             docs.append(text)
 
-            # Run reranker
-            reranked = self.re_ranker.rerank(query, docs, method=method, top_k=top_k)
+    #         # Run reranker
+    #         reranked = self.re_ranker.rerank(query, docs, method=method, top_k=top_k)
 
-            # Map reranked docs back to Pinecone matches
-            doc_to_result = { 
-                (r.get("metadata", {}).get("text") or r.get("metadata", {}).get("summary") or str(r.get("metadata"))): r 
-                for r in results 
-            }
+    #         # Map reranked docs back to Pinecone matches
+    #         doc_to_result = { 
+    #             (r.get("metadata", {}).get("text") or r.get("metadata", {}).get("summary") or str(r.get("metadata"))): r 
+    #             for r in results 
+    #         }
 
-            reranked_results = []
-            for item in reranked:
-                doc = item["doc"]
-                if doc in doc_to_result:
-                    updated = doc_to_result[doc].copy()
-                    updated["rerank_score"] = item["score"]
-                    reranked_results.append(updated)
+    #         reranked_results = []
+    #         for item in reranked:
+    #             doc = item["doc"]
+    #             if doc in doc_to_result:
+    #                 updated = doc_to_result[doc].copy()
+    #                 updated["rerank_score"] = item["score"]
+    #                 reranked_results.append(updated)
 
-            print("✅ Reranking completed")
-            for rr in reranked_results:
-                print(f" - ID: {rr['id']}, base={rr['score']:.4f}, rerank={rr['rerank_score']:.4f}")
+    #         print("✅ Reranking completed")
+    #         for rr in reranked_results:
+    #             print(f" - ID: {rr['id']}, base={rr['score']:.4f}, rerank={rr['rerank_score']:.4f}")
 
-            return reranked_results
+    #         return reranked_results
 
-        except Exception as e:
-            print(f"❌ Failed to rerank results: {e}")
-            return results
+    #     except Exception as e:
+    #         print(f"❌ Failed to rerank results: {e}")
+    #         return results
 
     def upload_data(self, data: Dict,batch_size: int = 100,embedding_method: str = "openai"):
         """Upload chunks to Pinecone in batches - IMPROVED VERSION."""
@@ -285,11 +285,11 @@ class PineconeUploader:
             print(f"✅ Retrieved {len(results['matches'])} results")
             print("📋 Results:")
             
-            if rerank_method and rerank_method != 'None':
-                # Note: Reranker implementation needs to be fixed separately
-                print("🔄 Reranking functionality available but needs implementation fix")
-                # results=self.re_ranker.rerank(query,results=[],method=rerank_method,top_k=top_k)
-                # print("🔄 Reranked Results:")
+            # if rerank_method and rerank_method != 'None':
+            #     # Note: Reranker implementation needs to be fixed separately
+            #     print("🔄 Reranking functionality available but needs implementation fix")
+            #     # results=self.re_ranker.rerank(query,results=[],method=rerank_method,top_k=top_k)
+            #     # print("🔄 Reranked Results:")
                 
             for match in results['matches']:
                 print(f" - ID: {match['id']}, Score: {match['score']:.4f}")
@@ -365,27 +365,27 @@ class PineconeUploader:
 
         print("✅ Pinecone index synchronized using Merkle diff.")
 
-class HybridSearcher:
-    def __init__(self,sparse_index:PineconeUploader,dense_index:PineconeUploader, alpha: float = 0.5, top_k: int = 5):
-        self.alpha = alpha
-        self.top_k = top_k
-        self.pc = Pinecone(api_key=PINECONE_API_KEY)
-        self.sparse_index = sparse_index
-        self.dense_index = dense_index
+# class HybridSearcher:
+#     def __init__(self,sparse_index:PineconeUploader,dense_index:PineconeUploader, alpha: float = 0.5, top_k: int = 5):
+#         self.alpha = alpha
+#         self.top_k = top_k
+#         self.pc = Pinecone(api_key=PINECONE_API_KEY)
+#         self.sparse_index = sparse_index
+#         self.dense_index = dense_index
         
-    def hybrid_query(self, query: str,sparse_embedding_method: str = "sbert",dense_embedding_method: str = "openai"):
-        """
-        Hybrid search: combines keyword (sparse) and semantic search (dense).   
-        Args:
-            query: The search query string
-        """
-        sparse_result=self.sparse_index.query_index(query,top_k=self.top_k,embedding_method=sparse_embedding_method)
-        dense_result=self.dense_index.query_index(query,top_k=self.top_k,embedding_method=dense_embedding_method)
+#     def hybrid_query(self, query: str,sparse_embedding_method: str = "sbert",dense_embedding_method: str = "openai"):
+#         """
+#         Hybrid search: combines keyword (sparse) and semantic search (dense).   
+#         Args:
+#             query: The search query string
+#         """
+#         sparse_result=self.sparse_index.query_index(query,top_k=self.top_k,embedding_method=sparse_embedding_method)
+#         dense_result=self.dense_index.query_index(query,top_k=self.top_k,embedding_method=dense_embedding_method)
 
-        # Step 3: Blend scores manually (alpha controls weighting)
-        chunked_results={ "sparse":sparse_result,"dense":dense_result}
-        return chunked_results
-        pass
+#         # Step 3: Blend scores manually (alpha controls weighting)
+#         chunked_results={ "sparse":sparse_result,"dense":dense_result}
+#         return chunked_results
+#         pass
 
         
 if __name__ == "__main__":
@@ -394,8 +394,8 @@ if __name__ == "__main__":
     index_data = load_anchored_index()
     
     # Initialize uploader
-    skopeo_context_index_dense=PineconeUploader(index_name='skopeo-context-index-dense')
-    # skopeo_context_index_sparse=PineconeUploader(index_name='skopeo-context-index-sparse')
+    skopeo_context_index_dense=PineconeUploader()
+    # skopeo_context_index_sparse=PineconeUploader()
 
     # Delete existing index if needed (uncomment to reset)
     # skopeo_context_index_dense.delete_index_if_exists()
@@ -413,6 +413,4 @@ if __name__ == "__main__":
     # skopeo_context_index_sparse.upload_data(index_data,embedding_method="sbert")
     # results=skopeo_context_index_sparse.query_index("Where is IQ 104 located?",rerank_method=None,embedding_method="sbert",)
     # print(get_chunk_ranges(results))
-    
-    # Clean up (uncomment to delete index)
     # skopeo_context_index_dense.delete_index_if_exists()
