@@ -1,6 +1,7 @@
 import json
 import requests
 import time
+import sys
 from typing import Dict, List, Any, Union
 from datetime import datetime
 from collections import defaultdict
@@ -639,55 +640,33 @@ def interactive_field_addition_mode():
     if query_count >= max_queries:
         print(f"\nReached maximum queries ({max_queries}). Exiting...")
 
-if __name__ == "__main__":
-    print("Dynamic Index Builder - Field Addition System")
+
+def main():
+    """Main function to run dynamic field addition from command line."""
+    if len(sys.argv) < 2:
+        print("Usage: python3 dynamic_index_builder.py '<query>'")
+        print("Example: python3 dynamic_index_builder.py 'us companies'")
+        sys.exit(1)
+    
+    query = " ".join(sys.argv[1:])
+    print(f"Processing query: '{query}'")
     print("=" * 50)
     
-    # Test with sample queries
-    test_queries = [
-        "What companies are in the US?",
-        "Which company has the highest salary ranges?",
-        "What benefits do companies offer?"
-    ]
-    
     try:
-        print("Choose mode:")
-        print("1. Test with predefined queries")
-        print("2. Interactive mode")
-        print("3. View existing queries and fields")
-        
-        choice = input("Enter choice (1-3): ").strip()
-        
-        if choice == "1":
-            # Test with predefined queries
-            existing_index = load_existing_index()
-            
-            for query in test_queries:
-                print(f"\n{'='*60}")
-                existing_index = process_query_for_field_addition(query, existing_index)
-        
-        elif choice == "2":
-            # Interactive mode
-            interactive_field_addition_mode()
-        
-        elif choice == "3":
-            # View existing queries and fields
-            existing_index = load_existing_index()
-            display_user_queries(existing_index)
-        
-        else:
-            print("Invalid choice. Exiting.")
-            
-    except EOFError:
-        print("\nNo input available. Running predefined queries...")
+        # Load existing index
         existing_index = load_existing_index()
         
-        for query in test_queries:
-            print(f"\n{'='*60}")
-            existing_index = process_query_for_field_addition(query, existing_index)
-    
-    except KeyboardInterrupt:
-        print("\nExiting...")
-    
+        # Process the query and add fields
+        updated_index = process_query_for_field_addition(query, existing_index)
+        
+        print(f"\n✅ Successfully processed query: '{query}'")
+        print(f"📊 Total fields in index: {len(updated_index.get('field_metadata', {}))}")
+        
+        return updated_index
+        
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ Error processing query: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
